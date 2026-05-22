@@ -1,0 +1,48 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Trainer {
+  id        String      @id @default(uuid())
+  email     String      @unique
+  name      String
+  createdAt DateTime    @default(now())
+  dogs      Dog[]
+}
+
+model Dog {
+  id           String         @id @default(uuid())
+  name         String
+  age          String
+  breed        String
+  status       String
+  owner        String
+  lastIncident String?
+  observations Observation[]
+  consultations Consultation[]
+}
+
+model Observation {
+  id        String   @id @default(uuid())
+  category  String
+  severity  String
+  trigger   String
+  notes     String
+  loggedAt  DateTime @default(now())
+  dog       Dog      @relation(fields: [dogId], references: [id])
+  dogId     String
+}
+
+model Consultation {
+  id      String   @id @default(uuid())
+  date    DateTime
+  focus   String
+  outcome String
+  dog     Dog      @relation(fields: [dogId], references: [id])
+  dogId   String
+}

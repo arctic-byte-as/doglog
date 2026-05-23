@@ -3,39 +3,41 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
 model Trainer {
-  id        String      @id @default(uuid())
-  email     String      @unique
+  id        String   @id @default(uuid())
+  email     String   @unique
   name      String
-  createdAt DateTime    @default(now())
+  createdAt DateTime @default(now())
   dogs      Dog[]
 }
 
 model Dog {
-  id           String         @id @default(uuid())
-  name         String
-  age          String
-  breed        String
-  status       String
-  owner        String
-  lastIncident String?
-  observations Observation[]
+  id            String         @id @default(uuid())
+  name          String
+  age           String
+  breed         String
+  status        String
+  owner         String
+  lastIncident  String?
+  trainer       Trainer        @relation(fields: [trainerId], references: [id])
+  trainerId     String
+  observations  Observation[]
   consultations Consultation[]
 }
 
 model Observation {
-  id        String   @id @default(uuid())
-  category  String
-  severity  String
-  trigger   String
-  notes     String
-  loggedAt  DateTime @default(now())
-  dog       Dog      @relation(fields: [dogId], references: [id])
-  dogId     String
+  id       String   @id @default(uuid())
+  category String
+  severity String
+  trigger  String
+  notes    String
+  loggedAt DateTime @default(now())
+  dog      Dog      @relation(fields: [dogId], references: [id])
+  dogId    String
 }
 
 model Consultation {
@@ -45,4 +47,50 @@ model Consultation {
   outcome String
   dog     Dog      @relation(fields: [dogId], references: [id])
   dogId   String
+}
+
+/// Models required by NextAuth
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  accounts      Account[]
+  sessions      Session[]
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
 }

@@ -1,53 +1,57 @@
-'use client';
+"use client";
 
 import { useState } from 'react';
+import { signIn } from 'next-auth/react';
 import { SiteShell } from '@/components/SiteShell';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [message, setMessage] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [sent, setSent] = useState(false);
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setMessage(`Demo login for ${email || 'trainer@example.com'} successful.`);
-  };
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setLoading(true);
+    await signIn('email', { email, redirect: false });
+    setLoading(false);
+    setSent(true);
+  }
 
   return (
     <SiteShell>
-      <div className="mx-auto max-w-xl space-y-8">
-        <div className="rounded-[2rem] border border-brand-200 bg-white p-8 shadow-soft">
-          <h2 className="text-3xl font-semibold text-brand-950">Trainer login</h2>
-          <p className="mt-3 text-brand-700">This demo screen shows how trainer access will work in the first version.</p>
-        </div>
+      <div className="mx-auto max-w-md space-y-6">
+        <div className="rounded-2xl border border-brand-200 bg-white p-8 shadow-soft">
+          <h1 className="text-2xl font-semibold text-brand-950">Sign in</h1>
+          <p className="mt-2 text-sm text-brand-700">Enter your email and we'll send a login link.</p>
 
-        <form onSubmit={handleSubmit} className="space-y-6 rounded-[2rem] border border-brand-200 bg-brand-50 p-8 shadow-soft">
-          <div>
-            <label className="block text-sm font-medium text-brand-700">Email</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
-              placeholder="trainer@example.com"
-              className="mt-3 w-full rounded-3xl border border-brand-200 bg-brand-50 px-4 py-3 text-brand-950 outline-none transition focus:border-brand-400"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-brand-700">Password</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
-              placeholder="Enter password"
-              className="mt-3 w-full rounded-3xl border border-brand-200 bg-brand-50 px-4 py-3 text-brand-950 outline-none transition focus:border-brand-400"
-            />
-          </div>
-          <button type="submit" className="w-full rounded-3xl bg-brand-900 px-5 py-3 text-white transition hover:bg-brand-700">
-            Sign in
-          </button>
-          {message ? <p className="rounded-3xl bg-brand-50 px-4 py-3 text-sm text-brand-700">{message}</p> : null}
-        </form>
+          {sent ? (
+            <div className="mt-6 text-sm text-brand-700">Check your inbox for a sign-in link.</div>
+          ) : (
+            <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+              <label className="block">
+                <input
+                  type="email"
+                  required
+                  placeholder="you@company.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full rounded-lg border border-brand-200 px-4 py-2"
+                />
+              </label>
+              <div>
+                <button
+                  type="submit"
+                  className="w-full rounded-lg bg-brand-700 px-4 py-2 text-white"
+                  disabled={loading}
+                >
+                  {loading ? 'Sending…' : 'Send sign-in link'}
+                </button>
+              </div>
+            </form>
+          )}
+        </div>
       </div>
     </SiteShell>
   );
 }
+

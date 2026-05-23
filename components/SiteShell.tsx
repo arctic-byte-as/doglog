@@ -17,10 +17,6 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
             <Link href="/" className="-mt-1">
               <Logo />
             </Link>
-            <div className="hidden sm:block">
-              <p className="text-sm uppercase tracking-[0.24em] text-brand-600">Norse Paw prototype</p>
-              <h1 className="mt-2 text-2xl font-semibold tracking-tight text-brand-950">Trainer dashboard</h1>
-            </div>
           </div>
           <nav className="flex flex-wrap gap-3">
             {nav.map((item) => (

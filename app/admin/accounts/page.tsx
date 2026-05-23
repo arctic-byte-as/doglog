@@ -3,6 +3,7 @@ import { SiteShell } from '@/components/SiteShell';
 import prisma from '@/lib/prisma';
 import { getCurrentUser } from '@/lib/auth';
 import CreateTrainerForm from '@/components/CreateTrainerForm';
+import TrainerListItem from '@/components/TrainerListItem';
 
 export default async function AccountsPage() {
   const user = await getCurrentUser();
@@ -28,10 +29,7 @@ export default async function AccountsPage() {
             <h2 className="mb-4 text-lg font-semibold text-brand-950">Existing trainers</h2>
             <ul className="space-y-3">
               {trainers.map((t) => (
-                <li key={t.id} className="rounded-lg border border-brand-200 bg-white p-3">
-                  <div className="text-sm font-semibold text-brand-900">{t.name}</div>
-                  <div className="text-xs text-brand-700">{t.email}</div>
-                </li>
+                <TrainerListItem key={t.id} trainer={t} />
               ))}
             </ul>
           </section>

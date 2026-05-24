@@ -56,7 +56,12 @@ export default function CreateConsultationForm() {
       <div className="grid gap-2 md:grid-cols-3">
         <label className="block">
           <div className="text-xs font-medium">Dog</div>
-          <select value={form.dogId} onChange={(e) => setForm({ ...form, dogId: e.target.value, dogName: dogs.find(d => d.id === e.target.value)?.name || '' })} className="w-full rounded border p-2">
+          <select
+            value={form.dogId}
+            onChange={(e) => setForm({ ...form, dogId: e.target.value, dogName: dogs.find(d => d.id === e.target.value)?.name || '' })}
+            className="w-full rounded border p-2"
+            disabled={dogs.length === 1}
+          >
             <option value="">Select a dog</option>
             {dogs.map((d) => (
               <option key={d.id} value={d.id}>{d.name}</option>

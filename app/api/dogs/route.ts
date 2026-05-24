@@ -28,6 +28,7 @@ export async function POST(req: Request) {
       status: body.status || 'Active',
       owner: body.owner,
       lastIncident: body.lastIncident || null,
+      profileImageUrl: body.profileImageUrl || null,
       trainerId: user.trainer.id,
     },
   });

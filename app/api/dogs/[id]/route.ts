@@ -30,6 +30,7 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
       status: body.status || 'Active',
       owner: body.owner,
       lastIncident: body.lastIncident || null,
+      profileImageUrl: body.profileImageUrl || null,
     },
   });
 

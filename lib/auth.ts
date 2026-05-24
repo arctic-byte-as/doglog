@@ -15,9 +15,10 @@ export async function getCurrentUser() {
   if (!session?.user?.email) return null;
 
   const email = session.user.email.toLowerCase();
-  const [user, trainerRecord] = await Promise.all([
+  const [user, trainerRecord, customerRecord] = await Promise.all([
     prisma.user.findUnique({ where: { email } }),
     prisma.trainer.findUnique({ where: { email } }),
+    prisma.customer.findUnique({ where: { email } }),
   ]);
 
   const role = adminEmails().includes(email) ? 'ADMIN' : user?.role || 'TRAINER';
@@ -34,7 +35,7 @@ export async function getCurrentUser() {
         })
       : null);
 
-  return { session, user, trainer, role };
+  return { session, user, trainer, customer: customerRecord, role };
 }
 
 export async function requireUser() {
@@ -53,4 +54,30 @@ export async function requireAdmin() {
   const user = await requireUser();
   if (user.role !== 'ADMIN') redirect('/dashboard');
   return user;
+}
+
+export async function requireCustomer() {
+  const user = await requireUser();
+  const email = user.session.user?.email?.toLowerCase();
+  if (!email) redirect('/login');
+
+  const customer =
+    user.customer ||
+    (await prisma.customer.upsert({
+      where: { email },
+      update: {},
+      create: {
+        email,
+        name: user.session.user?.name || email,
+      },
+    }));
+
+  if (user.user && user.role !== 'ADMIN') {
+    await prisma.user.update({
+      where: { id: user.user.id },
+      data: { role: 'CUSTOMER' },
+    });
+  }
+
+  return { ...user, customer, role: user.role === 'ADMIN' ? 'ADMIN' : 'CUSTOMER' };
 }

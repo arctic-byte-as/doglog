@@ -10,6 +10,15 @@ export default async function DogsPage() {
   const dogs = await prisma.dog.findMany({
     where: { trainerId: user.trainer.id },
     orderBy: { name: 'asc' },
+    include: {
+      customer: {
+        select: {
+          name: true,
+          email: true,
+          phone: true,
+        },
+      },
+    },
   });
 
   return (

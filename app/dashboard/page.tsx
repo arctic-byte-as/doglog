@@ -17,9 +17,15 @@ function formatDate(date: Date | string | null) {
 export default async function DashboardPage() {
   const user = await requireTrainer();
 
-  const [dogCount, consultationCount, recentDogs] = await Promise.all([
+  const [dogCount, customerDogCount, consultationCount, recentDogs] = await Promise.all([
     prisma.dog.count({
       where: { trainerId: user.trainer.id },
+    }),
+    prisma.dog.count({
+      where: {
+        trainerId: user.trainer.id,
+        customerId: { not: null },
+      },
     }),
     prisma.consultation.count({
       where: { dog: { trainerId: user.trainer.id } },
@@ -28,6 +34,13 @@ export default async function DashboardPage() {
       where: { trainerId: user.trainer.id },
       orderBy: { name: 'asc' },
       include: {
+        customer: {
+          select: {
+            name: true,
+            email: true,
+            phone: true,
+          },
+        },
         consultations: {
           orderBy: { date: 'desc' },
           take: 1,
@@ -39,13 +52,14 @@ export default async function DashboardPage() {
 
   const summary = [
     { label: 'Dogs', value: dogCount },
+    { label: 'Customer entries', value: customerDogCount },
     { label: 'Active consultations', value: consultationCount },
   ];
 
   return (
     <SiteShell>
       <div className="space-y-8">
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="grid gap-4 md:grid-cols-3">
           {summary.map((item) => (
             <div key={item.label} className="rounded-3xl bg-white p-6 text-brand-950 shadow-soft">
               <p className="text-sm uppercase tracking-[0.24em] text-brand-600">{item.label}</p>
@@ -63,14 +77,27 @@ export default async function DashboardPage() {
                 return (
                   <article key={dog.id} className="rounded-2xl border border-brand-200 bg-white p-5 shadow-sm">
                     <div className="flex flex-wrap items-start justify-between gap-3">
-                      <div>
-                        <p className="text-sm text-brand-600">
-                          {dog.breed || 'Breed not set'} {dog.age ? `- ${dog.age}` : ''}
-                        </p>
-                        <h3 className="mt-2 text-xl font-semibold text-brand-950">{dog.name}</h3>
-                        <p className="mt-1 text-brand-700">Owner: {dog.owner}</p>
+                      <div className="flex gap-3">
+                        {dog.profileImageUrl ? (
+                          <img src={dog.profileImageUrl} alt={dog.name} className="h-10 w-10 rounded-full object-cover" />
+                        ) : (
+                          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-brand-100 text-sm font-semibold text-brand-700">
+                            {dog.name.slice(0, 1).toUpperCase()}
+                          </div>
+                        )}
+                        <div>
+                          <p className="text-sm text-brand-600">
+                            {dog.breed || 'Breed not set'} {dog.age ? `- ${dog.age}` : ''}
+                          </p>
+                          <h3 className="mt-2 text-xl font-semibold text-brand-950">{dog.name}</h3>
+                          <p className="mt-1 text-brand-700">Owner: {dog.owner}</p>
+                          {dog.customer ? <p className="mt-1 text-sm text-brand-700">Customer: {dog.customer.email}</p> : null}
+                        </div>
                       </div>
-                      <span className="rounded-full bg-brand-100 px-3 py-1 text-sm text-brand-800">{dog.status}</span>
+                      <div className="flex flex-wrap gap-2">
+                        {dog.customer ? <span className="rounded-full bg-brand-100 px-3 py-1 text-sm text-brand-800">Customer entry</span> : null}
+                        <span className="rounded-full bg-brand-100 px-3 py-1 text-sm text-brand-800">{dog.status}</span>
+                      </div>
                     </div>
 
                     <div className="mt-4 space-y-2 text-sm text-brand-700">

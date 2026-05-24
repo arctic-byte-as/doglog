@@ -6,6 +6,9 @@ const nav = [
   { href: '/dashboard', label: 'Dashboard' },
   { href: '/dogs', label: 'Dogs' },
   { href: '/consultations', label: 'Consultations' },
+  { href: '/customer', label: 'Customer' },
+  { href: '/customer/tips', label: 'Tips' },
+  { href: '/customer/plan', label: 'My plan' },
   { href: '/admin/accounts', label: 'Admin' },
   { href: '/login', label: 'Login' },
 ];

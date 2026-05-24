@@ -15,6 +15,16 @@ model Trainer {
   dogs      Dog[]
 }
 
+model Customer {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  name      String
+  phone     String?
+  notes     String?
+  createdAt DateTime @default(now())
+  dogs      Dog[]
+}
+
 model Dog {
   id            String         @id @default(uuid())
   name          String
@@ -23,8 +33,11 @@ model Dog {
   status        String
   owner         String
   lastIncident  String?
+  profileImageUrl String?
   trainer       Trainer        @relation(fields: [trainerId], references: [id])
   trainerId     String
+  customer      Customer?      @relation(fields: [customerId], references: [id])
+  customerId    String?
   observations  Observation[]
   consultations Consultation[]
 }

@@ -10,6 +10,7 @@ type DogFormData = {
   owner: string;
   status: string;
   lastIncident: string;
+  profileImageUrl: string;
 };
 
 const emptyDog: DogFormData = {
@@ -19,6 +20,7 @@ const emptyDog: DogFormData = {
   owner: '',
   status: 'Active',
   lastIncident: '',
+  profileImageUrl: '',
 };
 
 const breedOptions = [
@@ -147,6 +149,10 @@ export function DogForm({ dog, onDone }: { dog?: DogFormData; onDone?: () => voi
         <label className="block">
           <span className="text-sm font-medium text-brand-800">Last incident</span>
           <input type="date" value={form.lastIncident} onChange={(event) => update('lastIncident', event.target.value)} className="mt-1 w-full rounded-lg border border-brand-200 px-3 py-2" />
+        </label>
+        <label className="block md:col-span-2">
+          <span className="text-sm font-medium text-brand-800">Profile picture URL</span>
+          <input type="url" value={form.profileImageUrl} onChange={(event) => update('profileImageUrl', event.target.value)} placeholder="https://example.com/dog-photo.jpg" className="mt-1 w-full rounded-lg border border-brand-200 px-3 py-2" />
         </label>
       </div>
       <div className="flex items-center gap-3">

@@ -29,8 +29,10 @@ export default function CreateConsultationForm() {
     fetch('/api/dogs')
       .then((r) => r.json())
       .then((data) => {
-        setDogs(data?.dogs || []);
-        if (data?.dogs?.length) setForm((f: any) => ({ ...f, dogId: data.dogs[0].id, dogName: data.dogs[0].name }));
+        const ds = data?.dogs || [];
+        setDogs(ds);
+        // Auto-select only when there is exactly one dog for this trainer
+        if (ds.length === 1) setForm((f: any) => ({ ...f, dogId: ds[0].id, dogName: ds[0].name }));
       })
       .catch(() => {});
   }, []);

@@ -1,11 +1,24 @@
 "use client";
 
 import { useState } from 'react';
+import { activationOptions, formatActivationOption } from '@/lib/activation-options';
+import { stimulusOptions, formatStimulusOption } from '@/lib/stimulus-options';
 
 export default function ConsultationItem({ consultation }: { consultation: any }) {
   const [editing, setEditing] = useState(false);
   const [data, setData] = useState({ ...consultation });
   const [saving, setSaving] = useState(false);
+  const activationValues = activationOptions.map(formatActivationOption);
+  const hasCustomActivation = data.activation && !activationValues.includes(data.activation);
+  const stimulusValues = stimulusOptions.map(formatStimulusOption);
+  const stimulusParts = String(data.stimulusAnalysis || '').split('\n');
+  const selectedStimulus = stimulusParts[0] || '';
+  const stimulusNotes = stimulusParts.slice(1).join('\n');
+  const hasCustomStimulus = selectedStimulus && !stimulusValues.includes(selectedStimulus);
+
+  function handleStimulusChange(selected: string, notes = stimulusNotes) {
+    handleChange('stimulusAnalysis', [selected, notes].filter(Boolean).join('\n'));
+  }
 
   function handleChange(field: string, value: any) {
     setData((d: any) => ({ ...d, [field]: value }));
@@ -137,7 +150,18 @@ export default function ConsultationItem({ consultation }: { consultation: any }
         <div>
           <label className="block text-sm font-medium">Activation</label>
           {editing ? (
-            <textarea className="w-full rounded border p-2" value={data.activation || ''} onChange={(e) => handleChange('activation', e.target.value)} />
+            <select className="w-full rounded border p-2" value={data.activation || ''} onChange={(e) => handleChange('activation', e.target.value)}>
+              <option value="">Select activation</option>
+              {hasCustomActivation ? <option value={data.activation}>{data.activation}</option> : null}
+              {activationOptions.map((option) => {
+                const value = formatActivationOption(option);
+                return (
+                  <option key={option.label} value={value}>
+                    {value}
+                  </option>
+                );
+              })}
+            </select>
           ) : (
             <p>{data.activation}</p>
           )}
@@ -146,9 +170,23 @@ export default function ConsultationItem({ consultation }: { consultation: any }
         <div>
           <label className="block text-sm font-medium">Stimulus Analysis</label>
           {editing ? (
-            <textarea className="w-full rounded border p-2" value={data.stimulusAnalysis || ''} onChange={(e) => handleChange('stimulusAnalysis', e.target.value)} />
+            <div className="space-y-2">
+              <select className="w-full rounded border p-2" value={selectedStimulus} onChange={(e) => handleStimulusChange(e.target.value)}>
+                <option value="">Select stimulus area</option>
+                {hasCustomStimulus ? <option value={selectedStimulus}>{selectedStimulus}</option> : null}
+                {stimulusOptions.map((option) => {
+                  const value = formatStimulusOption(option);
+                  return (
+                    <option key={option.label} value={value}>
+                      {value}
+                    </option>
+                  );
+                })}
+              </select>
+              <textarea className="w-full rounded border p-2" value={stimulusNotes} onChange={(e) => handleStimulusChange(selectedStimulus, e.target.value)} />
+            </div>
           ) : (
-            <p>{data.stimulusAnalysis}</p>
+            <p className="whitespace-pre-line">{data.stimulusAnalysis}</p>
           )}
         </div>
 

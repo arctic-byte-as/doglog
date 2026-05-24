@@ -14,7 +14,7 @@ export default function LoginPage() {
     e.preventDefault();
     setLoading(true);
     setError('');
-    const result = await signIn('email', { email, redirect: false });
+    const result = await signIn('email', { email, callbackUrl: '/dashboard', redirect: false });
     setLoading(false);
 
     if (result?.error) {
@@ -33,7 +33,18 @@ export default function LoginPage() {
           <p className="mt-2 text-sm text-brand-700">Enter your email and we&apos;ll send a login link.</p>
 
           {sent ? (
-            <div className="mt-6 text-sm text-brand-700">Check your inbox for a sign-in link.</div>
+            <div className="mt-6 space-y-3 text-sm text-brand-700">
+              <p>The sign-in email was sent to MailHog, not your normal email inbox.</p>
+              <a
+                href="http://localhost:8025"
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex rounded-lg bg-brand-700 px-4 py-2 font-medium text-white"
+              >
+                Open MailHog inbox
+              </a>
+              <p>Open the newest sign-in message and click the link in this same browser.</p>
+            </div>
           ) : (
             <form onSubmit={handleSubmit} className="mt-6 space-y-4">
               <label className="block">

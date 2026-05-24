@@ -1,9 +1,18 @@
 "use client";
 
 import { useEffect, useState } from 'react';
+import { activationOptions, formatActivationOption } from '@/lib/activation-options';
+import { stimulusOptions, formatStimulusOption } from '@/lib/stimulus-options';
 
-export default function CreateConsultationForm() {
-  const [dogs, setDogs] = useState<any[]>([]);
+type DogOption = {
+  id: string;
+  name: string;
+  breed: string;
+  owner: string;
+};
+
+export default function CreateConsultationForm({ initialDogs = [] }: { initialDogs?: DogOption[] }) {
+  const [dogs, setDogs] = useState<DogOption[]>(initialDogs);
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState<any>({
     dogId: '',
@@ -23,8 +32,20 @@ export default function CreateConsultationForm() {
     stimulusAnalysis: '',
     prescribedPlan: '',
   });
+  const stimulusParts = String(form.stimulusAnalysis || '').split('\n');
+  const selectedStimulus = stimulusParts[0] || '';
+  const stimulusNotes = stimulusParts.slice(1).join('\n');
+
+  function updateStimulus(selected: string, notes = stimulusNotes) {
+    setForm({ ...form, stimulusAnalysis: [selected, notes].filter(Boolean).join('\n') });
+  }
 
   useEffect(() => {
+    if (initialDogs.length) {
+      if (initialDogs.length === 1) setForm((f: any) => ({ ...f, dogId: initialDogs[0].id, dogName: initialDogs[0].name, client: initialDogs[0].owner }));
+      return;
+    }
+
     // load dogs for selection; fallback to empty
     fetch('/api/dogs')
       .then((r) => r.json())
@@ -32,10 +53,10 @@ export default function CreateConsultationForm() {
         const ds = data?.dogs || [];
         setDogs(ds);
         // Auto-select only when there is exactly one dog for this trainer
-        if (ds.length === 1) setForm((f: any) => ({ ...f, dogId: ds[0].id, dogName: ds[0].name }));
+        if (ds.length === 1) setForm((f: any) => ({ ...f, dogId: ds[0].id, dogName: ds[0].name, client: ds[0].owner || '' }));
       })
       .catch(() => {});
-  }, []);
+  }, [initialDogs]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -64,7 +85,10 @@ export default function CreateConsultationForm() {
           ) : (
             <select
               value={form.dogId}
-              onChange={(e) => setForm({ ...form, dogId: e.target.value, dogName: dogs.find(d => d.id === e.target.value)?.name || '' })}
+              onChange={(e) => {
+                const selectedDog = dogs.find((d) => d.id === e.target.value);
+                setForm({ ...form, dogId: e.target.value, dogName: selectedDog?.name || '', client: selectedDog?.owner || form.client });
+              }}
               className="w-full rounded border p-2"
             >
               <option value="">Select a dog</option>
@@ -135,12 +159,41 @@ export default function CreateConsultationForm() {
       <div className="grid gap-2 md:grid-cols-2">
         <label className="block">
           <div className="text-xs font-medium">Activation</div>
-          <input value={form.activation} onChange={(e) => setForm({ ...form, activation: e.target.value })} className="w-full rounded border p-2" />
+          <select value={form.activation} onChange={(e) => setForm({ ...form, activation: e.target.value })} className="w-full rounded border p-2">
+            <option value="">Select activation</option>
+            {activationOptions.map((option) => {
+              const value = formatActivationOption(option);
+              return (
+                <option key={option.label} value={value}>
+                  {value}
+                </option>
+              );
+            })}
+          </select>
         </label>
         <label className="block">
           <div className="text-xs font-medium">Stimulus Analysis</div>
-          <input value={form.stimulusAnalysis} onChange={(e) => setForm({ ...form, stimulusAnalysis: e.target.value })} className="w-full rounded border p-2" />
+          <select value={selectedStimulus} onChange={(e) => updateStimulus(e.target.value)} className="w-full rounded border p-2">
+            <option value="">Select stimulus area</option>
+            {stimulusOptions.map((option) => {
+              const value = formatStimulusOption(option);
+              return (
+                <option key={option.label} value={value}>
+                  {value}
+                </option>
+              );
+            })}
+          </select>
         </label>
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium">Stimulus notes</label>
+        <textarea
+          value={stimulusNotes}
+          onChange={(e) => updateStimulus(selectedStimulus, e.target.value)}
+          className="w-full rounded border p-2"
+        />
       </div>
 
       <div>

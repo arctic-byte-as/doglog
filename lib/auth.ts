@@ -15,12 +15,25 @@ export async function getCurrentUser() {
   if (!session?.user?.email) return null;
 
   const email = session.user.email.toLowerCase();
-  const [user, trainer] = await Promise.all([
+  const [user, trainerRecord] = await Promise.all([
     prisma.user.findUnique({ where: { email } }),
     prisma.trainer.findUnique({ where: { email } }),
   ]);
 
   const role = adminEmails().includes(email) ? 'ADMIN' : user?.role || 'TRAINER';
+  const trainer =
+    trainerRecord ||
+    (role === 'TRAINER'
+      ? await prisma.trainer.upsert({
+          where: { email },
+          update: {},
+          create: {
+            email,
+            name: session.user.name || email,
+          },
+        })
+      : null);
+
   return { session, user, trainer, role };
 }
 

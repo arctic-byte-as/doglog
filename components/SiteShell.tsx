@@ -1,11 +1,11 @@
 import Link from 'next/link';
 import Logo from './Logo';
+import AuthStatus from './AuthStatus';
 
 const nav = [
   { href: '/dashboard', label: 'Dashboard' },
   { href: '/dogs', label: 'Dogs' },
   { href: '/consultations', label: 'Consultations' },
-  { href: '/dogpedia', label: 'Dogpedia' },
   { href: '/admin/accounts', label: 'Admin' },
   { href: '/login', label: 'Login' },
 ];
@@ -31,6 +31,7 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
               </Link>
             ))}
           </nav>
+          <AuthStatus />
         </div>
       </header>
       <main className="mx-auto max-w-7xl px-6 py-8">{children}</main>

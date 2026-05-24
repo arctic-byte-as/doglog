@@ -1,18 +1,51 @@
 import { SiteShell } from '@/components/SiteShell';
 import { SectionCard } from '@/components/SectionCard';
-import { consultations, dogs, observations } from '@/lib/mock-data';
+import { requireTrainer } from '@/lib/auth';
+import prisma from '@/lib/prisma';
 
-const summary = [
-  { label: 'Active dogs', value: dogs.length },
-  { label: 'Recent incidents', value: observations.length },
-  { label: 'Consultations', value: consultations.length },
-];
+function formatDate(date: Date | string | null) {
+  if (!date) return 'No date recorded';
+  const parsed = typeof date === 'string' ? new Date(date) : date;
+  if (Number.isNaN(parsed.getTime())) return String(date);
+  return parsed.toLocaleDateString('en-GB', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+  });
+}
 
-export default function DashboardPage() {
+export default async function DashboardPage() {
+  const user = await requireTrainer();
+
+  const [dogCount, consultationCount, recentDogs] = await Promise.all([
+    prisma.dog.count({
+      where: { trainerId: user.trainer.id },
+    }),
+    prisma.consultation.count({
+      where: { dog: { trainerId: user.trainer.id } },
+    }),
+    prisma.dog.findMany({
+      where: { trainerId: user.trainer.id },
+      orderBy: { name: 'asc' },
+      include: {
+        consultations: {
+          orderBy: { date: 'desc' },
+          take: 1,
+        },
+      },
+      take: 8,
+    }),
+  ]);
+
+  const summary = [
+    { label: 'Dogs', value: dogCount },
+    { label: 'Active consultations', value: consultationCount },
+  ];
+
   return (
     <SiteShell>
       <div className="space-y-8">
-        <div className="grid gap-4 md:grid-cols-3">
+        <div className="grid gap-4 md:grid-cols-2">
           {summary.map((item) => (
             <div key={item.label} className="rounded-3xl bg-white p-6 text-brand-950 shadow-soft">
               <p className="text-sm uppercase tracking-[0.24em] text-brand-600">{item.label}</p>
@@ -21,29 +54,42 @@ export default function DashboardPage() {
           ))}
         </div>
 
-        <div className="grid gap-6 lg:grid-cols-[1fr_0.9fr]">
-          <SectionCard title="Recent incident log">
-            {observations.map((item) => (
-              <div key={item.id} className="rounded-3xl border border-brand-200 bg-brand-50 p-4">
-                <p className="text-sm text-brand-600">{item.loggedAt} · {item.category}</p>
-                <p className="mt-2 text-lg font-semibold text-brand-950">{item.trigger}</p>
-                <p className="mt-2 text-brand-700">{item.notes}</p>
-                <p className="mt-3 text-sm text-brand-600">Dog ID: {item.dogId} · Severity: {item.severity}</p>
-              </div>
-            ))}
-          </SectionCard>
+        <SectionCard title="Recent dogs">
+          {recentDogs.length ? (
+            <div className="grid gap-4 md:grid-cols-2">
+              {recentDogs.map((dog) => {
+                const latestConsultation = dog.consultations[0];
 
-          <SectionCard title="Consultation plan snapshot">
-            {consultations.map((item) => (
-              <div key={item.id} className="rounded-3xl border border-brand-200 bg-brand-50 p-4">
-                <p className="text-sm text-brand-600">{item.date} · {item.client}</p>
-                <p className="mt-2 text-lg font-semibold text-brand-950">{item.dogName}</p>
-                <p className="mt-2 text-brand-700">Focus: {item.focus}</p>
-                <p className="mt-2 text-brand-600">Outcome: {item.outcome}</p>
-              </div>
-            ))}
-          </SectionCard>
-        </div>
+                return (
+                  <article key={dog.id} className="rounded-2xl border border-brand-200 bg-white p-5 shadow-sm">
+                    <div className="flex flex-wrap items-start justify-between gap-3">
+                      <div>
+                        <p className="text-sm text-brand-600">
+                          {dog.breed || 'Breed not set'} {dog.age ? `- ${dog.age}` : ''}
+                        </p>
+                        <h3 className="mt-2 text-xl font-semibold text-brand-950">{dog.name}</h3>
+                        <p className="mt-1 text-brand-700">Owner: {dog.owner}</p>
+                      </div>
+                      <span className="rounded-full bg-brand-100 px-3 py-1 text-sm text-brand-800">{dog.status}</span>
+                    </div>
+
+                    <div className="mt-4 space-y-2 text-sm text-brand-700">
+                      <p>Last incident: {dog.lastIncident ? formatDate(dog.lastIncident) : 'None recorded'}</p>
+                      <p>
+                        Latest consultation:{' '}
+                        {latestConsultation
+                          ? `${formatDate(latestConsultation.date)} - ${latestConsultation.focus || 'No focus recorded'}`
+                          : 'None recorded'}
+                      </p>
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
+          ) : (
+            <p className="rounded-2xl border border-brand-200 bg-white p-5 text-brand-700">No dogs yet. Add the first dog from the Dogs page.</p>
+          )}
+        </SectionCard>
       </div>
     </SiteShell>
   );

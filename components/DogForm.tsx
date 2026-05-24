@@ -21,6 +21,65 @@ const emptyDog: DogFormData = {
   lastIncident: '',
 };
 
+const breedOptions = [
+  'Australian Cattle Dog',
+  'Australian Shepherd',
+  'Basset Hound',
+  'Beagle',
+  'Belgian Malinois',
+  'Bernese Mountain Dog',
+  'Bichon Frise',
+  'Border Collie',
+  'Boxer',
+  'Brittany',
+  'Boston Terrier',
+  'Bulldog',
+  'Cane Corso',
+  'Cavalier King Charles Spaniel',
+  'Chihuahua',
+  'Cocker Spaniel',
+  'Collie',
+  'Dachshund',
+  'Dalmatian',
+  'Doberman Pinscher',
+  'Dunker',
+  'English Cocker Spaniel',
+  'English Springer Spaniel',
+  'French Bulldog',
+  'German Shepherd Dog',
+  'German Shorthaired Pointer',
+  'Golden Retriever',
+  'Great Dane',
+  'Halden Hound',
+  'Havanese',
+  'Hygen Hound',
+  'Labrador Retriever',
+  'Maltese',
+  'Mastiff',
+  'Miniature American Shepherd',
+  'Miniature Schnauzer',
+  'Newfoundland',
+  'Norwegian Buhund',
+  'Norwegian Elkhound',
+  'Norwegian Lundehund',
+  'Papillon',
+  'Pembroke Welsh Corgi',
+  'Pomeranian',
+  'Portuguese Water Dog',
+  'Poodle',
+  'Pug',
+  'Rhodesian Ridgeback',
+  'Rottweiler',
+  'Shetland Sheepdog',
+  'Shiba Inu',
+  'Shih Tzu',
+  'Siberian Husky',
+  'Vizsla',
+  'West Highland White Terrier',
+  'Whippet',
+  'Yorkshire Terrier',
+];
+
 export function DogForm({ dog, onDone }: { dog?: DogFormData; onDone?: () => void }) {
   const [form, setForm] = useState<DogFormData>(dog || emptyDog);
   const [loading, setLoading] = useState(false);
@@ -68,7 +127,14 @@ export function DogForm({ dog, onDone }: { dog?: DogFormData; onDone?: () => voi
         </label>
         <label className="block">
           <span className="text-sm font-medium text-brand-800">Breed</span>
-          <input value={form.breed} onChange={(event) => update('breed', event.target.value)} className="mt-1 w-full rounded-lg border border-brand-200 px-3 py-2" />
+          <select value={form.breed} onChange={(event) => update('breed', event.target.value)} className="mt-1 w-full rounded-lg border border-brand-200 px-3 py-2">
+            <option value="">Select a breed</option>
+            {breedOptions.map((breed) => (
+              <option key={breed} value={breed}>
+                {breed}
+              </option>
+            ))}
+          </select>
         </label>
         <label className="block">
           <span className="text-sm font-medium text-brand-800">Age</span>

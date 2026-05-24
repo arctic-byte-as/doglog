@@ -1,13 +1,11 @@
-import { redirect } from 'next/navigation';
 import { SiteShell } from '@/components/SiteShell';
 import prisma from '@/lib/prisma';
-import { getCurrentUser } from '@/lib/auth';
+import { requireAdmin } from '@/lib/auth';
 import CreateTrainerForm from '@/components/CreateTrainerForm';
 import TrainerListItem from '@/components/TrainerListItem';
 
 export default async function AccountsPage() {
-  const user = await getCurrentUser();
-  if (!user) redirect('/login');
+  await requireAdmin();
 
   const trainers = await prisma.trainer.findMany({ orderBy: { createdAt: 'desc' } });
 

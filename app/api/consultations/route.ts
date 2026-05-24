@@ -1,21 +1,26 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
-import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { requireTrainer } from '@/lib/auth';
 
 export async function POST(req: Request) {
-  const session = await getServerSession(authOptions as any);
-  if (!session?.user?.email) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  const user = await requireTrainer();
 
   const body = await req.json();
   try {
     let dogId = body.dogId;
     if (!dogId) {
-      // fallback: pick first dog in DB
-      const first = await prisma.dog.findFirst();
+      const first = await prisma.dog.findFirst({ where: { trainerId: user.trainer.id } });
       if (!first) return NextResponse.json({ error: 'No dog available' }, { status: 400 });
       dogId = first.id;
     }
+
+    const dog = await prisma.dog.findFirst({
+      where: {
+        id: dogId,
+        trainerId: user.trainer.id,
+      },
+    });
+    if (!dog) return NextResponse.json({ error: 'Dog not found' }, { status: 404 });
 
     const created = await prisma.consultation.create({
       data: {

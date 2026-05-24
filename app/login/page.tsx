@@ -8,12 +8,20 @@ export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
+  const [error, setError] = useState('');
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
-    await signIn('email', { email, redirect: false });
+    setError('');
+    const result = await signIn('email', { email, redirect: false });
     setLoading(false);
+
+    if (result?.error) {
+      setError('Could not send the sign-in email. Check the local SMTP server or email provider settings.');
+      return;
+    }
+
     setSent(true);
   }
 
@@ -22,7 +30,7 @@ export default function LoginPage() {
       <div className="mx-auto max-w-md space-y-6">
         <div className="rounded-2xl border border-brand-200 bg-white p-8 shadow-soft">
           <h1 className="text-2xl font-semibold text-brand-950">Sign in</h1>
-          <p className="mt-2 text-sm text-brand-700">Enter your email and we'll send a login link.</p>
+          <p className="mt-2 text-sm text-brand-700">Enter your email and we&apos;ll send a login link.</p>
 
           {sent ? (
             <div className="mt-6 text-sm text-brand-700">Check your inbox for a sign-in link.</div>
@@ -47,6 +55,7 @@ export default function LoginPage() {
                   {loading ? 'Sending…' : 'Send sign-in link'}
                 </button>
               </div>
+              {error ? <p className="text-sm text-red-700">{error}</p> : null}
             </form>
           )}
         </div>
@@ -54,4 +63,3 @@ export default function LoginPage() {
     </SiteShell>
   );
 }
-

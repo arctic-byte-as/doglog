@@ -23,7 +23,7 @@ docker run -p 1025:1025 -p 8025:8025 mailhog/mailhog
 Set the SMTP host/port to MailHog in `.env`:
 
 ```
-SMTP_HOST=localhost
+SMTP_HOST=127.0.0.1
 SMTP_PORT=1025
 SMTP_USER=
 SMTP_PASS=

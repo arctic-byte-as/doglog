@@ -1,14 +1,22 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
-import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { requireTrainer } from '@/lib/auth';
 
 export async function PATCH(req: Request, { params }: { params: { id: string } }) {
-  const session = await getServerSession(authOptions as any);
-  if (!session?.user?.email) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  const user = await requireTrainer();
   const { id } = params;
   const body = await req.json();
   try {
+    const existing = await prisma.consultation.findFirst({
+      where: {
+        id,
+        dog: {
+          trainerId: user.trainer.id,
+        },
+      },
+    });
+    if (!existing) return NextResponse.json({ error: 'Consultation not found' }, { status: 404 });
+
     const updated = await prisma.consultation.update({ where: { id }, data: body });
     return NextResponse.json({ ok: true, consultation: updated });
   } catch (err: any) {

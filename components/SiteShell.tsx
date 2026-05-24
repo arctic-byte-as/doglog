@@ -6,6 +6,7 @@ const nav = [
   { href: '/dogs', label: 'Dogs' },
   { href: '/consultations', label: 'Consultations' },
   { href: '/dogpedia', label: 'Dogpedia' },
+  { href: '/admin/accounts', label: 'Admin' },
   { href: '/login', label: 'Login' },
 ];
 

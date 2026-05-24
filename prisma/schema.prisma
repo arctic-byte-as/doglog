@@ -65,6 +65,7 @@ model User {
   name          String?
   email         String?   @unique
   emailVerified DateTime?
+  role          String    @default("TRAINER")
   accounts      Account[]
   sessions      Session[]
 }

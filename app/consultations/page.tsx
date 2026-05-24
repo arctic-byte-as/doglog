@@ -1,6 +1,7 @@
 import { SiteShell } from '@/components/SiteShell';
 import { SectionCard } from '@/components/SectionCard';
 import { consultations } from '@/lib/mock-data';
+import ConsultationItem from '@/components/ConsultationItem';
 
 export default function ConsultationsPage() {
   return (
@@ -9,15 +10,7 @@ export default function ConsultationsPage() {
         <SectionCard title="Consultation log">
           <div className="space-y-4">
             {consultations.map((item) => (
-              <article key={item.id} className="rounded-3xl border border-brand-200 bg-white p-6 shadow-sm">
-                <div className="flex flex-wrap items-center justify-between gap-4 text-brand-600">
-                  <p>{item.date}</p>
-                  <p>{item.client}</p>
-                </div>
-                <h3 className="mt-3 text-2xl font-semibold text-brand-950">{item.dogName}</h3>
-                <p className="mt-2 text-brand-700">Focus: {item.focus}</p>
-                <p className="mt-2 text-brand-600">Recommended outcome: {item.outcome}</p>
-              </article>
+              <ConsultationItem key={item.id} consultation={item} />
             ))}
           </div>
         </SectionCard>

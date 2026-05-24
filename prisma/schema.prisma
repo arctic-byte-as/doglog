@@ -41,12 +41,22 @@ model Observation {
 }
 
 model Consultation {
-  id      String   @id @default(uuid())
-  date    DateTime
-  focus   String
-  outcome String
-  dog     Dog      @relation(fields: [dogId], references: [id])
-  dogId   String
+  id                 String   @id @default(uuid())
+  date               DateTime
+  focus              String
+  outcome            String
+  generalDescription String?
+  dogBreed           String?
+  learningHistory    String?
+  situation          String?
+  nutrition          String?
+  health             String?
+  hormoneAnalysis    String?
+  activation         String?
+  stimulusAnalysis   String?
+  prescribedPlan     String?
+  dog                Dog      @relation(fields: [dogId], references: [id])
+  dogId              String
 }
 
 /// Models required by NextAuth

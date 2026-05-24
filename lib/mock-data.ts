@@ -25,6 +25,16 @@ export type Consultation = {
   date: string;
   focus: string;
   outcome: string;
+  generalDescription?: string;
+  dogBreed?: string;
+  learningHistory?: string;
+  situation?: string;
+  nutrition?: string;
+  health?: string;
+  hormoneAnalysis?: string;
+  activation?: string;
+  stimulusAnalysis?: string;
+  prescribedPlan?: string;
 };
 
 export const dogs: Dog[] = [
@@ -95,6 +105,16 @@ export const consultations: Consultation[] = [
     date: '2026-05-03',
     focus: 'Gate reactivity',
     outcome: 'Introduced threshold management and counterconditioning.',
+    generalDescription: 'Reactive at gate to passing people and vehicles.',
+    dogBreed: 'Labrador Retriever',
+    learningHistory: 'Basic obedience, no formal behaviour training.',
+    situation: 'Home with busy street access, mailbox nearby.',
+    nutrition: 'Adult dry kibble, meals twice daily.',
+    health: 'Overall healthy, vaccinated, no known conditions.',
+    hormoneAnalysis: 'No hormone data available.',
+    activation: 'Gets excited with visitors; high arousal on leash.',
+    stimulusAnalysis: 'Triggers: mail carrier, joggers, delivery vehicles.',
+    prescribedPlan: 'Work on threshold management, desensitisation to triggers, and calm routines.',
   },
   {
     id: 'cons-02',
@@ -103,5 +123,15 @@ export const consultations: Consultation[] = [
     date: '2026-04-29',
     focus: 'Separation support',
     outcome: 'Created stepwise departure plan with enrichment boxes.',
+    generalDescription: 'Shows signs of anxiety when owner prepares to leave.',
+    dogBreed: 'French Bulldog',
+    learningHistory: 'Puppy classes; responds to food rewards.',
+    situation: 'Left alone for 4-6 hours on weekdays.',
+    nutrition: 'Mixed wet and dry; small meals.',
+    health: 'Minor allergies; on occasional antihistamines.',
+    hormoneAnalysis: 'No testing performed.',
+    activation: 'Lower energy but anxious when owner departs.',
+    stimulusAnalysis: 'Owner cues (putting on shoes) predict departures.',
+    prescribedPlan: 'Gradual desensitisation to departure cues, enrichment puzzle toys.',
   },
 ];

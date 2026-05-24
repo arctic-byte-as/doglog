@@ -56,17 +56,23 @@ export default function CreateConsultationForm() {
       <div className="grid gap-2 md:grid-cols-3">
         <label className="block">
           <div className="text-xs font-medium">Dog</div>
-          <select
-            value={form.dogId}
-            onChange={(e) => setForm({ ...form, dogId: e.target.value, dogName: dogs.find(d => d.id === e.target.value)?.name || '' })}
-            className="w-full rounded border p-2"
-            disabled={dogs.length === 1}
-          >
-            <option value="">Select a dog</option>
-            {dogs.map((d) => (
-              <option key={d.id} value={d.id}>{d.name}</option>
-            ))}
-          </select>
+          {dogs.length === 1 ? (
+            <div className="w-full rounded border p-2 bg-gray-50">
+              <div className="text-sm">{dogs[0].name}{dogs[0].breed ? ` — ${dogs[0].breed}` : ''}</div>
+              <input type="hidden" name="dogId" value={form.dogId} />
+            </div>
+          ) : (
+            <select
+              value={form.dogId}
+              onChange={(e) => setForm({ ...form, dogId: e.target.value, dogName: dogs.find(d => d.id === e.target.value)?.name || '' })}
+              className="w-full rounded border p-2"
+            >
+              <option value="">Select a dog</option>
+              {dogs.map((d) => (
+                <option key={d.id} value={d.id}>{d.name}</option>
+              ))}
+            </select>
+          )}
         </label>
 
         <label className="block">

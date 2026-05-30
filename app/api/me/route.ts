@@ -12,6 +12,7 @@ export async function GET() {
     authenticated: true,
     email: user.session.user?.email,
     role: user.role,
+    modes: user.modes,
     trainerId: user.trainer?.id || null,
   });
 }

@@ -5,17 +5,17 @@ Last updated: 2026-05-30
 ## Repository State
 
 - Local `main` tracks `origin/main`.
-- Remote `main` includes commit `edc133d Add agent handoff notes`.
+- Local `main` equals `origin/main` at `27a37a8 Merge rescue launch app work`.
 - Planning branch `docs/vercel-supabase-launch-plan` also points at `8f9116d`.
 - The former misplaced local `main` has been preserved as `feature/dogpedia-thumbnails-local`.
 - `feature/dogpedia-thumbnails-local` is 19 commits ahead of `origin/feature/dogpedia-thumbnails`.
 - Safety stash remains available as `stash@{0}: pre-main-branch-fix-2026-05-30`.
 - `feature/dogpedia-thumbnails-local` should be treated as PR/review material, not merged directly into `main`.
 - That branch contains broad product/schema work, auth dependencies, migrations, uploaded dog images, and a tracked `prisma/dev.db` change.
-- Current `main` has a partial PostgreSQL-oriented `prisma/schema.prisma`; the local SQLite seed DB matches the richer feature-branch model more closely.
-- Rescue branch `rescue/dogpedia-launch-app` was created from `main` and has a squash import staged from `feature/dogpedia-thumbnails-local`.
-- The rescue import intentionally excludes `prisma/dev.db`, root `dev.db`, `tsconfig.tsbuildinfo`, old SQLite migration files, and `public/uploads/dogs/*`.
+- Current `main` has the recovered launch app work merged.
+- The rescue import intentionally excluded `prisma/dev.db`, root `dev.db`, `tsconfig.tsbuildinfo`, old SQLite migration files, and `public/uploads/dogs/*`.
 - The local seed DB was restored at `prisma/dev.db` after the rescue import and remains untracked/ignored.
+- Rescue branch `rescue/dogpedia-launch-app` remains as a safety/archive branch.
 
 ## Local Data
 
@@ -79,19 +79,38 @@ Observed status on 2026-05-30:
 ## First Checks For Next Agent
 
 ```bash
-git status --short --branch
+git status --short --branch --ignored=matching
 git branch -vv
-git stash list --max-count=3
 sqlite3 prisma/dev.db ".tables"
-gh auth status
-vercel whoami
-supabase --version
+sqlite3 prisma/dev.db "SELECT 'Customer', COUNT(*) FROM Customer UNION ALL SELECT 'Dog', COUNT(*) FROM Dog UNION ALL SELECT 'User', COUNT(*) FROM User UNION ALL SELECT 'ServiceSession', COUNT(*) FROM ServiceSession;"
+npm run lint
+npx prisma validate
 ```
+
+## Current Working Notes
+
+- The recovered app starts locally with `npm run dev`; in this environment it used `http://localhost:3001` because port `3000` was already occupied.
+- `npm run build` succeeds.
+- `npm run lint` succeeds with existing `<img>` optimization warnings in `app/customer/page.tsx`, `components/DogListItem.tsx`, and `components/Logo.tsx`.
+- `npx prisma validate` succeeds.
+- Unauthenticated `/dashboard` and `/customer` route checks redirect to `/login`.
+- `/api/me` returns `{"authenticated":false}` when signed out.
+- The in-app browser was unavailable in this session, so route verification used local HTTP requests instead of visual screenshots.
+- Running `next build` while `next dev` was active caused a transient dev-server webpack cache error on `/dashboard`; restarting `next dev` cleared it.
+
+## Auth Refactor Started
+
+- `lib/auth.ts` now centralizes derived access modes as `ADMIN` and `CUSTOMER`.
+- Sign-in no longer auto-creates `Trainer` records through the NextAuth `createUser` event.
+- `requireCustomer()` no longer auto-creates `Customer` records or mutates `User.role`.
+- Customer profile POST now requires customer access instead of granting it by role mutation.
+- Admin customer creation still explicitly creates customer `User` records with `role: 'CUSTOMER'` for the current compatibility model.
+- This is a compatibility step only; the durable schema still needs explicit mode grants before RLS work.
 
 ## Recommended Next Work
 
-1. Review staged files on `rescue/dogpedia-launch-app` and decide whether skills/training library and course-service screens belong in the launch scope.
-2. Commit the rescue branch only after staged file review is accepted.
-3. Authenticate `gh`, `vercel`, and `supabase` interactively.
-4. Build the SQLite export script using the documented structural/anonymized plan.
-5. Implement the auth-mode refactor before touching RLS policies, because RLS policy shape depends on durable user/customer/trainer linkage.
+1. Add durable mode grants to the schema instead of relying on legacy `User.role` strings.
+2. Finish server-side route guard coverage after mode grants exist.
+3. Build the SQLite export script using the documented structural/anonymized plan.
+4. Authenticate `gh`, `vercel`, and `supabase` interactively when deployment work resumes.
+5. Do not start RLS policies until the auth-mode schema is stable.

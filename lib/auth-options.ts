@@ -81,18 +81,4 @@ export const authOptions: NextAuthOptions = {
   pages: {
     signIn: '/login',
   },
-  events: {
-    async createUser({ user }) {
-      if (!user.email) return;
-
-      await prisma.trainer.upsert({
-        where: { email: user.email.toLowerCase() },
-        update: {},
-        create: {
-          email: user.email.toLowerCase(),
-          name: user.name || user.email,
-        },
-      });
-    },
-  },
 };

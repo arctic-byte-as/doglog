@@ -4,6 +4,10 @@ import prisma from '@/lib/prisma';
 
 export async function POST(req: Request) {
   const user = await requireUser();
+  if (!user.modes.includes('CUSTOMER')) {
+    return NextResponse.json({ error: 'Customer access is required.' }, { status: 403 });
+  }
+
   const email = user.session.user?.email?.toLowerCase();
   if (!email) return NextResponse.json({ error: 'Missing email.' }, { status: 400 });
 
@@ -24,13 +28,6 @@ export async function POST(req: Request) {
       notes: body.notes || null,
     },
   });
-
-  if (user.user && user.role !== 'ADMIN') {
-    await prisma.user.update({
-      where: { id: user.user.id },
-      data: { role: 'CUSTOMER' },
-    });
-  }
 
   return NextResponse.json({ customer });
 }

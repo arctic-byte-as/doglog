@@ -3,11 +3,36 @@ import { redirect } from 'next/navigation';
 import prisma from './prisma';
 import { authOptions } from '@/lib/auth-options';
 
+export type AuthMode = 'ADMIN' | 'CUSTOMER';
+
 function adminEmails() {
   return (process.env.ADMIN_EMAILS || '')
     .split(',')
     .map((email) => email.trim().toLowerCase())
     .filter(Boolean);
+}
+
+function accessModes({
+  email,
+  role,
+  hasCustomer,
+}: {
+  email: string;
+  role?: string | null;
+  hasCustomer: boolean;
+}): AuthMode[] {
+  const modes = new Set<AuthMode>();
+  const normalizedRole = role?.toUpperCase();
+
+  if (adminEmails().includes(email) || normalizedRole === 'ADMIN' || normalizedRole === 'TRAINER') {
+    modes.add('ADMIN');
+  }
+
+  if (normalizedRole === 'CUSTOMER' || hasCustomer) {
+    modes.add('CUSTOMER');
+  }
+
+  return [...modes];
 }
 
 export async function getCurrentUser() {
@@ -21,21 +46,10 @@ export async function getCurrentUser() {
     prisma.customer.findUnique({ where: { email } }),
   ]);
 
-  const role = adminEmails().includes(email) ? 'ADMIN' : user?.role || 'TRAINER';
-  const trainer =
-    trainerRecord ||
-    (role === 'TRAINER' || role === 'ADMIN'
-      ? await prisma.trainer.upsert({
-          where: { email },
-          update: {},
-          create: {
-            email,
-            name: session.user.name || email,
-          },
-        })
-      : null);
+  const modes = accessModes({ email, role: user?.role, hasCustomer: Boolean(customerRecord) });
+  const role = modes.includes('ADMIN') ? 'ADMIN' : modes.includes('CUSTOMER') ? 'CUSTOMER' : user?.role || null;
 
-  return { session, user, trainer, customer: customerRecord, role };
+  return { session, user, trainer: trainerRecord, customer: customerRecord, role, modes };
 }
 
 export async function requireUser() {
@@ -46,38 +60,21 @@ export async function requireUser() {
 
 export async function requireTrainer() {
   const user = await requireUser();
-  if (!user.trainer) redirect('/login');
+  if (!user.modes.includes('ADMIN')) redirect('/login');
+  if (!user.trainer) redirect('/admin/trainers');
   return { ...user, trainer: user.trainer };
 }
 
 export async function requireAdmin() {
   const user = await requireUser();
-  if (user.role !== 'ADMIN') redirect('/dashboard');
+  if (!user.modes.includes('ADMIN')) redirect('/customer');
   return user;
 }
 
 export async function requireCustomer() {
   const user = await requireUser();
-  const email = user.session.user?.email?.toLowerCase();
-  if (!email) redirect('/login');
+  if (!user.modes.includes('CUSTOMER')) redirect('/dashboard');
+  if (!user.customer) redirect('/register/owner');
 
-  const customer =
-    user.customer ||
-    (await prisma.customer.upsert({
-      where: { email },
-      update: {},
-      create: {
-        email,
-        name: user.session.user?.name || email,
-      },
-    }));
-
-  if (user.user && user.role !== 'ADMIN') {
-    await prisma.user.update({
-      where: { id: user.user.id },
-      data: { role: 'CUSTOMER' },
-    });
-  }
-
-  return { ...user, customer, role: user.role === 'ADMIN' ? 'ADMIN' : 'CUSTOMER' };
+  return { ...user, customer: user.customer, role: user.role === 'ADMIN' ? 'ADMIN' : 'CUSTOMER' };
 }

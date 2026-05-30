@@ -26,16 +26,8 @@ export async function POST(request: Request) {
   const adminEmail = admin.session.user?.email?.toLowerCase();
   const trainer =
     admin.trainer ||
-    (adminEmail
-      ? await prisma.trainer.upsert({
-          where: { email: adminEmail },
-          update: {},
-          create: {
-            email: adminEmail,
-            name: admin.session.user?.name || adminEmail,
-          },
-        })
-      : await prisma.trainer.findFirst({ orderBy: { createdAt: 'asc' } }));
+    (adminEmail ? await prisma.trainer.findUnique({ where: { email: adminEmail } }) : null) ||
+    (await prisma.trainer.findFirst({ orderBy: { createdAt: 'asc' } }));
 
   if (!trainer) return NextResponse.json({ error: 'No trainer is available yet. Please create a trainer account first.' }, { status: 400 });
 

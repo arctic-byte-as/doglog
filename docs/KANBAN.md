@@ -24,7 +24,7 @@ Last updated: 2026-05-30
 
 | ID | Card | Owner | Acceptance Criteria |
 | --- | --- | --- | --- |
-| None | No unstarted planning card is ready | Project Manager Agent | Review active rescue branch before opening new implementation work |
+| DL-013 | Add server-side admin and customer route guards | Lead Engineer Agent | Unauthorized mode access redirects or fails cleanly |
 
 ## Next
 
@@ -33,7 +33,6 @@ Last updated: 2026-05-30
 | DL-010 | Convert Prisma schema from SQLite to PostgreSQL | Lead Engineer Agent | Schema validates and maps current data model to Supabase Postgres |
 | DL-011 | Generate clean baseline migration | Lead Engineer Agent | Old prototype migrations replaced only after baseline is reviewed |
 | DL-012 | Build SQLite export and Supabase seed path | Lead Engineer Agent | Repeatable stage seed script with record count checks |
-| DL-013 | Add server-side admin and customer route guards | Lead Engineer Agent | Unauthorized mode access redirects or fails cleanly |
 | DL-014 | Update login UX for admin/customer mode clarity | UX Designer Agent | Copy and interaction make identity versus workspace mode clear |
 | DL-015 | Draft RLS policies for customer-owned data | Data Security Agent | Policies cover customer profile, dogs, services, sessions, and consultations |
 | DL-016 | Add RLS verification tests | Software Tester Agent | Admin/customer fixtures prove allowed and blocked access |
@@ -44,7 +43,7 @@ Last updated: 2026-05-30
 
 | ID | Card | Owner | Acceptance Criteria |
 | --- | --- | --- | --- |
-| DL-019 | Reconcile launch schema source | Lead Engineer Agent | Squash import staged without DB/generated artifacts; needs human scope review before commit |
+| DL-024 | Harden auth mode derivation | Lead Engineer Agent | Access modes are centralized, sign-in does not auto-create trainer records, and customer guards do not mutate roles |
 
 ## Review
 
@@ -65,6 +64,7 @@ Last updated: 2026-05-30
 | DL-004 | Define admin/customer authorization model | Lead Engineer Agent | Roles/modes/session rules documented before code changes in `docs/PROJECT_PLAN.md` |
 | DL-006 | Decide what to do with preserved feature branch | Project Manager Agent | Keep `feature/dogpedia-thumbnails-local` for PR/review; do not merge directly into `main` |
 | DL-009 | Design SQLite export and seed approach | Lead Engineer Agent | Two-track structural/anonymized export design documented in `docs/PROJECT_PLAN.md` |
+| DL-019 | Reconcile launch schema source | Lead Engineer Agent | Rescue app work merged to `main` without DB/generated artifacts |
 
 ## Blocked
 

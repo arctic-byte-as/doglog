@@ -24,10 +24,11 @@ Last updated: 2026-05-30
 
 | ID | Card | Owner | Acceptance Criteria |
 | --- | --- | --- | --- |
-| DL-001 | Create launch plan, kanban, agent profiles, and roadmap view | Project Manager Agent | Docs exist and can guide parallel work |
 | DL-002 | Decide stage/prod Supabase topology | Lead Engineer Agent | Decision recorded: separate projects or branching, with reason |
 | DL-003 | Inventory SQLite data and PII fields | Data Security Agent | Tables, counts, PII columns, and export risks documented |
 | DL-004 | Define admin/customer authorization model | Lead Engineer Agent | Roles/modes/session rules documented before code changes |
+| DL-005 | Authenticate local deployment CLIs | Project Manager Agent | `gh auth status`, `vercel whoami`, and Supabase auth are confirmed |
+| DL-006 | Decide what to do with preserved feature branch | Project Manager Agent | `feature/dogpedia-thumbnails-local` is PR'd, merged, or archived intentionally |
 
 ## Next
 
@@ -60,6 +61,9 @@ Last updated: 2026-05-30
 | ID | Card | Owner | Acceptance Criteria |
 | --- | --- | --- | --- |
 | DL-000 | Existing prototype inspected | Project Manager Agent | Current auth, schema, docs, and dirty worktree noted |
+| DL-001 | Create launch plan, kanban, agent profiles, and roadmap view | Project Manager Agent | Docs exist and can guide parallel work |
+| DL-007 | Fix local `main` tracking state | Project Manager Agent | Local `main` tracks `origin/main`; prior work preserved as `feature/dogpedia-thumbnails-local` |
+| DL-008 | Restore local SQLite seed DB | Data Security Agent | `prisma/dev.db` restored locally and table counts verified |
 
 ## Blocked
 
@@ -68,6 +72,7 @@ Last updated: 2026-05-30
 | DL-020 | Production Supabase creation | Project Manager Agent | Needs account/project access and human approval |
 | DL-021 | Vercel production deployment | Project Manager Agent | Needs Vercel project access, domain decision, and secrets |
 | DL-022 | Production data import | Data Security Agent | Needs seed rehearsal, backup plan, and production freeze window |
+| DL-023 | GitHub/Vercel/Supabase authenticated CLI operations | Project Manager Agent | Needs interactive `gh auth login`, `vercel login`, and `supabase login` |
 
 ## Later
 

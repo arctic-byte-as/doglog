@@ -10,9 +10,37 @@ Move Doglog from a local SQLite prototype to a staged Vercel and Supabase deploy
 
 - App stack: Next.js 14, TypeScript, Tailwind, NextAuth email login, Prisma.
 - Current database: SQLite via `prisma/schema.prisma`.
+- Local seed source restored: `prisma/dev.db` is present locally and intentionally untracked on `main`.
 - Existing login UI: trainer and owner buttons already choose different callback URLs.
 - Current authorization gap: new NextAuth users are automatically upserted as trainers, and mode selection is not yet a durable authorization model.
 - Existing docs: `wiki/` has architecture, MVP scope, database notes, and basic agent rules.
+
+## Handoff State
+
+This section records the working state after the planning/setup chat on 2026-05-30.
+
+- Remote `main` contains planning commit `8f9116d Add launch planning docs`.
+- Local `main` now correctly tracks `origin/main`.
+- Previous misplaced local `main` was preserved as `feature/dogpedia-thumbnails-local`.
+- `feature/dogpedia-thumbnails-local` is 19 commits ahead of `origin/feature/dogpedia-thumbnails`; decide separately whether to PR or merge that app work.
+- Safety stash remains: `stash@{0}: pre-main-branch-fix-2026-05-30`.
+- `prisma/dev.db` was restored from the stash and should be used as the SQLite seed source.
+- SQLite seed counts at restore time: `Trainer=1`, `Customer=12`, `Dog=12`, `Consultation=3`, `ServiceSession=4`, `User=14`.
+- Installed global CLIs with Homebrew: `gh 2.93.0`, `supabase 2.102.0`, `vercel-cli 54.6.1`.
+- Authentication still needs to be run interactively: `gh auth login`, `vercel login`, `supabase login`.
+- Homebrew installed Node 26 as a Vercel dependency, but this shell still resolves Node through nvm at `/Users/ianrobertson/.nvm/versions/node/v18.18.2/bin/node`.
+- Vercel device login was started once and cancelled cleanly because it needed browser approval.
+
+Next agent should start by checking:
+
+```bash
+git status --short --branch
+git branch -vv
+sqlite3 prisma/dev.db ".tables"
+gh auth status
+vercel whoami
+supabase --version
+```
 
 ## Source Guidance Checked
 
@@ -82,7 +110,7 @@ Tables requiring RLS review:
 We will start Supabase from a clean baseline rather than replaying old prototype migrations.
 
 1. Freeze current SQLite writes.
-2. Export current SQLite data from `prisma/dev.db`.
+2. Export current SQLite data from local untracked `prisma/dev.db`.
 3. Convert Prisma datasource from SQLite to PostgreSQL.
 4. Create one new baseline migration for the current intended schema.
 5. Apply the baseline to stage Supabase.
@@ -92,6 +120,12 @@ We will start Supabase from a clean baseline rather than replaying old prototype
 9. Remove old prototype migration history once the new baseline migration is committed.
 
 Important: do not delete old migrations until the new baseline has been generated, reviewed, and stage-tested.
+
+Seed handling notes:
+
+- Treat `prisma/dev.db` as private local source data unless explicitly approved for commit.
+- Before export, inventory PII fields and confirm whether stage should receive real, minimized, or anonymized data.
+- Preserve row counts before and after import so seeding can be audited.
 
 ## CI/CD Plan
 

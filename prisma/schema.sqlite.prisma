@@ -3,8 +3,8 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("POSTGRES_DATABASE_URL")
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
 }
 
 model Trainer {
@@ -16,13 +16,13 @@ model Trainer {
 }
 
 model Customer {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  name      String
-  phone     String?
-  notes     String?
-  createdAt DateTime @default(now())
-  dogs      Dog[]
+  id            String                  @id @default(uuid())
+  email         String                  @unique
+  name          String
+  phone         String?
+  notes         String?
+  createdAt     DateTime                @default(now())
+  dogs          Dog[]
   serviceAccess CustomerServiceAccess[]
 }
 
@@ -37,20 +37,20 @@ model CustomerServiceAccess {
 }
 
 model Dog {
-  id            String         @id @default(uuid())
-  name          String
-  age           String
-  breed         String
-  status        String
-  owner         String
-  lastIncident  String?
+  id              String           @id @default(uuid())
+  name            String
+  age             String
+  breed           String
+  status          String
+  owner           String
+  lastIncident    String?
   profileImageUrl String?
-  trainer       Trainer        @relation(fields: [trainerId], references: [id])
-  trainerId     String
-  customer      Customer?      @relation(fields: [customerId], references: [id])
-  customerId    String?
-  observations  Observation[]
-  consultations Consultation[]
+  trainer         Trainer          @relation(fields: [trainerId], references: [id])
+  trainerId       String
+  customer        Customer?        @relation(fields: [customerId], references: [id])
+  customerId      String?
+  observations    Observation[]
+  consultations   Consultation[]
   serviceSessions ServiceSession[]
 }
 
@@ -104,7 +104,6 @@ model ServiceSession {
   dogId              String
 }
 
-/// Models required by NextAuth
 model User {
   id            String    @id @default(cuid())
   name          String?

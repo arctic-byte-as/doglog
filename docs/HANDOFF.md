@@ -98,6 +98,19 @@ npx prisma validate
 - The in-app browser was unavailable in this session, so route verification used local HTTP requests instead of visual screenshots.
 - Running `next build` while `next dev` was active caused a transient dev-server webpack cache error on `/dashboard`; restarting `next dev` cleared it.
 
+## Supabase Seeding Fast Track
+
+- User approved production-first seeding for a fast hosted demo.
+- User approved real data from `prisma/dev.db`.
+- Default Prisma schema is now Postgres-oriented and uses `POSTGRES_DATABASE_URL`.
+- Local SQLite schema is preserved at `prisma/schema.sqlite.prisma`.
+- Clean baseline SQL exists at `prisma/migrations/20260530195500_supabase_baseline/migration.sql`.
+- Real-data export script exists at `scripts/export-supabase-seed.js`.
+- Generated seed files are ignored under `exports/supabase/`.
+- Current export command succeeded with counts: `User=14`, `Trainer=1`, `Customer=12`, `Dog=12`, `CustomerServiceAccess=6`, `Consultation=3`, `Observation=0`, `ServiceSession=4`.
+- Import commands are documented in `docs/SUPABASE_SEEDING.md`.
+- `npx prisma validate` now requires `POSTGRES_DATABASE_URL`; use `npm run prisma:validate:sqlite` for the local SQLite schema.
+
 ## Auth Refactor Started
 
 - `lib/auth.ts` now centralizes derived access modes as `ADMIN` and `CUSTOMER`.

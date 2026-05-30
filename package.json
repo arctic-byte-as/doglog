@@ -7,6 +7,11 @@
     "build": "next build",
     "start": "next start",
     "seed": "node prisma/seed.js",
+    "seed:export:supabase": "node scripts/export-supabase-seed.js",
+    "db:prod:baseline": "prisma db execute --url \"$POSTGRES_DATABASE_URL\" --file prisma/migrations/20260530195500_supabase_baseline/migration.sql",
+    "seed:import:supabase": "prisma db execute --url \"$POSTGRES_DATABASE_URL\" --file exports/supabase/seed.sql",
+    "prisma:validate:sqlite": "prisma validate --schema prisma/schema.sqlite.prisma",
+    "prisma:validate:prod": "prisma validate --schema prisma/schema.prisma",
     "lint": "next lint"
   },
   "dependencies": {

@@ -25,14 +25,14 @@ Last updated: 2026-05-30
 | ID | Card | Owner | Acceptance Criteria |
 | --- | --- | --- | --- |
 | DL-013 | Add server-side admin and customer route guards | Lead Engineer Agent | Unauthorized mode access redirects or fails cleanly |
+| DL-010 | Convert Prisma schema from SQLite to PostgreSQL | Lead Engineer Agent | Schema validates and maps current data model to Supabase Postgres |
+| DL-011 | Generate clean baseline migration | Lead Engineer Agent | Old prototype migrations replaced only after baseline is reviewed |
+| DL-012 | Build SQLite export and Supabase seed path | Lead Engineer Agent | Repeatable production seed script with record count checks |
 
 ## Next
 
 | ID | Card | Owner | Acceptance Criteria |
 | --- | --- | --- | --- |
-| DL-010 | Convert Prisma schema from SQLite to PostgreSQL | Lead Engineer Agent | Schema validates and maps current data model to Supabase Postgres |
-| DL-011 | Generate clean baseline migration | Lead Engineer Agent | Old prototype migrations replaced only after baseline is reviewed |
-| DL-012 | Build SQLite export and Supabase seed path | Lead Engineer Agent | Repeatable stage seed script with record count checks |
 | DL-014 | Update login UX for admin/customer mode clarity | UX Designer Agent | Copy and interaction make identity versus workspace mode clear |
 | DL-015 | Draft RLS policies for customer-owned data | Data Security Agent | Policies cover customer profile, dogs, services, sessions, and consultations |
 | DL-016 | Add RLS verification tests | Software Tester Agent | Admin/customer fixtures prove allowed and blocked access |

@@ -37,3 +37,8 @@ pip-log.txt
 dist/
 build/
 coverage/
+
+# Local database seed/source files
+prisma/*.db
+prisma/*.db-*
+exports/

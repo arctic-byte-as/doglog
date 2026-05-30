@@ -6,7 +6,7 @@ A lightweight trainer dashboard prototype for dog behaviour logging and consulta
 
 - Next.js + TypeScript + Tailwind CSS prototype UI
 - Dashboard, dog profiles, consultations, and demo login flow
-- Mock data for quick founder demos
+- Owner registration creates live customer and dog records in the local database
 - Prisma schema scaffold included for next-stage database integration
 
 ## Run locally
@@ -27,6 +27,6 @@ npm run dev
 
 ## Notes
 
-- This first prototype uses mock data in `lib/mock-data.ts`
+- Customer and dog data should be created through the owner registration flow
 - `prisma/schema.prisma` is included as a starting data model for Postgres
 - The UI is intentionally simple and demo-ready for founder review

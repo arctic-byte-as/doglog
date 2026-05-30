@@ -1,0 +1,20 @@
+import { SiteShell } from '@/components/SiteShell';
+import { SectionCard } from '@/components/SectionCard';
+import SkillsLibraryClient from '@/components/SkillsLibraryClient';
+import BackToDashboardLink from '@/components/BackToDashboardLink';
+import { requireTrainer } from '@/lib/auth';
+
+export default async function SkillsLibraryPage() {
+  await requireTrainer();
+
+  return (
+    <SiteShell>
+      <div className="space-y-8">
+        <BackToDashboardLink />
+        <SectionCard title="Skills Library">
+          <SkillsLibraryClient />
+        </SectionCard>
+      </div>
+    </SiteShell>
+  );
+}

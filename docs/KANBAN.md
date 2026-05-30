@@ -24,11 +24,7 @@ Last updated: 2026-05-30
 
 | ID | Card | Owner | Acceptance Criteria |
 | --- | --- | --- | --- |
-| DL-002 | Decide stage/prod Supabase topology | Lead Engineer Agent | Decision recorded: separate projects or branching, with reason |
-| DL-003 | Inventory SQLite data and PII fields | Data Security Agent | Tables, counts, PII columns, and export risks documented |
-| DL-004 | Define admin/customer authorization model | Lead Engineer Agent | Roles/modes/session rules documented before code changes |
-| DL-005 | Authenticate local deployment CLIs | Project Manager Agent | `gh auth status`, `vercel whoami`, and Supabase auth are confirmed |
-| DL-006 | Decide what to do with preserved feature branch | Project Manager Agent | `feature/dogpedia-thumbnails-local` is PR'd, merged, or archived intentionally |
+| None | No unstarted planning card is ready | Project Manager Agent | Review active rescue branch before opening new implementation work |
 
 ## Next
 
@@ -48,7 +44,7 @@ Last updated: 2026-05-30
 
 | ID | Card | Owner | Acceptance Criteria |
 | --- | --- | --- | --- |
-| None | No implementation card has started yet | Project Manager Agent | Start only after the plan is accepted |
+| DL-019 | Reconcile launch schema source | Lead Engineer Agent | Squash import staged without DB/generated artifacts; needs human scope review before commit |
 
 ## Review
 
@@ -64,6 +60,11 @@ Last updated: 2026-05-30
 | DL-001 | Create launch plan, kanban, agent profiles, and roadmap view | Project Manager Agent | Docs exist and can guide parallel work |
 | DL-007 | Fix local `main` tracking state | Project Manager Agent | Local `main` tracks `origin/main`; prior work preserved as `feature/dogpedia-thumbnails-local` |
 | DL-008 | Restore local SQLite seed DB | Data Security Agent | `prisma/dev.db` restored locally and table counts verified |
+| DL-002 | Decide stage/prod Supabase topology | Lead Engineer Agent | Separate Supabase projects selected for stage/prod and recorded in `docs/PROJECT_PLAN.md` |
+| DL-003 | Inventory SQLite data and PII fields | Data Security Agent | Tables, counts, PII columns, and export risks documented in `docs/PROJECT_PLAN.md` |
+| DL-004 | Define admin/customer authorization model | Lead Engineer Agent | Roles/modes/session rules documented before code changes in `docs/PROJECT_PLAN.md` |
+| DL-006 | Decide what to do with preserved feature branch | Project Manager Agent | Keep `feature/dogpedia-thumbnails-local` for PR/review; do not merge directly into `main` |
+| DL-009 | Design SQLite export and seed approach | Lead Engineer Agent | Two-track structural/anonymized export design documented in `docs/PROJECT_PLAN.md` |
 
 ## Blocked
 
@@ -73,6 +74,7 @@ Last updated: 2026-05-30
 | DL-021 | Vercel production deployment | Project Manager Agent | Needs Vercel project access, domain decision, and secrets |
 | DL-022 | Production data import | Data Security Agent | Needs seed rehearsal, backup plan, and production freeze window |
 | DL-023 | GitHub/Vercel/Supabase authenticated CLI operations | Project Manager Agent | Needs interactive `gh auth login`, `vercel login`, and `supabase login` |
+| DL-005 | Authenticate local deployment CLIs | Project Manager Agent | `gh` not logged in; Vercel needs device login; Supabase CLI version verified but project auth still needs interactive login |
 
 ## Later
 

@@ -1,25 +1,50 @@
 import { SiteShell } from '@/components/SiteShell';
 import { SectionCard } from '@/components/SectionCard';
-import { consultations } from '@/lib/mock-data';
+import ConsultationLogClient from '@/components/ConsultationLogClient';
+import BackToDashboardLink from '@/components/BackToDashboardLink';
+import { requireTrainer } from '@/lib/auth';
+import prisma from '@/lib/prisma';
 
-export default function ConsultationsPage() {
+export default async function ConsultationsPage() {
+  const user = await requireTrainer();
+  const [dogs, consultations] = await Promise.all([
+    prisma.dog.findMany({
+      where: { trainerId: user.trainer.id },
+      orderBy: { name: 'asc' },
+      select: { id: true, name: true, breed: true, owner: true },
+    }),
+    prisma.consultation.findMany({
+      where: { dog: { trainerId: user.trainer.id } },
+      include: { dog: true },
+      orderBy: { date: 'desc' },
+    }),
+  ]);
+
+  const consultationItems = consultations.map((consultation) => ({
+    id: consultation.id,
+    dogName: consultation.dog.name,
+    client: consultation.dog.owner,
+    date: consultation.date.toISOString().slice(0, 10),
+    focus: consultation.focus,
+    outcome: consultation.outcome,
+    generalDescription: consultation.generalDescription || '',
+    dogBreed: consultation.dogBreed || consultation.dog.breed,
+    learningHistory: consultation.learningHistory || '',
+    situation: consultation.situation || '',
+    nutrition: consultation.nutrition || '',
+    health: consultation.health || '',
+    hormoneAnalysis: consultation.hormoneAnalysis || '',
+    activation: consultation.activation || '',
+    stimulusAnalysis: consultation.stimulusAnalysis || '',
+    prescribedPlan: consultation.prescribedPlan || '',
+  }));
+
   return (
     <SiteShell>
       <div className="space-y-8">
+        <BackToDashboardLink />
         <SectionCard title="Consultation log">
-          <div className="space-y-4">
-            {consultations.map((item) => (
-              <article key={item.id} className="rounded-3xl border border-brand-200 bg-white p-6 shadow-sm">
-                <div className="flex flex-wrap items-center justify-between gap-4 text-brand-600">
-                  <p>{item.date}</p>
-                  <p>{item.client}</p>
-                </div>
-                <h3 className="mt-3 text-2xl font-semibold text-brand-950">{item.dogName}</h3>
-                <p className="mt-2 text-brand-700">Focus: {item.focus}</p>
-                <p className="mt-2 text-brand-600">Recommended outcome: {item.outcome}</p>
-              </article>
-            ))}
-          </div>
+          <ConsultationLogClient dogs={dogs} consultations={consultationItems} />
         </SectionCard>
       </div>
     </SiteShell>

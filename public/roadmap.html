@@ -1,0 +1,384 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Doglog Roadmap</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --ink: #17201b;
+        --muted: #607068;
+        --paper: #f7f4ee;
+        --panel: #ffffff;
+        --line: #d8d0c3;
+        --green: #2f6b4f;
+        --blue: #315f7c;
+        --gold: #9b6a21;
+        --rose: #a44747;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background: var(--paper);
+        color: var(--ink);
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+
+      main {
+        width: min(1180px, calc(100vw - 32px));
+        margin: 0 auto;
+        padding: 32px 0 44px;
+      }
+
+      header {
+        display: grid;
+        gap: 14px;
+        margin-bottom: 24px;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: clamp(2rem, 5vw, 4.4rem);
+        line-height: 0.98;
+        letter-spacing: 0;
+      }
+
+      .intro {
+        max-width: 720px;
+        margin: 0;
+        color: var(--muted);
+        font-size: 1rem;
+        line-height: 1.6;
+      }
+
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 10px;
+        margin: 22px 0;
+      }
+
+      .stat {
+        min-height: 84px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.74);
+        padding: 14px;
+      }
+
+      .stat strong {
+        display: block;
+        font-size: 1.8rem;
+        line-height: 1;
+      }
+
+      .stat span {
+        display: block;
+        margin-top: 8px;
+        color: var(--muted);
+        font-size: 0.86rem;
+      }
+
+      .board {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 12px;
+        align-items: start;
+      }
+
+      .column {
+        min-height: 360px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.72);
+        overflow: hidden;
+      }
+
+      .column h2 {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        margin: 0;
+        padding: 14px;
+        border-bottom: 1px solid var(--line);
+        font-size: 0.95rem;
+      }
+
+      .count {
+        display: inline-grid;
+        place-items: center;
+        min-width: 28px;
+        height: 28px;
+        border-radius: 999px;
+        background: var(--ink);
+        color: #fff;
+        font-size: 0.78rem;
+      }
+
+      .cards {
+        display: grid;
+        gap: 10px;
+        padding: 12px;
+      }
+
+      .card {
+        border: 1px solid var(--line);
+        border-left: 6px solid var(--green);
+        border-radius: 8px;
+        background: var(--panel);
+        padding: 12px;
+      }
+
+      .card[data-theme="security"] {
+        border-left-color: var(--rose);
+      }
+
+      .card[data-theme="platform"] {
+        border-left-color: var(--blue);
+      }
+
+      .card[data-theme="payments"] {
+        border-left-color: var(--gold);
+      }
+
+      .card h3 {
+        margin: 0;
+        font-size: 0.98rem;
+        line-height: 1.3;
+      }
+
+      .card p {
+        margin: 8px 0 0;
+        color: var(--muted);
+        font-size: 0.86rem;
+        line-height: 1.45;
+      }
+
+      .meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-top: 10px;
+      }
+
+      .tag {
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 4px 8px;
+        color: var(--muted);
+        font-size: 0.74rem;
+      }
+
+      .controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin: 8px 0 18px;
+      }
+
+      button {
+        min-height: 38px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #fff;
+        color: var(--ink);
+        padding: 0 12px;
+        font: inherit;
+        cursor: pointer;
+      }
+
+      button[aria-pressed="true"] {
+        border-color: var(--green);
+        background: var(--green);
+        color: #fff;
+      }
+
+      @media (max-width: 900px) {
+        .stats,
+        .board {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+
+      @media (max-width: 620px) {
+        main {
+          width: min(100vw - 20px, 1180px);
+          padding-top: 20px;
+        }
+
+        .stats,
+        .board {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header>
+        <h1>Doglog Roadmap</h1>
+        <p class="intro">
+          A live-feeling view of what is being prepared for launch: secure customer access, staging and production hosting, privacy protections, and future payment planning.
+        </p>
+      </header>
+
+      <section class="stats" aria-label="Roadmap statistics" id="stats"></section>
+
+      <nav class="controls" aria-label="Roadmap filters" id="filters"></nav>
+
+      <section class="board" aria-label="Roadmap board" id="board"></section>
+    </main>
+
+    <script>
+      const columns = ["Now", "Next", "Review", "Later"];
+      const items = [
+        {
+          title: "Launch planning",
+          status: "Now",
+          theme: "platform",
+          owner: "Project Manager",
+          summary: "Plan, kanban, agent roster, and roadmap view for the Vercel and Supabase move."
+        },
+        {
+          title: "Admin and customer modes",
+          status: "Next",
+          theme: "product",
+          owner: "Lead Engineer",
+          summary: "Separate workspace mode from identity so one person can use allowed modes without impersonation."
+        },
+        {
+          title: "Supabase baseline",
+          status: "Next",
+          theme: "platform",
+          owner: "Lead Engineer",
+          summary: "Move from SQLite to a clean PostgreSQL baseline and seed stage from current data."
+        },
+        {
+          title: "Privacy and RLS",
+          status: "Next",
+          theme: "security",
+          owner: "Data Security",
+          summary: "Protect customer PII with row-level policies and server-side verification."
+        },
+        {
+          title: "Stage and production hosting",
+          status: "Next",
+          theme: "platform",
+          owner: "Lead Engineer",
+          summary: "Configure separate Vercel and Supabase environments with CI checks before release."
+        },
+        {
+          title: "Release smoke tests",
+          status: "Review",
+          theme: "security",
+          owner: "Test Lead",
+          summary: "Verify login, admin, customer, RLS, and seeded data before production."
+        },
+        {
+          title: "Trainer subscriptions",
+          status: "Later",
+          theme: "payments",
+          owner: "Payments Strategy",
+          summary: "Plan Stripe Checkout for trainers who use Doglog to manage clients."
+        },
+        {
+          title: "Owner payments",
+          status: "Later",
+          theme: "payments",
+          owner: "Payments Strategy",
+          summary: "Plan VIPPS or payment registration flows for dog owners paying trainers."
+        }
+      ];
+
+      let activeTheme = "all";
+
+      function visibleItems() {
+        return activeTheme === "all" ? items : items.filter((item) => item.theme === activeTheme);
+      }
+
+      function renderStats() {
+        const root = document.getElementById("stats");
+        const visible = visibleItems();
+        const stats = [
+          ["Total", visible.length],
+          ["Now", visible.filter((item) => item.status === "Now").length],
+          ["Next", visible.filter((item) => item.status === "Next").length],
+          ["Later", visible.filter((item) => item.status === "Later").length]
+        ];
+
+        root.innerHTML = stats
+          .map(([label, value]) => `<article class="stat"><strong>${value}</strong><span>${label}</span></article>`)
+          .join("");
+      }
+
+      function renderFilters() {
+        const root = document.getElementById("filters");
+        const filters = [
+          ["all", "All"],
+          ["platform", "Platform"],
+          ["security", "Privacy"],
+          ["product", "Product"],
+          ["payments", "Payments"]
+        ];
+
+        root.innerHTML = filters
+          .map(([theme, label]) => `<button type="button" data-filter="${theme}" aria-pressed="${theme === activeTheme}">${label}</button>`)
+          .join("");
+
+        root.querySelectorAll("button").forEach((button) => {
+          button.addEventListener("click", () => {
+            activeTheme = button.dataset.filter;
+            render();
+          });
+        });
+      }
+
+      function renderBoard() {
+        const root = document.getElementById("board");
+        const visible = visibleItems();
+
+        root.innerHTML = columns
+          .map((column) => {
+            const cards = visible.filter((item) => item.status === column);
+            const cardHtml = cards
+              .map(
+                (item) => `
+                  <article class="card" data-theme="${item.theme}">
+                    <h3>${item.title}</h3>
+                    <p>${item.summary}</p>
+                    <div class="meta">
+                      <span class="tag">${item.owner}</span>
+                      <span class="tag">${item.theme}</span>
+                    </div>
+                  </article>
+                `
+              )
+              .join("");
+
+            return `
+              <section class="column">
+                <h2>${column}<span class="count">${cards.length}</span></h2>
+                <div class="cards">${cardHtml || "<p>No roadmap items in this lane.</p>"}</div>
+              </section>
+            `;
+          })
+          .join("");
+      }
+
+      function render() {
+        renderStats();
+        renderFilters();
+        renderBoard();
+      }
+
+      render();
+    </script>
+  </body>
+</html>

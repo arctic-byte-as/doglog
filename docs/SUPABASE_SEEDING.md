@@ -32,7 +32,7 @@ Validate schemas:
 
 ```bash
 npm run prisma:validate:sqlite
-POSTGRES_DATABASE_URL="postgresql://..." DIRECT_URL="postgresql://..." npm run prisma:validate:prod
+DATABASE_URL="postgresql://..." DIRECT_URL="postgresql://..." npm run prisma:validate:prod
 ```
 
 Apply the clean baseline to a Supabase Postgres database:
@@ -62,8 +62,8 @@ ServiceSession|4
 
 ## Production Notes
 
-- `POSTGRES_DATABASE_URL` and `DIRECT_URL` must be server-side secrets only.
-- Use `POSTGRES_DATABASE_URL` for the app runtime connection and `DIRECT_URL` for one-off Prisma/database setup commands.
+- `DATABASE_URL` and `DIRECT_URL` must be server-side secrets only.
+- Use `DATABASE_URL` for the app runtime connection and `DIRECT_URL` for one-off Prisma/database setup commands.
 - Do not commit generated seed files; they contain real PII.
 - Run the baseline only against a clean database.
 - The seed import truncates seeded business/auth identity tables before inserting exported rows.
@@ -75,12 +75,31 @@ ServiceSession|4
 
 1. Open `https://supabase.com/dashboard`.
 2. Open the production project.
-3. Click `Connect` at the top of the project dashboard.
-4. Copy the `Transaction pooler` URI into `POSTGRES_DATABASE_URL`.
-5. Copy the `Direct connection` URI into `DIRECT_URL`.
-6. Replace `[YOUR-PASSWORD]` or similar placeholders with the database password from the same Supabase project.
+3. Open `SQL Editor` and create a dedicated Prisma role:
 
-Supabase documents that direct connections are best for migrations and other one-off database commands, while transaction pooler connections are intended for serverless/temporary application traffic.
+```sql
+create user "prisma" with password 'replace_with_a_generated_password' bypassrls createdb;
+grant "prisma" to "postgres";
+grant usage on schema public to prisma;
+grant create on schema public to prisma;
+grant all on all tables in schema public to prisma;
+grant all on all routines in schema public to prisma;
+grant all on all sequences in schema public to prisma;
+alter default privileges for role postgres in schema public grant all on tables to prisma;
+alter default privileges for role postgres in schema public grant all on routines to prisma;
+alter default privileges for role postgres in schema public grant all on sequences to prisma;
+```
+
+4. Click `Connect` at the top of the project dashboard.
+5. Copy the `Transaction pooler` URI into `DATABASE_URL`.
+6. Change the connection user from `postgres.PROJECT_REF` to `prisma.PROJECT_REF`.
+7. Replace the password with the generated Prisma role password.
+8. Add `?pgbouncer=true` to the end of `DATABASE_URL` if it is not already present.
+9. Copy the `Session pooler` URI into `DIRECT_URL`.
+10. Change the connection user from `postgres.PROJECT_REF` to `prisma.PROJECT_REF`.
+11. Replace the password with the generated Prisma role password.
+
+Supabase's current Prisma guide recommends a custom Prisma DB user. Supabase's connection docs recommend transaction pooler connections for serverless application traffic. Transaction pooler mode does not support prepared statements, so Prisma URLs for transaction mode should include `?pgbouncer=true`. Direct connections or session pooler connections are prepared-statement-safe options for setup commands.
 
 ### Vercel
 

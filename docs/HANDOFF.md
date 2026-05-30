@@ -102,14 +102,15 @@ npx prisma validate
 
 - User approved production-first seeding for a fast hosted demo.
 - User approved real data from `prisma/dev.db`.
-- Default Prisma schema is now Postgres-oriented and uses `POSTGRES_DATABASE_URL` plus `DIRECT_URL`.
+- Default Prisma schema is now Postgres-oriented and follows Supabase's Prisma convention: `DATABASE_URL` for runtime and `DIRECT_URL` for setup commands.
 - Local SQLite schema is preserved at `prisma/schema.sqlite.prisma`.
 - Clean baseline SQL exists at `prisma/migrations/20260530195500_supabase_baseline/migration.sql`.
 - Real-data export script exists at `scripts/export-supabase-seed.js`.
 - Generated seed files are ignored under `exports/supabase/`.
 - Current export command succeeded with counts: `User=14`, `Trainer=1`, `Customer=12`, `Dog=12`, `CustomerServiceAccess=6`, `Consultation=3`, `Observation=0`, `ServiceSession=4`.
 - Import commands and environment setup are documented in `docs/SUPABASE_SEEDING.md`.
-- `npx prisma validate` now requires `POSTGRES_DATABASE_URL` and `DIRECT_URL`; use `npm run prisma:validate:sqlite` for the local SQLite schema.
+- `npx prisma validate` now requires `DATABASE_URL` and `DIRECT_URL`; use `npm run prisma:validate:sqlite` for the local SQLite schema.
+- `prisma/schema.sqlite.prisma` uses `SQLITE_DATABASE_URL` so local SQLite validation does not conflict with the production `DATABASE_URL`.
 
 ## Auth Refactor Started
 

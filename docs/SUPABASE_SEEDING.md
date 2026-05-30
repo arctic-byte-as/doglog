@@ -60,10 +60,20 @@ Observation|0
 ServiceSession|4
 ```
 
+## Production Import Status
+
+Applied on 2026-05-30:
+
+- Baseline schema: successful.
+- Real-data seed import: successful.
+- Verified production counts match the export counts above.
+- Verified seeded relationships have zero missing trainer/customer/dog links.
+
 ## Production Notes
 
 - `DATABASE_URL` and `DIRECT_URL` must be server-side secrets only.
 - Use `DATABASE_URL` for the app runtime connection and `DIRECT_URL` for one-off Prisma/database setup commands.
+- Keep only one `DATABASE_URL` entry in `.env`; if a later local SQLite `DATABASE_URL` appears, shell-based commands will use that later value.
 - Do not commit generated seed files; they contain real PII.
 - Run the baseline only against a clean database.
 - The seed import truncates seeded business/auth identity tables before inserting exported rows.

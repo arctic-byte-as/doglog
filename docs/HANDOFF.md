@@ -111,6 +111,12 @@ npx prisma validate
 - Import commands and environment setup are documented in `docs/SUPABASE_SEEDING.md`.
 - `npx prisma validate` now requires `DATABASE_URL` and `DIRECT_URL`; use `npm run prisma:validate:sqlite` for the local SQLite schema.
 - `prisma/schema.sqlite.prisma` uses `SQLITE_DATABASE_URL` so local SQLite validation does not conflict with the production `DATABASE_URL`.
+- Production Supabase baseline was applied successfully on 2026-05-30.
+- Production Supabase seed import was applied successfully on 2026-05-30 using real data from `prisma/dev.db`.
+- Production row counts verified after import: `User=14`, `Trainer=1`, `Customer=12`, `Dog=12`, `CustomerServiceAccess=6`, `Consultation=3`, `Observation=0`, `ServiceSession=4`.
+- Production relationship checks verified zero missing trainer/customer/dog links for seeded records.
+- Local `.env` temporarily contained duplicate `DATABASE_URL`, `NEXTAUTH_URL`, and `NEXTAUTH_SECRET` entries; clean this up so the production `DATABASE_URL` is the only `DATABASE_URL` assignment.
+- Local Prisma Client was regenerated from the Postgres schema after seeding; this only touched ignored `node_modules`.
 
 ## Auth Refactor Started
 

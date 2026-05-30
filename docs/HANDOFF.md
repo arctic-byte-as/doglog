@@ -118,6 +118,13 @@ npx prisma validate
 - Local `.env` temporarily contained duplicate `DATABASE_URL`, `NEXTAUTH_URL`, and `NEXTAUTH_SECRET` entries; clean this up so the production `DATABASE_URL` is the only `DATABASE_URL` assignment.
 - Local Prisma Client was regenerated from the Postgres schema after seeding; this only touched ignored `node_modules`.
 
+## Vercel Deployment Prep
+
+- Vercel deployment notes live in `docs/VERCEL_DEPLOY.md`.
+- `npm run build` and `postinstall` now run `prisma generate` so Vercel gets a Postgres-shaped Prisma Client.
+- Vercel CLI login was started on 2026-05-30 but required browser/device approval.
+- GitHub CLI was not authenticated when checked; pushing local commits may require `gh auth login` or another authenticated Git path.
+
 ## Auth Refactor Started
 
 - `lib/auth.ts` now centralizes derived access modes as `ADMIN` and `CUSTOMER`.

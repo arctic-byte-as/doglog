@@ -32,19 +32,19 @@ Validate schemas:
 
 ```bash
 npm run prisma:validate:sqlite
-POSTGRES_DATABASE_URL="postgresql://..." npm run prisma:validate:prod
+POSTGRES_DATABASE_URL="postgresql://..." DIRECT_URL="postgresql://..." npm run prisma:validate:prod
 ```
 
 Apply the clean baseline to a Supabase Postgres database:
 
 ```bash
-POSTGRES_DATABASE_URL="postgresql://..." npm run db:prod:baseline
+DIRECT_URL="postgresql://..." npm run db:prod:baseline
 ```
 
 Import the generated seed:
 
 ```bash
-POSTGRES_DATABASE_URL="postgresql://..." npm run seed:import:supabase
+DIRECT_URL="postgresql://..." npm run seed:import:supabase
 ```
 
 ## Current Export Counts
@@ -62,8 +62,43 @@ ServiceSession|4
 
 ## Production Notes
 
-- `POSTGRES_DATABASE_URL` must be a server-side secret only.
+- `POSTGRES_DATABASE_URL` and `DIRECT_URL` must be server-side secrets only.
+- Use `POSTGRES_DATABASE_URL` for the app runtime connection and `DIRECT_URL` for one-off Prisma/database setup commands.
 - Do not commit generated seed files; they contain real PII.
 - Run the baseline only against a clean database.
 - The seed import truncates seeded business/auth identity tables before inserting exported rows.
 - NextAuth token/session tables are created by the baseline but are not seeded from local SQLite.
+
+## Where To Get Values
+
+### Supabase
+
+1. Open `https://supabase.com/dashboard`.
+2. Open the production project.
+3. Click `Connect` at the top of the project dashboard.
+4. Copy the `Transaction pooler` URI into `POSTGRES_DATABASE_URL`.
+5. Copy the `Direct connection` URI into `DIRECT_URL`.
+6. Replace `[YOUR-PASSWORD]` or similar placeholders with the database password from the same Supabase project.
+
+Supabase documents that direct connections are best for migrations and other one-off database commands, while transaction pooler connections are intended for serverless/temporary application traffic.
+
+### Vercel
+
+1. Open `https://vercel.com/dashboard`.
+2. Open the Doglog project.
+3. Go to `Settings` > `Environment Variables`.
+4. Add the variables from `.env.example`.
+5. Select `Production` for the first demo deployment.
+6. Redeploy after adding or changing variables.
+
+Vercel applies Production environment variables to the next production deployment.
+
+### Email SMTP
+
+Use any SMTP provider you control. Copy that provider's SMTP host, port, username, password, and sender address into:
+
+- `SMTP_HOST`
+- `SMTP_PORT`
+- `SMTP_USER`
+- `SMTP_PASS`
+- `EMAIL_FROM`

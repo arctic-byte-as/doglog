@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from 'react';
-import { signOut } from 'next-auth/react';
+import { createClient } from '@/lib/supabase/client';
 
 type AuthState = {
   authenticated: boolean;
@@ -11,6 +11,12 @@ type AuthState = {
 
 export default function AuthStatus() {
   const [auth, setAuth] = useState<AuthState | null>(null);
+
+  async function handleSignOut() {
+    const supabase = createClient();
+    await supabase.auth.signOut();
+    window.location.href = '/login';
+  }
 
   useEffect(() => {
     fetch('/api/me')
@@ -36,7 +42,7 @@ export default function AuthStatus() {
           {auth.email} · {auth.role}
         </span>
       ) : null}
-      <button type="button" onClick={() => signOut({ callbackUrl: '/login' })} className="rounded-full border border-brand-200 bg-white px-3 py-1 text-brand-800">
+      <button type="button" onClick={handleSignOut} className="rounded-full border border-brand-200 bg-white px-3 py-1 text-brand-800">
         Sign out
       </button>
     </div>

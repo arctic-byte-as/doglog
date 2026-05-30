@@ -21,7 +21,7 @@ Last updated: 2026-05-30
 
 - `prisma/dev.db` has been restored locally from the stash.
 - It is intentionally untracked on `main`.
-- Verified SQLite tables include `Trainer`, `Customer`, `Dog`, `Consultation`, `ServiceSession`, `User`, and NextAuth tables.
+- Verified SQLite tables include `Trainer`, `Customer`, `Dog`, `Consultation`, `ServiceSession`, `User`, and legacy NextAuth tables.
 - Verified row counts:
 
 ```text
@@ -115,7 +115,7 @@ npx prisma validate
 - Production Supabase seed import was applied successfully on 2026-05-30 using real data from `prisma/dev.db`.
 - Production row counts verified after import: `User=14`, `Trainer=1`, `Customer=12`, `Dog=12`, `CustomerServiceAccess=6`, `Consultation=3`, `Observation=0`, `ServiceSession=4`.
 - Production relationship checks verified zero missing trainer/customer/dog links for seeded records.
-- Local `.env` temporarily contained duplicate `DATABASE_URL`, `NEXTAUTH_URL`, and `NEXTAUTH_SECRET` entries; clean this up so the production `DATABASE_URL` is the only `DATABASE_URL` assignment.
+- Local `.env` temporarily contained duplicate `DATABASE_URL`, `NEXTAUTH_URL`, and `NEXTAUTH_SECRET` entries; clean this up so the production `DATABASE_URL` is the only `DATABASE_URL` assignment and add Supabase Auth public URL/key values.
 - Local Prisma Client was regenerated from the Postgres schema after seeding; this only touched ignored `node_modules`.
 
 ## Vercel Deployment Prep
@@ -128,7 +128,7 @@ npx prisma validate
 ## Auth Refactor Started
 
 - `lib/auth.ts` now centralizes derived access modes as `ADMIN` and `CUSTOMER`.
-- Sign-in no longer auto-creates `Trainer` records through the NextAuth `createUser` event.
+- Sign-in now uses Supabase Auth magic links instead of NextAuth email login.
 - `requireCustomer()` no longer auto-creates `Customer` records or mutates `User.role`.
 - Customer profile POST now requires customer access instead of granting it by role mutation.
 - Admin customer creation still explicitly creates customer `User` records with `role: 'CUSTOMER'` for the current compatibility model.

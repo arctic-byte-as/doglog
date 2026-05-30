@@ -8,11 +8,11 @@ Move Doglog from a local SQLite prototype to a staged Vercel and Supabase deploy
 
 ## Current Snapshot
 
-- App stack: Next.js 14, TypeScript, Tailwind, NextAuth email login, Prisma.
+- App stack: Next.js 14, TypeScript, Tailwind, Supabase Auth magic-link login, Prisma.
 - Current database: SQLite via `prisma/schema.prisma`.
 - Local seed source restored: `prisma/dev.db` is present locally and intentionally untracked on `main`.
-- Existing login UI: trainer and owner buttons already choose different callback URLs.
-- Current authorization gap: new NextAuth users are automatically upserted as trainers, and mode selection is not yet a durable authorization model.
+- Existing login UI: trainer and owner buttons choose different Supabase Auth callback destinations.
+- Current authorization gap: mode selection is not yet a durable authorization model.
 - Existing docs: `wiki/` has architecture, MVP scope, database notes, and basic agent rules.
 
 ## Handoff State
@@ -69,17 +69,17 @@ Observed tables and row counts:
 
 | Table | Rows | Notes |
 | --- | ---: | --- |
-| `Account` | 0 | NextAuth OAuth/account linkage; can be omitted from seed unless needed for auth testing |
+| `Account` | 0 | Legacy NextAuth OAuth/account linkage; can be omitted from seed |
 | `Consultation` | 3 | Dog-linked training records; may contain sensitive behavioral/health notes |
 | `Customer` | 12 | Direct PII: email, name, phone, notes |
 | `CustomerServiceAccess` | 6 | Customer entitlement records |
 | `Dog` | 12 | Dog profiles plus owner names and uploaded image URLs |
 | `Observation` | 0 | Dog-linked notes; sensitive when populated |
 | `ServiceSession` | 4 | Dog-linked service records; may contain sensitive training/health details |
-| `Session` | 7 | NextAuth session tokens; do not export to stage/prod seed |
+| `Session` | 7 | Legacy NextAuth session tokens; do not export to stage/prod seed |
 | `Trainer` | 1 | Trainer PII: email/name |
 | `User` | 14 | Auth identity records: email/name/role |
-| `VerificationToken` | 17 | Magic-link tokens; do not export |
+| `VerificationToken` | 17 | Legacy NextAuth magic-link tokens; do not export |
 | `_prisma_migrations` | 5 | Prototype migration history; do not import into the new baseline |
 
 PII and sensitive fields to review before export:
@@ -131,7 +131,7 @@ Recommended schema direction:
 
 - Replace free-form `User.role` with durable mode grants, such as a `UserMode` enum plus a join table, or explicit nullable `trainerId` and `customerId` links with a mode-grant table.
 - Link `User.email` to `Trainer.email`/`Customer.email` only during migration/backfill; use stable foreign keys after launch.
-- Keep NextAuth tables server-managed and excluded from browser-readable Supabase client access.
+- Keep legacy auth tables excluded from browser-readable Supabase client access while they remain in the database.
 
 Route behavior:
 
@@ -200,7 +200,7 @@ Recommended policy shape:
 
 - Trainers/admins can access customers, dogs, consultations, observations, and sessions assigned to their trainer/team scope.
 - Customers can access only their own profile, their dogs, their service access, and their dog-related consultation/session records that are customer-visible.
-- NextAuth tables remain server-managed and should not be browser-exposed.
+- Legacy auth tables remain server-managed and should not be browser-exposed while they remain in the database.
 - Service role key is server-only and never shipped to client code.
 - Database policies are tested with representative admin and customer accounts before production release.
 

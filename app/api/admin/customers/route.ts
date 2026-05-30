@@ -23,7 +23,7 @@ export async function POST(request: Request) {
   const existingCustomer = await prisma.customer.findUnique({ where: { email } });
   if (existingCustomer) return NextResponse.json({ error: 'A customer already exists for this email.' }, { status: 409 });
 
-  const adminEmail = admin.session.user?.email?.toLowerCase();
+  const adminEmail = admin.email;
   const trainer =
     admin.trainer ||
     (adminEmail ? await prisma.trainer.findUnique({ where: { email: adminEmail } }) : null) ||

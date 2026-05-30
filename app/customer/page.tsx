@@ -17,7 +17,7 @@ function trainingPlanNames(plan?: string | null) {
 
 export default async function CustomerPage() {
   const user = await requireUser();
-  const email = user.session.user?.email?.toLowerCase();
+  const email = user.email;
   const customer = email
     ? await prisma.customer.findUnique({
         where: { email },

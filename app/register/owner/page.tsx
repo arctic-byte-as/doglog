@@ -13,8 +13,8 @@ export default function OwnerRegistrationPage() {
           </Link>
         </div>
       </header>
-      <main className="mx-auto max-w-3xl px-6 py-10">
-        <div className="rounded-2xl border border-brand-200 bg-white p-8 shadow-soft">
+      <main className="mx-auto w-full max-w-3xl px-4 py-8 sm:px-6 sm:py-10">
+        <div className="rounded-lg border border-brand-200 bg-white p-6 shadow-soft sm:p-8">
           <p className="text-sm font-medium uppercase tracking-[0.2em] text-brand-600">Owner registration</p>
           <h1 className="mt-3 text-3xl font-semibold text-brand-950">Welcome to Norse Paw. Please complete your registration.</h1>
           <p className="mt-3 text-sm leading-6 text-brand-700">

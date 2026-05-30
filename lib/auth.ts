@@ -1,7 +1,6 @@
-import { getServerSession } from 'next-auth/next';
 import { redirect } from 'next/navigation';
 import prisma from './prisma';
-import { authOptions } from '@/lib/auth-options';
+import { createClient } from '@/lib/supabase/server';
 
 export type AuthMode = 'ADMIN' | 'CUSTOMER';
 
@@ -36,10 +35,14 @@ function accessModes({
 }
 
 export async function getCurrentUser() {
-  const session = await getServerSession(authOptions);
-  if (!session?.user?.email) return null;
+  const supabase = createClient();
+  const {
+    data: { user: authUser },
+  } = await supabase.auth.getUser();
 
-  const email = session.user.email.toLowerCase();
+  if (!authUser?.email) return null;
+
+  const email = authUser.email.toLowerCase();
   const [user, trainerRecord, customerRecord] = await Promise.all([
     prisma.user.findUnique({ where: { email } }),
     prisma.trainer.findUnique({ where: { email } }),
@@ -49,7 +52,7 @@ export async function getCurrentUser() {
   const modes = accessModes({ email, role: user?.role, hasCustomer: Boolean(customerRecord) });
   const role = modes.includes('ADMIN') ? 'ADMIN' : modes.includes('CUSTOMER') ? 'CUSTOMER' : user?.role || null;
 
-  return { session, user, trainer: trainerRecord, customer: customerRecord, role, modes };
+  return { authUser, email, user, trainer: trainerRecord, customer: customerRecord, role, modes };
 }
 
 export async function requireUser() {

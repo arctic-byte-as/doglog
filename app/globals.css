@@ -11,6 +11,7 @@
 
 html, body {
   min-height: 100%;
+  overflow-x: hidden;
 }
 
 body {
@@ -36,8 +37,4 @@ input:not([type="checkbox"]):not([type="radio"]) {
 
 summary::-webkit-details-marker {
   display: none;
-}
-
-main {
-  padding: 2rem 1.25rem;
 }

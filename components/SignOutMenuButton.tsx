@@ -1,10 +1,16 @@
 "use client";
 
-import { signOut } from 'next-auth/react';
+import { createClient } from '@/lib/supabase/client';
 
 export default function SignOutMenuButton({ className = '' }: { className?: string }) {
+  async function handleSignOut() {
+    const supabase = createClient();
+    await supabase.auth.signOut();
+    window.location.href = '/login';
+  }
+
   return (
-    <button type="button" onClick={() => signOut({ callbackUrl: '/login' })} className={className}>
+    <button type="button" onClick={handleSignOut} className={className}>
       Sign out
     </button>
   );

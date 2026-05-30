@@ -8,7 +8,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Customer access is required.' }, { status: 403 });
   }
 
-  const email = user.session.user?.email?.toLowerCase();
+  const email = user.email;
   if (!email) return NextResponse.json({ error: 'Missing email.' }, { status: 400 });
 
   const body = await req.json();

@@ -77,7 +77,7 @@ Applied on 2026-05-30:
 - Do not commit generated seed files; they contain real PII.
 - Run the baseline only against a clean database.
 - The seed import truncates seeded business/auth identity tables before inserting exported rows.
-- NextAuth token/session tables are created by the baseline but are not seeded from local SQLite.
+- Legacy NextAuth token/session tables are created by the baseline but are not seeded from local SQLite.
 
 ## Where To Get Values
 
@@ -126,8 +126,5 @@ Vercel applies Production environment variables to the next production deploymen
 
 Use any SMTP provider you control. Copy that provider's SMTP host, port, username, password, and sender address into:
 
-- `SMTP_HOST`
-- `SMTP_PORT`
-- `SMTP_USER`
-- `SMTP_PASS`
-- `EMAIL_FROM`
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`

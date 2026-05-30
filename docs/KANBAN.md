@@ -25,6 +25,7 @@ Last updated: 2026-05-30
 | ID | Card | Owner | Acceptance Criteria |
 | --- | --- | --- | --- |
 | DL-013 | Add server-side admin and customer route guards | Lead Engineer Agent | Unauthorized mode access redirects or fails cleanly |
+| DL-025 | Replace NextAuth email login with Supabase Auth | Lead Engineer Agent | Login, callback, SSR session refresh, route guards, and sign-out use Supabase Auth |
 | DL-010 | Convert Prisma schema from SQLite to PostgreSQL | Lead Engineer Agent | Schema validates and maps current data model to Supabase Postgres |
 | DL-011 | Generate clean baseline migration | Lead Engineer Agent | Old prototype migrations replaced only after baseline is reviewed |
 | DL-012 | Build SQLite export and Supabase seed path | Lead Engineer Agent | Repeatable production seed script with record count checks |
@@ -92,7 +93,7 @@ Suggested first split:
 
 | Workstream | Agent | Files Likely Touched | Notes |
 | --- | --- | --- | --- |
-| Auth modes | Lead Engineer Agent + UX Designer Agent | `app/login/page.tsx`, `lib/auth-options.ts`, route guards, session helpers | Sequence UX before final copy |
+| Auth modes | Lead Engineer Agent + UX Designer Agent | `app/login/page.tsx`, `lib/auth.ts`, `lib/supabase/*`, route guards, session helpers | Sequence UX before final copy |
 | Database baseline | Lead Engineer Agent | `prisma/schema.prisma`, new migration, seed/export scripts | Avoid same files as RLS until schema stabilizes |
 | RLS and privacy | Data Security Agent + Software Tester Agent | Supabase SQL policies, policy tests, docs | Start with policy draft while schema changes are reviewed |
 | CI/CD | Lead Engineer Agent + Software Tester Agent | `.github/workflows/*`, package scripts | Can run in parallel after package manager choice |

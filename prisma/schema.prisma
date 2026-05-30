@@ -105,7 +105,7 @@ model ServiceSession {
   dogId              String
 }
 
-/// Models required by NextAuth
+/// Legacy app identity model used for authorization during the Supabase Auth migration.
 model User {
   id            String    @id @default(cuid())
   name          String?

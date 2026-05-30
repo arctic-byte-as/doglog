@@ -1,13 +1,7 @@
 "use client";
 
 import { useState } from 'react';
-import { signIn } from 'next-auth/react';
-
-type DevSigninLink = {
-  email: string;
-  url: string;
-  createdAt: string;
-};
+import { createClient } from '@/lib/supabase/client';
 
 const breedOptions = [
   'Beagle',
@@ -37,13 +31,13 @@ export default function OwnerRegistrationForm() {
   });
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
-  const [devLink, setDevLink] = useState<DevSigninLink | null>(null);
+  const [messageType, setMessageType] = useState<'success' | 'error' | null>(null);
 
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
     setLoading(true);
     setMessage('');
-    setDevLink(null);
+    setMessageType(null);
 
     try {
       const response = await fetch('/api/register/owner', {
@@ -54,22 +48,20 @@ export default function OwnerRegistrationForm() {
       const data = await response.json();
       if (!response.ok) throw new Error(data?.error || 'Could not complete registration.');
 
-      const result = await signIn('email', {
+      const supabase = createClient();
+      const { error } = await supabase.auth.signInWithOtp({
         email: form.email,
-        callbackUrl: '/customer',
-        redirect: false,
+        options: {
+          emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent('/customer')}`,
+        },
       });
-      if (result?.error) throw new Error('Registration was saved, but the sign-in link could not be sent.');
+      if (error) throw new Error('Registration was saved, but the sign-in link could not be sent.');
 
-      const linkResponse = await fetch('/api/dev/signin-link');
-      if (linkResponse.ok) {
-        const linkData = await linkResponse.json();
-        setDevLink(linkData?.link ?? null);
-      }
-
-      setMessage('Registration complete. Use the sign-in link to continue.');
+      setMessage('Registration complete. Check your email for the sign-in link.');
+      setMessageType('success');
     } catch (error: any) {
       setMessage(error.message || 'Could not complete registration.');
+      setMessageType('error');
     } finally {
       setLoading(false);
     }
@@ -176,15 +168,18 @@ export default function OwnerRegistrationForm() {
 
       <div className="flex flex-wrap items-center gap-3">
         <button type="submit" disabled={loading} className="rounded-lg bg-brand-700 px-5 py-2 font-medium text-white disabled:opacity-60">
-          {loading ? 'Registering...' : 'Complete registration'}
+          {loading ? 'Registering...' : 'Complete registration and email sign-in link'}
         </button>
-        {devLink ? (
-          <a href={devLink.url} className="rounded-lg border border-brand-700 px-5 py-2 font-medium text-brand-800">
-            Continue sign in
-          </a>
-        ) : null}
       </div>
-      {message ? <p className="text-sm text-brand-700">{message}</p> : null}
+      {message ? (
+        <p
+          className={`rounded-lg border px-3 py-2 text-sm ${
+            messageType === 'error' ? 'border-red-200 bg-red-50 text-red-800' : 'border-brand-200 bg-brand-50 text-brand-800'
+          }`}
+        >
+          {message}
+        </p>
+      ) : null}
     </form>
   );
 }

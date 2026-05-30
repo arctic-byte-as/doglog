@@ -42,7 +42,7 @@ export async function SiteShell({ children }: { children: React.ReactNode }) {
       : isCustomerMenu
         ? customerNav
       : nav;
-  const logoSubtitle = isCustomerMenu ? user?.customer?.name || user?.session.user?.name || 'Customer' : 'Trainer dashboard';
+  const logoSubtitle = isCustomerMenu ? user?.customer?.name || user?.authUser.user_metadata?.name || 'Customer' : 'Trainer dashboard';
 
   return (
     <div className="min-h-screen bg-brand-50 text-brand-900">

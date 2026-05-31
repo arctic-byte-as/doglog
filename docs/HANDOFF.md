@@ -124,6 +124,9 @@ npx prisma validate
 - `npm run build` and `postinstall` now run `prisma generate` so Vercel gets a Postgres-shaped Prisma Client.
 - Vercel CLI login was started on 2026-05-30 but required browser/device approval.
 - GitHub CLI was not authenticated when checked; pushing local commits may require `gh auth login` or another authenticated Git path.
+- Login has been simplified to Google OAuth plus email magic link fallback.
+- Auth callback now allowlists internal redirect targets and reports callback failures to `/login`.
+- `/auth/resolve` routes signed-in users to admin or customer workspace based on server-side access modes.
 
 ## Auth Refactor Started
 

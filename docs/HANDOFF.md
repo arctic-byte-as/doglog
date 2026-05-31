@@ -127,6 +127,10 @@ npx prisma validate
 - Login has been simplified to Google OAuth plus email magic link fallback.
 - Auth callback now allowlists internal redirect targets and reports callback failures to `/login`.
 - `/auth/resolve` routes signed-in users to admin or customer workspace based on server-side access modes.
+- `User.supabaseAuthId` has been added so Supabase Auth identities can be linked to Doglog users after first successful login.
+- Existing seeded users are linked by email on first Supabase login; unknown emails remain blocked with an account-not-linked message.
+- Production Supabase migration `20260531093000_link_supabase_auth_users` was applied successfully on 2026-05-31.
+- After migration, production had `totalUsers=14` and `linkedSupabaseUsers=0`, which is expected before users complete their first Supabase Auth login.
 
 ## Auth Refactor Started
 

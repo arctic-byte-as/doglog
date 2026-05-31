@@ -40,6 +40,8 @@ Configure Supabase Dashboard > Authentication > URL Configuration:
 - Redirect URLs: add `https://your-vercel-domain.vercel.app/auth/callback`.
 - If a custom domain is added later, add `https://your-custom-domain/auth/callback` before switching traffic.
 - Supabase sessions persist through refresh tokens; users remain signed in on the same browser/device until they sign out or the refresh token expires/revokes.
+- Doglog links a Supabase Auth user to the app `User` row on first successful login using email, then stores `supabaseAuthId` for future logins.
+- The `supabaseAuthId` production migration has been applied; seeded users will link automatically on first login when their Supabase email matches their Doglog email.
 
 For Google login, also configure Supabase Dashboard > Authentication > Providers > Google:
 

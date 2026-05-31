@@ -11,6 +11,7 @@
     "seed:export:supabase": "node scripts/export-supabase-seed.js",
     "db:prod:baseline": "prisma db execute --url \"$DIRECT_URL\" --file prisma/migrations/20260530195500_supabase_baseline/migration.sql",
     "seed:import:supabase": "prisma db execute --url \"$DIRECT_URL\" --file exports/supabase/seed.sql",
+    "auth:set-password": "node scripts/set-user-password.js",
     "prisma:validate:sqlite": "prisma validate --schema prisma/schema.sqlite.prisma",
     "prisma:validate:prod": "prisma validate --schema prisma/schema.prisma",
     "lint": "next lint"

@@ -1,22 +1,9 @@
 "use client";
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import type { CoreSkill, SkillSubcategory } from '@/lib/skills-library';
 
-type SkillSubcategory = {
-  title: string;
-  goal: string;
-  steps: string;
-  coachingNotes: string;
-  youtubeUrl: string;
-};
-
-type CoreSkill = {
-  title: string;
-  summary: string;
-  subcategories: SkillSubcategory[];
-};
-
-const storageKey = 'norsepaw-skills-library';
+const legacyStorageKey = 'norsepaw-skills-library';
 
 const defaultSkills: CoreSkill[] = [
   {
@@ -287,27 +274,111 @@ export default function SkillsLibraryClient({ editable = true }: { editable?: bo
   const [form, setForm] = useState(emptySubcategory);
   const [coreSkillMessage, setCoreSkillMessage] = useState('');
   const [message, setMessage] = useState('');
+  const [sharedLibraryLoaded, setSharedLibraryLoaded] = useState(false);
+  const [hasLocalChanges, setHasLocalChanges] = useState(false);
+  const saveCounter = useRef(0);
 
   useEffect(() => {
-    const saved = window.localStorage.getItem(storageKey);
-    if (!saved) return;
+    let cancelled = false;
 
-    try {
-      const parsed = JSON.parse(saved) as CoreSkill[];
-      if (Array.isArray(parsed) && parsed.length) {
-        setSkills(parsed);
-        setSelectedSkillTitle(parsed[0].title);
-        setSelectedSubcategoryTitle(parsed[0].subcategories[0]?.title || '');
-      }
-    } catch {
-      window.localStorage.removeItem(storageKey);
+    function selectFirst(nextSkills: CoreSkill[]) {
+      setSelectedSkillTitle(nextSkills[0].title);
+      setSelectedSubcategoryTitle(nextSkills[0].subcategories[0]?.title || '');
     }
-  }, []);
+
+    function getLegacySkills() {
+      const saved = window.localStorage.getItem(legacyStorageKey);
+      if (!saved) return null;
+
+      try {
+        const parsed = JSON.parse(saved) as CoreSkill[];
+        return Array.isArray(parsed) && parsed.length ? parsed : null;
+      } catch {
+        window.localStorage.removeItem(legacyStorageKey);
+        return null;
+      }
+    }
+
+    async function loadSharedLibrary() {
+      const legacySkills = getLegacySkills();
+
+      try {
+        const response = await fetch('/api/skills-library', { cache: 'no-store' });
+        if (!response.ok) throw new Error('Could not load skills library');
+
+        const body = (await response.json()) as { skills?: CoreSkill[] | null };
+        if (cancelled) return;
+
+        if (Array.isArray(body.skills) && body.skills.length) {
+          setSkills(body.skills);
+          selectFirst(body.skills);
+          setSharedLibraryLoaded(true);
+          return;
+        }
+
+        if (editable && legacySkills) {
+          setSkills(legacySkills);
+          selectFirst(legacySkills);
+          setSharedLibraryLoaded(true);
+          await saveSkillsToServer(legacySkills, 'Imported your saved skills library for customers.');
+          return;
+        }
+      } catch {
+        if (!cancelled && editable && legacySkills) {
+          setSkills(legacySkills);
+          selectFirst(legacySkills);
+          setMessage('Using the saved copy from this browser. Shared save will retry when the server is available.');
+        }
+      }
+
+      if (!cancelled) setSharedLibraryLoaded(true);
+    }
+
+    loadSharedLibrary();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [editable]);
 
   function saveSkills(nextSkills: CoreSkill[]) {
     setSkills(nextSkills);
-    window.localStorage.setItem(storageKey, JSON.stringify(nextSkills));
+    setHasLocalChanges(true);
   }
+
+  async function saveSkillsToServer(nextSkills: CoreSkill[], successMessage = 'Saved for customers.') {
+    const saveId = saveCounter.current + 1;
+    saveCounter.current = saveId;
+    setMessage('Saving shared skills library...');
+
+    try {
+      const response = await fetch('/api/skills-library', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ skills: nextSkills }),
+      });
+
+      if (!response.ok) throw new Error('Could not save skills library');
+      if (saveCounter.current === saveId) {
+        setHasLocalChanges(false);
+        setMessage(successMessage);
+      }
+    } catch {
+      if (saveCounter.current === saveId) {
+        setMessage('Could not save the shared skills library. Please try again.');
+      }
+    }
+  }
+
+  useEffect(() => {
+    if (!editable || !sharedLibraryLoaded || !hasLocalChanges) return;
+
+    const timeout = window.setTimeout(() => {
+      saveSkillsToServer(skills);
+    }, 600);
+
+    return () => window.clearTimeout(timeout);
+  }, [editable, hasLocalChanges, sharedLibraryLoaded, skills]);
 
   const selectedSkill = useMemo(
     () => skills.find((skill) => skill.title === selectedSkillTitle) || skills[0],

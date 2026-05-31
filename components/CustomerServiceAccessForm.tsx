@@ -15,6 +15,7 @@ export default function CustomerServiceAccessForm({
   const [saving, setSaving] = useState(false);
 
   async function toggle(serviceKey: string) {
+    const previous = new Set(selected);
     const next = new Set(selected);
     if (next.has(serviceKey)) next.delete(serviceKey);
     else next.add(serviceKey);
@@ -33,7 +34,7 @@ export default function CustomerServiceAccessForm({
       if (!response.ok) throw new Error(data?.error || 'Could not update services.');
       setMessage('Services updated');
     } catch (error: any) {
-      setSelected(new Set(enabledServices));
+      setSelected(previous);
       setMessage(error.message || 'Could not update services.');
     } finally {
       setSaving(false);

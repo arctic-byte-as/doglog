@@ -112,9 +112,30 @@ model User {
   name           String?
   email          String?   @unique
   emailVerified  DateTime?
+  passwordHash   String?
   role           String    @default("TRAINER")
   accounts       Account[]
   sessions       Session[]
+  passwordResetTokens PasswordResetToken[]
+}
+
+model PasswordResetToken {
+  id        String    @id @default(cuid())
+  tokenHash String    @unique
+  expires   DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+
+  @@index([userId])
+  @@index([expires])
+}
+
+model AppContent {
+  key       String   @id
+  value     String
+  updatedAt DateTime @updatedAt
 }
 
 model Account {

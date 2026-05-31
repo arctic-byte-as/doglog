@@ -1,7 +1,6 @@
 import { redirect } from 'next/navigation';
-import type { User as SupabaseUser } from '@supabase/supabase-js';
 import prisma from './prisma';
-import { createClient } from '@/lib/supabase/server';
+import { getAppSession } from './session';
 
 export type AuthMode = 'ADMIN' | 'CUSTOMER';
 
@@ -35,75 +34,32 @@ function accessModes({
   return [...modes];
 }
 
-function displayName(authUser: SupabaseUser, email: string) {
-  const metadata = authUser.user_metadata || {};
-  return (
-    (typeof metadata.full_name === 'string' && metadata.full_name) ||
-    (typeof metadata.name === 'string' && metadata.name) ||
-    email
-  );
-}
-
-async function resolveAppUser(authUser: SupabaseUser, email: string) {
-  const [existingByAuthId, existingByEmail, trainerRecord, customerRecord] = await Promise.all([
-    prisma.user.findUnique({ where: { supabaseAuthId: authUser.id } }),
+async function resolveAppUser(email: string) {
+  const [existingUser, trainerRecord, customerRecord] = await Promise.all([
     prisma.user.findUnique({ where: { email } }),
     prisma.trainer.findUnique({ where: { email } }),
     prisma.customer.findUnique({ where: { email } }),
   ]);
 
-  const existingUser = existingByAuthId || existingByEmail;
-
   if (existingUser) {
-    const shouldLinkAuthId = !existingUser.supabaseAuthId;
-    const shouldFillName = !existingUser.name;
-
-    const user =
-      shouldLinkAuthId || shouldFillName
-        ? await prisma.user.update({
-            where: { id: existingUser.id },
-            data: {
-              ...(shouldLinkAuthId ? { supabaseAuthId: authUser.id } : {}),
-              ...(shouldFillName ? { name: displayName(authUser, email) } : {}),
-            },
-          })
-        : existingUser;
-
-    return { user, trainer: trainerRecord, customer: customerRecord };
-  }
-
-  if (trainerRecord || customerRecord || adminEmails().includes(email)) {
-    const role = adminEmails().includes(email) || trainerRecord ? 'TRAINER' : 'CUSTOMER';
-    const user = await prisma.user.create({
-      data: {
-        supabaseAuthId: authUser.id,
-        email,
-        name: displayName(authUser, email),
-        role,
-      },
-    });
-
-    return { user, trainer: trainerRecord, customer: customerRecord };
+    return { user: existingUser, trainer: trainerRecord, customer: customerRecord };
   }
 
   return { user: null, trainer: trainerRecord, customer: customerRecord };
 }
 
 export async function getCurrentUser() {
-  const supabase = createClient();
-  const {
-    data: { user: authUser },
-  } = await supabase.auth.getUser();
+  const session = await getAppSession();
+  if (!session?.user.email) return null;
 
-  if (!authUser?.email) return null;
+  const email = session.user.email.toLowerCase();
+  const { user, trainer: trainerRecord, customer: customerRecord } = await resolveAppUser(email);
 
-  const email = authUser.email.toLowerCase();
-  const { user, trainer: trainerRecord, customer: customerRecord } = await resolveAppUser(authUser, email);
-
+  if (!user) return null;
   const modes = accessModes({ email, role: user?.role, hasCustomer: Boolean(customerRecord) });
   const role = modes.includes('ADMIN') ? 'ADMIN' : modes.includes('CUSTOMER') ? 'CUSTOMER' : user?.role || null;
 
-  return { authUser, email, user, trainer: trainerRecord, customer: customerRecord, role, modes };
+  return { email, user, trainer: trainerRecord, customer: customerRecord, role, modes };
 }
 
 export async function requireUser() {

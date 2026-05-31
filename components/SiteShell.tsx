@@ -13,6 +13,7 @@ const nav = [
   { href: '/customer/tips', label: 'Tips' },
   { href: '/customer/plan', label: 'My plan' },
   { href: '/admin/accounts', label: 'Admin' },
+  { href: '/admin/testing', label: 'Test views' },
   { href: '/login', label: 'Login' },
 ];
 
@@ -42,7 +43,7 @@ export async function SiteShell({ children }: { children: React.ReactNode }) {
       : isCustomerMenu
         ? customerNav
       : nav;
-  const logoSubtitle = isCustomerMenu ? user?.customer?.name || user?.authUser.user_metadata?.name || 'Customer' : 'Trainer dashboard';
+  const logoSubtitle = isCustomerMenu ? user?.customer?.name || user?.user.name || 'Customer' : 'Trainer dashboard';
 
   return (
     <div className="min-h-screen bg-brand-50 text-brand-900">

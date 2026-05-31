@@ -20,6 +20,7 @@ export default function AdminCreateCustomerForm() {
   const [form, setForm] = useState({
     ownerName: '',
     email: '',
+    password: '',
     phone: '',
     ownerNotes: '',
     dogName: '',
@@ -62,6 +63,10 @@ export default function AdminCreateCustomerForm() {
         <label className="block">
           <span className="text-sm font-medium text-brand-800">Email</span>
           <input required type="email" value={form.email} onChange={(event) => setForm({ ...form, email: event.target.value })} className="mt-1 w-full rounded-lg border border-brand-200 px-3 py-2" />
+        </label>
+        <label className="block">
+          <span className="text-sm font-medium text-brand-800">Temporary password</span>
+          <input required type="password" minLength={10} autoComplete="new-password" value={form.password} onChange={(event) => setForm({ ...form, password: event.target.value })} className="mt-1 w-full rounded-lg border border-brand-200 px-3 py-2" />
         </label>
         <label className="block">
           <span className="text-sm font-medium text-brand-800">Phone</span>

@@ -1,6 +1,6 @@
 # Doglog Launch Kanban
 
-Last updated: 2026-05-30
+Last updated: 2026-05-31
 
 ## How To Use This Board
 
@@ -25,10 +25,13 @@ Last updated: 2026-05-30
 | ID | Card | Owner | Acceptance Criteria |
 | --- | --- | --- | --- |
 | DL-013 | Add server-side admin and customer route guards | Lead Engineer Agent | Unauthorized mode access redirects or fails cleanly |
-| DL-025 | Replace NextAuth email login with Supabase Auth | Lead Engineer Agent | Login, callback, SSR session refresh, route guards, and sign-out use Supabase Auth |
+| DL-025 | Replace magic-link login with app password login | Lead Engineer Agent | Login, app sessions, route guards, and sign-out use Doglog `User`/`Session` tables |
 | DL-010 | Convert Prisma schema from SQLite to PostgreSQL | Lead Engineer Agent | Schema validates and maps current data model to Supabase Postgres |
 | DL-011 | Generate clean baseline migration | Lead Engineer Agent | Old prototype migrations replaced only after baseline is reviewed |
 | DL-012 | Build SQLite export and Supabase seed path | Lead Engineer Agent | Repeatable production seed script with record count checks |
+| DL-026 | Add admin testing view switcher | Lead Engineer Agent | Admins can preview trainer tools and customer state in one signed-in session |
+| DL-027 | Add password reset flow | Lead Engineer Agent | Users can request email reset links and set a new password without magic-link login |
+| DL-029 | Move profile picture uploads to Supabase Storage | Lead Engineer Agent | Customer dog photos upload to durable Supabase Storage and save public URLs in `Dog.profileImageUrl` |
 
 ## Next
 
@@ -66,6 +69,7 @@ Last updated: 2026-05-30
 | DL-006 | Decide what to do with preserved feature branch | Project Manager Agent | Keep `feature/dogpedia-thumbnails-local` for PR/review; do not merge directly into `main` |
 | DL-009 | Design SQLite export and seed approach | Lead Engineer Agent | Two-track structural/anonymized export design documented in `docs/PROJECT_PLAN.md` |
 | DL-019 | Reconcile launch schema source | Lead Engineer Agent | Rescue app work merged to `main` without DB/generated artifacts |
+| DL-028 | Persist skills library videos for customers | Lead Engineer Agent | Admin YouTube links save to shared storage and customer library reads the same content |
 
 ## Blocked
 

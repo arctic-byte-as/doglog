@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from 'react';
-import { createClient } from '@/lib/supabase/client';
 
 const breedOptions = [
   'Beagle',
@@ -22,6 +21,8 @@ export default function OwnerRegistrationForm() {
     ownerName: '',
     email: '',
     phone: '',
+    password: '',
+    confirmPassword: '',
     ownerNotes: '',
     dogName: '',
     dogAge: '',
@@ -40,6 +41,10 @@ export default function OwnerRegistrationForm() {
     setMessageType(null);
 
     try {
+      if (form.password !== form.confirmPassword) {
+        throw new Error('Passwords must match.');
+      }
+
       const response = await fetch('/api/register/owner', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -48,17 +53,9 @@ export default function OwnerRegistrationForm() {
       const data = await response.json();
       if (!response.ok) throw new Error(data?.error || 'Could not complete registration.');
 
-      const supabase = createClient();
-      const { error } = await supabase.auth.signInWithOtp({
-        email: form.email,
-        options: {
-          emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent('/customer')}`,
-        },
-      });
-      if (error) throw new Error('Registration was saved, but the sign-in link could not be sent.');
-
-      setMessage('Registration complete. Check your email for the sign-in link.');
+      setMessage('Registration complete. Opening your customer area...');
       setMessageType('success');
+      window.location.href = '/customer';
     } catch (error: any) {
       setMessage(error.message || 'Could not complete registration.');
       setMessageType('error');
@@ -96,6 +93,30 @@ export default function OwnerRegistrationForm() {
             <input
               value={form.phone}
               onChange={(event) => setForm({ ...form, phone: event.target.value })}
+              className="mt-1 w-full rounded-lg border border-brand-200 px-3 py-2"
+            />
+          </label>
+          <label className="block">
+            <span className="text-sm font-medium text-brand-800">Password</span>
+            <input
+              required
+              type="password"
+              minLength={10}
+              autoComplete="new-password"
+              value={form.password}
+              onChange={(event) => setForm({ ...form, password: event.target.value })}
+              className="mt-1 w-full rounded-lg border border-brand-200 px-3 py-2"
+            />
+          </label>
+          <label className="block">
+            <span className="text-sm font-medium text-brand-800">Confirm password</span>
+            <input
+              required
+              type="password"
+              minLength={10}
+              autoComplete="new-password"
+              value={form.confirmPassword}
+              onChange={(event) => setForm({ ...form, confirmPassword: event.target.value })}
               className="mt-1 w-full rounded-lg border border-brand-200 px-3 py-2"
             />
           </label>
@@ -168,7 +189,7 @@ export default function OwnerRegistrationForm() {
 
       <div className="flex flex-wrap items-center gap-3">
         <button type="submit" disabled={loading} className="rounded-lg bg-brand-700 px-5 py-2 font-medium text-white disabled:opacity-60">
-          {loading ? 'Registering...' : 'Complete registration and email sign-in link'}
+          {loading ? 'Registering...' : 'Create account'}
         </button>
       </div>
       {message ? (

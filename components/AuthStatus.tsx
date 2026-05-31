@@ -1,8 +1,6 @@
 "use client";
 
 import { useEffect, useState } from 'react';
-import { createClient } from '@/lib/supabase/client';
-
 type AuthState = {
   authenticated: boolean;
   email?: string;
@@ -13,8 +11,7 @@ export default function AuthStatus() {
   const [auth, setAuth] = useState<AuthState | null>(null);
 
   async function handleSignOut() {
-    const supabase = createClient();
-    await supabase.auth.signOut();
+    await fetch('/api/auth/logout', { method: 'POST' });
     window.location.href = '/login';
   }
 

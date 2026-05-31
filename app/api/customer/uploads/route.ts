@@ -1,7 +1,6 @@
-import { mkdir, writeFile } from 'fs/promises';
-import path from 'path';
 import { randomUUID } from 'crypto';
 import { NextResponse } from 'next/server';
+import { createClient } from '@supabase/supabase-js';
 import { requireCustomer } from '@/lib/auth';
 
 const allowedTypes: Record<string, string> = {
@@ -11,8 +10,48 @@ const allowedTypes: Record<string, string> = {
   'image/webp': 'webp',
 };
 
+const bucketName = process.env.SUPABASE_STORAGE_DOG_IMAGES_BUCKET || 'dog-profile-images';
+let bucketReady = false;
+
+function getSupabaseStorageClient() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const secretKey = process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+  if (!url || !secretKey) {
+    throw new Error('Supabase Storage is not configured.');
+  }
+
+  return createClient(url, secretKey, {
+    auth: {
+      persistSession: false,
+      autoRefreshToken: false,
+    },
+  });
+}
+
+async function ensureBucket() {
+  if (bucketReady) return;
+
+  const supabase = getSupabaseStorageClient();
+  const { data: buckets, error: listError } = await supabase.storage.listBuckets();
+  if (listError) throw listError;
+
+  const exists = buckets.some((bucket) => bucket.name === bucketName);
+  if (!exists) {
+    const { error: createError } = await supabase.storage.createBucket(bucketName, {
+      public: true,
+      allowedMimeTypes: Object.keys(allowedTypes),
+      fileSizeLimit: '4MB',
+    });
+
+    if (createError) throw createError;
+  }
+
+  bucketReady = true;
+}
+
 export async function POST(request: Request) {
-  await requireCustomer();
+  const user = await requireCustomer();
 
   const formData = await request.formData();
   const file = formData.get('file');
@@ -30,12 +69,30 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Image must be smaller than 4MB.' }, { status: 400 });
   }
 
-  const uploadDir = path.join(process.cwd(), 'public', 'uploads', 'dogs');
-  await mkdir(uploadDir, { recursive: true });
+  try {
+    await ensureBucket();
+  } catch (error) {
+    console.error('Dog image storage setup failed', error);
+    return NextResponse.json({ error: 'Photo storage is not configured yet.' }, { status: 500 });
+  }
 
   const filename = `${randomUUID()}.${extension}`;
   const bytes = Buffer.from(await file.arrayBuffer());
-  await writeFile(path.join(uploadDir, filename), bytes);
+  const objectPath = `${user.customer.id}/${filename}`;
+  const supabase = getSupabaseStorageClient();
 
-  return NextResponse.json({ url: `/uploads/dogs/${filename}` }, { status: 201 });
+  const { error } = await supabase.storage.from(bucketName).upload(objectPath, bytes, {
+    cacheControl: '31536000',
+    contentType: file.type,
+    upsert: false,
+  });
+
+  if (error) {
+    console.error('Dog image upload failed', error);
+    return NextResponse.json({ error: 'Could not upload image.' }, { status: 500 });
+  }
+
+  const { data } = supabase.storage.from(bucketName).getPublicUrl(objectPath);
+
+  return NextResponse.json({ url: data.publicUrl }, { status: 201 });
 }

@@ -20,12 +20,16 @@ export async function PUT(request: Request, { params }: { params: { id: string }
 
   await prisma.$transaction([
     prisma.customerServiceAccess.deleteMany({ where: { customerId: params.id } }),
-    prisma.customerServiceAccess.createMany({
-      data: serviceKeys.map((serviceKey) => ({
-        customerId: params.id,
-        serviceKey,
-      })),
-    }),
+    ...(serviceKeys.length
+      ? [
+          prisma.customerServiceAccess.createMany({
+            data: serviceKeys.map((serviceKey) => ({
+              customerId: params.id,
+              serviceKey,
+            })),
+          }),
+        ]
+      : []),
   ]);
 
   return NextResponse.json({ ok: true });

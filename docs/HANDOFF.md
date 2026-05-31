@@ -124,18 +124,18 @@ npx prisma validate
 - `npm run build` and `postinstall` now run `prisma generate` so Vercel gets a Postgres-shaped Prisma Client.
 - Vercel CLI login was started on 2026-05-30 but required browser/device approval.
 - GitHub CLI was not authenticated when checked; pushing local commits may require `gh auth login` or another authenticated Git path.
-- Login has been simplified to Google OAuth plus email magic link fallback.
-- Auth callback now allowlists internal redirect targets and reports callback failures to `/login`.
+- Login has been restarted as a traditional Doglog email/password flow.
+- App sessions use the existing `Session` table plus a 30-day httpOnly `doglog_session` cookie; Supabase Auth magic links are no longer used for normal login.
 - `/auth/resolve` routes signed-in users to admin or customer workspace based on server-side access modes.
-- `User.supabaseAuthId` has been added so Supabase Auth identities can be linked to Doglog users after first successful login.
-- Existing seeded users are linked by email on first Supabase login; unknown emails remain blocked with an account-not-linked message.
+- `User.passwordHash` has been added for password login.
 - Production Supabase migration `20260531093000_link_supabase_auth_users` was applied successfully on 2026-05-31.
-- After migration, production had `totalUsers=14` and `linkedSupabaseUsers=0`, which is expected before users complete their first Supabase Auth login.
+- Production migration `20260531161000_password_login` was applied successfully on 2026-05-31.
+- Temporary passwords were set for `idr.robertson@gmail.com` and `ian@tectrap.com`; the generated values were written locally to `/private/tmp/doglog-login-passwords.txt`.
 
 ## Auth Refactor Started
 
 - `lib/auth.ts` now centralizes derived access modes as `ADMIN` and `CUSTOMER`.
-- Sign-in now uses Supabase Auth magic links instead of NextAuth email login.
+- Sign-in now uses Doglog password login instead of magic links.
 - `requireCustomer()` no longer auto-creates `Customer` records or mutates `User.role`.
 - Customer profile POST now requires customer access instead of granting it by role mutation.
 - Admin customer creation still explicitly creates customer `User` records with `role: 'CUSTOMER'` for the current compatibility model.

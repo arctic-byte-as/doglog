@@ -40,8 +40,6 @@ export async function getAppSession() {
   });
 
   if (!session || session.expires <= new Date()) {
-    if (session) await prisma.session.delete({ where: { id: session.id } }).catch(() => null);
-    cookies().delete(sessionCookieName);
     return null;
   }
 

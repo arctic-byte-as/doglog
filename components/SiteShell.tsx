@@ -46,8 +46,8 @@ export async function SiteShell({ children }: { children: React.ReactNode }) {
   const logoSubtitle = isCustomerMenu ? user?.customer?.name || user?.user.name || 'Customer' : 'Trainer dashboard';
 
   return (
-    <div className="min-h-screen bg-brand-50 text-brand-900">
-      <header className="border-b border-brand-200 bg-brand-50/95 backdrop-blur-sm">
+    <div className="min-h-screen text-brand-900">
+      <header className="border-b border-brand-200 bg-white/95 backdrop-blur-sm">
         <div className="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-4 sm:px-6 sm:py-5">
           <div className="flex items-center justify-between gap-4">
             <Link href="/" className="-mt-1">
@@ -59,7 +59,7 @@ export async function SiteShell({ children }: { children: React.ReactNode }) {
                   href="/customer"
                   aria-label="Customer home"
                   title={customerDog ? `${customerDog.name} customer home` : 'Customer home'}
-                  className="flex h-11 w-11 items-center justify-center overflow-hidden rounded-full border border-brand-200 bg-white text-sm font-semibold text-brand-800 transition hover:border-brand-300 hover:bg-brand-50"
+                  className="flex h-11 w-11 items-center justify-center overflow-hidden rounded-full border border-brand-200 bg-white text-sm font-semibold text-brand-800 transition hover:border-brand-400 hover:bg-brand-50"
                 >
                   {customerDog?.profileImageUrl ? (
                     <span
@@ -78,8 +78,8 @@ export async function SiteShell({ children }: { children: React.ReactNode }) {
                     title="Menu"
                     className={
                       isCustomerMenu
-                        ? "flex h-11 w-11 cursor-pointer list-none flex-col items-center justify-center gap-1.5 rounded-full border border-brand-200 bg-white text-brand-800 transition hover:border-brand-300 hover:bg-brand-50"
-                        : "cursor-pointer list-none rounded-full border border-brand-200 bg-white px-4 py-2 text-sm font-medium text-brand-800"
+                        ? "flex h-11 w-11 cursor-pointer list-none flex-col items-center justify-center gap-1.5 rounded-full border border-brand-200 bg-white text-brand-800 transition hover:border-brand-400 hover:bg-brand-50"
+                        : "cursor-pointer list-none rounded-full border border-brand-200 bg-white px-4 py-2 text-sm font-medium text-brand-800 transition hover:border-brand-400 hover:bg-brand-50"
                     }
                   >
                     {isCustomerMenu ? (
@@ -116,13 +116,13 @@ export async function SiteShell({ children }: { children: React.ReactNode }) {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="rounded-full border border-brand-200 bg-white px-4 py-2 text-sm font-medium text-brand-800 transition hover:border-brand-300 hover:bg-brand-50"
+                  className="rounded-full border border-brand-200 bg-white px-4 py-2 text-sm font-medium text-brand-900 transition hover:border-brand-400 hover:bg-brand-50 hover:text-brand-800"
                 >
                   {item.label}
                 </Link>
               ))}
               {isCustomerMenu ? (
-                <SignOutMenuButton className="rounded-full border border-brand-200 bg-white px-4 py-2 text-sm font-medium text-brand-800 transition hover:border-brand-300 hover:bg-brand-50" />
+                <SignOutMenuButton className="rounded-full border border-brand-200 bg-white px-4 py-2 text-sm font-medium text-brand-900 transition hover:border-brand-400 hover:bg-brand-50 hover:text-brand-800" />
               ) : null}
             </nav>
             <div className="flex flex-wrap items-center gap-3">

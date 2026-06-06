@@ -41,8 +41,8 @@ export default function ResetPasswordPage({ searchParams }: { searchParams?: { t
   }
 
   return (
-    <div className="min-h-screen bg-brand-50 text-brand-900">
-      <header className="border-b border-brand-200 bg-brand-50/95 px-6 py-5">
+    <div className="min-h-screen bg-white text-brand-900">
+      <header className="border-b border-brand-200 bg-white px-6 py-5">
         <div className="mx-auto max-w-7xl">
           <Logo />
         </div>

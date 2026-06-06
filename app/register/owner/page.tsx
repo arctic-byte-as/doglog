@@ -4,8 +4,8 @@ import OwnerRegistrationForm from '@/components/OwnerRegistrationForm';
 
 export default function OwnerRegistrationPage() {
   return (
-    <div className="min-h-screen bg-brand-50 text-brand-900">
-      <header className="border-b border-brand-200 bg-brand-50/95 px-6 py-5">
+    <div className="min-h-screen bg-white text-brand-900">
+      <header className="border-b border-brand-200 bg-white px-6 py-5">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4">
           <Logo />
           <Link href="/login" className="rounded-full border border-brand-200 bg-white px-4 py-2 text-sm font-medium text-brand-800">

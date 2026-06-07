@@ -399,6 +399,11 @@ export default function SkillsLibraryClient({ editable = true }: { editable?: bo
     setMessage('');
   }
 
+  function chooseSkillByTitle(title: string) {
+    const skill = skills.find((item) => item.title === title);
+    if (skill) chooseSkill(skill);
+  }
+
   function chooseSubcategory(title: string) {
     setSelectedSubcategoryTitle(title);
     setMessage('');
@@ -490,24 +495,64 @@ export default function SkillsLibraryClient({ editable = true }: { editable?: bo
     setForm(emptySubcategory);
   }
 
+  function deleteCoreSkill(title: string) {
+    if (!editable || skills.length <= 1) return;
+    if (!window.confirm(`Delete "${title}" and all of its sub categories?`)) return;
+
+    const nextSkills = skills.filter((skill) => skill.title !== title);
+    const fallbackSkill = nextSkills[0];
+
+    saveSkills(nextSkills);
+    setSelectedSkillTitle(fallbackSkill.title);
+    setSelectedSubcategoryTitle(fallbackSkill.subcategories[0]?.title || '');
+    setCoreSkillMessage('Core subject deleted.');
+    setMessage('');
+  }
+
+  function deleteSubcategory(title: string) {
+    if (!editable || !selectedSkill) return;
+    if (!window.confirm(`Delete "${title}" from ${selectedSkill.title}?`)) return;
+
+    const nextSubcategories = selectedSkill.subcategories.filter((subcategory) => subcategory.title !== title);
+    const nextSkills = skills.map((skill) =>
+      skill.title === selectedSkill.title ? { ...skill, subcategories: nextSubcategories } : skill,
+    );
+
+    saveSkills(nextSkills);
+    setSelectedSubcategoryTitle(nextSubcategories[0]?.title || '');
+    setMessage('Sub category deleted.');
+  }
+
   return (
     <div className="grid min-w-0 gap-6 xl:grid-cols-[300px_1fr]">
       <div className="min-w-0 space-y-4">
-        <aside className="flex gap-3 overflow-x-auto pb-2 xl:block xl:space-y-3 xl:overflow-visible xl:pb-0">
-          {skills.map((skill) => (
-            <button
-              key={skill.title}
-              type="button"
-              onClick={() => chooseSkill(skill)}
-              className={`block min-w-64 rounded-2xl border bg-white p-4 text-left shadow-sm transition hover:border-brand-300 xl:w-full xl:min-w-0 ${
-                selectedSkill.title === skill.title ? 'border-brand-700' : 'border-brand-200'
-              }`}
+        <div className="rounded-2xl border border-brand-200 bg-white p-4 shadow-sm">
+          <label className="block min-w-0">
+            <span className="text-sm font-medium text-brand-800">Core skill heading</span>
+            <select
+              value={selectedSkill.title}
+              onChange={(event) => chooseSkillByTitle(event.target.value)}
+              className="mt-2 w-full rounded-lg border border-brand-200 bg-white px-3 py-2 text-brand-900"
             >
-              <span className="block font-semibold text-brand-950">{skill.title}</span>
-              <span className="mt-2 block text-sm leading-5 text-brand-700">{skill.summary}</span>
+              {skills.map((skill) => (
+                <option key={skill.title} value={skill.title}>
+                  {skill.title}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          {editable ? (
+            <button
+              type="button"
+              onClick={() => deleteCoreSkill(selectedSkill.title)}
+              disabled={skills.length <= 1}
+              className="mt-4 rounded-full border border-red-200 bg-white px-4 py-2 text-sm font-semibold text-red-700 transition hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              Delete core skill
             </button>
-          ))}
-        </aside>
+          ) : null}
+        </div>
 
         {editable ? (
           <form onSubmit={addCoreSkill} className="rounded-2xl border border-brand-200 bg-white p-4 shadow-sm">
@@ -575,7 +620,7 @@ export default function SkillsLibraryClient({ editable = true }: { editable?: bo
         ) : null}
 
         <div className="rounded-2xl border border-brand-200 bg-white p-5 shadow-sm">
-          <label className="block">
+          <label className="block min-w-0">
             <span className="text-sm font-medium text-brand-800">Sub category</span>
             <select
               value={selectedSubcategory?.title || ''}
@@ -589,6 +634,15 @@ export default function SkillsLibraryClient({ editable = true }: { editable?: bo
               ))}
             </select>
           </label>
+          {editable && selectedSubcategory ? (
+            <button
+              type="button"
+              onClick={() => deleteSubcategory(selectedSubcategory.title)}
+              className="mt-4 rounded-full border border-red-200 bg-white px-4 py-2 text-sm font-semibold text-red-700 transition hover:bg-red-50"
+            >
+              Delete sub category
+            </button>
+          ) : null}
         </div>
 
         {selectedSubcategory ? (

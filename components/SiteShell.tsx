@@ -18,11 +18,10 @@ const nav = [
 ];
 
 const customerNav = [
-  { href: '/customer/profile', label: 'Profile' },
+  { href: '/customer/services', label: 'My Services' },
   { href: '/customer/plan', label: 'My Training Plan' },
   { href: '/customer/skills-library', label: 'Skills Library' },
-  { href: '/customer/tips', label: 'Tips' },
-  { href: '/customer/training-library', label: 'Training Library' },
+  { href: '/customer/profile', label: 'My Profile' },
 ];
 
 export async function SiteShell({ children }: { children: React.ReactNode }) {

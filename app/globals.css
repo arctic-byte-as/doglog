@@ -5,7 +5,8 @@
 :root {
   color-scheme: light;
   --norse-green: #12622d;
-  --norse-text: #545454;
+  --norse-green-dark: #0f5025;
+  --norse-text: #747474;
   font-family: Arial, Helvetica, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   background-color: #ffffff;
   color: var(--norse-text);
@@ -48,6 +49,26 @@ li,
 dd,
 label {
   color: var(--norse-text);
+}
+
+.text-brand-950,
+.text-brand-600 {
+  color: var(--norse-green) !important;
+}
+
+.text-brand-700,
+.text-brand-800,
+.text-brand-900 {
+  color: var(--norse-text) !important;
+}
+
+.bg-brand-700,
+.bg-brand-800 {
+  background-color: var(--norse-green) !important;
+}
+
+.hover\:bg-brand-950:hover {
+  background-color: var(--norse-green-dark) !important;
 }
 
 button,

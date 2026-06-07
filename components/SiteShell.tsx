@@ -22,7 +22,7 @@ const customerNav = [
   { href: '/customer/services', label: 'My Services' },
   { href: '/customer/plan', label: 'My Training Plan' },
   { href: '/customer/skills-library', label: 'Skills Library' },
-  { href: '/customer/profile', label: 'My Profile' },
+  { href: '/customer/profile', label: 'Profile' },
 ];
 
 export async function SiteShell({ children }: { children: React.ReactNode }) {
@@ -103,7 +103,10 @@ export async function SiteShell({ children }: { children: React.ReactNode }) {
                       </Link>
                     ))}
                     {isCustomerMenu ? (
-                      <SignOutMenuButton className="block w-full rounded-xl px-4 py-3 text-left text-sm font-medium text-brand-800 transition hover:bg-brand-50" />
+                      <SignOutMenuButton
+                        label="Log Out"
+                        className="block w-full rounded-xl px-4 py-3 text-left text-sm font-medium text-brand-800 transition hover:bg-brand-50"
+                      />
                     ) : null}
                   </div>
                 </details>
@@ -122,7 +125,10 @@ export async function SiteShell({ children }: { children: React.ReactNode }) {
                 </Link>
               ))}
               {isCustomerMenu ? (
-                <SignOutMenuButton className="rounded-full border border-brand-200 bg-white px-4 py-2 text-sm font-medium text-brand-900 transition hover:border-brand-400 hover:bg-brand-50 hover:text-brand-800" />
+                <SignOutMenuButton
+                  label="Log Out"
+                  className="rounded-full border border-brand-200 bg-white px-4 py-2 text-sm font-medium text-brand-900 transition hover:border-brand-400 hover:bg-brand-50 hover:text-brand-800"
+                />
               ) : null}
             </nav>
             <div className="flex flex-wrap items-center gap-3">

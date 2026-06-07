@@ -25,7 +25,7 @@ export default async function CustomerServicesPage() {
 
   return (
     <SiteShell>
-      <SectionCard title="Service">
+      <SectionCard title="My Services">
         {assignedServices.length ? (
           <div className="grid gap-4 md:grid-cols-2">
             {assignedServices.map((service) => (

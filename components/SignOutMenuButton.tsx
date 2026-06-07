@@ -1,6 +1,6 @@
 "use client";
 
-export default function SignOutMenuButton({ className = '' }: { className?: string }) {
+export default function SignOutMenuButton({ className = '', label = 'Sign out' }: { className?: string; label?: string }) {
   async function handleSignOut() {
     await fetch('/api/auth/logout', { method: 'POST' });
     window.location.href = '/login';
@@ -8,7 +8,7 @@ export default function SignOutMenuButton({ className = '' }: { className?: stri
 
   return (
     <button type="button" onClick={handleSignOut} className={className}>
-      Sign out
+      {label}
     </button>
   );
 }

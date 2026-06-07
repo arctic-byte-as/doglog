@@ -585,12 +585,6 @@ export default function SkillsLibraryClient({ editable = true }: { editable?: bo
       </div>
 
       <section className="min-w-0 space-y-5">
-        <div className="rounded-2xl border border-brand-200 bg-white p-5 shadow-sm">
-          <p className="text-sm font-medium text-brand-700">Core skill</p>
-          <h2 className="mt-1 text-2xl font-semibold text-brand-950">{selectedSkill.title}</h2>
-          <p className="mt-3 text-sm leading-6 text-brand-700">{selectedSkill.summary}</p>
-        </div>
-
         {selectedSubcategory?.youtubeUrl ? (
           <div className="mx-auto w-full max-w-full overflow-hidden rounded-2xl border border-brand-200 bg-brand-50 text-brand-950 shadow-sm">
             {youtubeVideoId ? (
@@ -618,6 +612,12 @@ export default function SkillsLibraryClient({ editable = true }: { editable?: bo
             )}
           </div>
         ) : null}
+
+        <div className="rounded-2xl border border-brand-200 bg-white p-5 shadow-sm">
+          <p className="text-sm font-medium text-brand-700">Core skill</p>
+          <h2 className="mt-1 text-2xl font-semibold text-brand-950">{selectedSkill.title}</h2>
+          <p className="mt-3 text-sm leading-6 text-brand-700">{selectedSkill.summary}</p>
+        </div>
 
         <div className="rounded-2xl border border-brand-200 bg-white p-5 shadow-sm">
           <label className="block min-w-0">

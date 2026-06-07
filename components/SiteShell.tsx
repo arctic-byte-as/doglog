@@ -10,12 +10,13 @@ const nav = [
   { href: '/training-library', label: 'Training Library' },
   { href: '/skills-library', label: 'Skills Library' },
   { href: '/customer', label: 'Profile' },
-  { href: '/customer/tips', label: 'Tips' },
   { href: '/customer/plan', label: 'My plan' },
   { href: '/admin/accounts', label: 'Admin' },
   { href: '/admin/testing', label: 'Test views' },
   { href: '/login', label: 'Login' },
 ];
+
+const hiddenCustomerMenuItems = new Set(['/customer/tips', '/customer/training-library']);
 
 const customerNav = [
   { href: '/customer/services', label: 'My Services' },
@@ -38,9 +39,9 @@ export async function SiteShell({ children }: { children: React.ReactNode }) {
       : null;
   const visibleNav =
     isTrainerMenu
-      ? nav.filter((item) => !['/customer', '/customer/tips', '/customer/plan', '/login'].includes(item.href))
+      ? nav.filter((item) => !['/customer', '/customer/plan', '/login'].includes(item.href))
       : isCustomerMenu
-        ? customerNav
+        ? customerNav.filter((item) => !hiddenCustomerMenuItems.has(item.href))
       : nav;
   const logoSubtitle = isCustomerMenu ? user?.customer?.name || user?.user.name || 'Customer' : 'Trainer dashboard';
 

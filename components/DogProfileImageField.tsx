@@ -18,7 +18,7 @@ export default function DogProfileImageField({
   uploadSuccessMessage = 'Photo uploaded. Save the dog to keep this picture.',
 }: {
   value: string;
-  onChange: (value: string) => void;
+  onChange: (value: string) => void | Promise<void>;
   disabled?: boolean;
   uploadSuccessMessage?: string;
 }) {
@@ -41,7 +41,7 @@ export default function DogProfileImageField({
       });
       const data = await response.json();
       if (!response.ok) throw new Error(data?.error || 'Could not upload image.');
-      onChange(data.url);
+      await onChange(data.url);
       setMessage(uploadSuccessMessage);
     } catch (error: any) {
       setMessage(error.message || 'Could not upload image.');

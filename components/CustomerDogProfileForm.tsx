@@ -39,8 +39,7 @@ export default function CustomerDogProfileForm({ dog }: { dog: DogProfile }) {
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
 
-  async function handleSubmit(event: React.FormEvent) {
-    event.preventDefault();
+  async function saveDog(nextForm: typeof form, successMessage: string) {
     setLoading(true);
     setMessage('');
 
@@ -48,21 +47,33 @@ export default function CustomerDogProfileForm({ dog }: { dog: DogProfile }) {
       const res = await fetch(`/api/customer/dogs/${dog.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
+        body: JSON.stringify(nextForm),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data?.error || 'Could not save dog.');
-      setMessage('Dog saved');
+      setForm(nextForm);
+      setMessage(successMessage);
       window.location.reload();
     } catch (error: any) {
       setMessage(error.message || 'Could not save dog.');
+      throw error;
     } finally {
       setLoading(false);
     }
   }
 
+  async function handleSubmit(event: React.FormEvent) {
+    event.preventDefault();
+    await saveDog(form, 'Dog saved');
+  }
+
   function update(field: keyof typeof form, value: string) {
     setForm((current) => ({ ...current, [field]: value }));
+  }
+
+  async function saveProfileImage(value: string) {
+    const nextForm = { ...form, profileImageUrl: value };
+    await saveDog(nextForm, 'Photo saved');
   }
 
   return (
@@ -95,7 +106,11 @@ export default function CustomerDogProfileForm({ dog }: { dog: DogProfile }) {
           <span className="text-sm font-medium text-brand-800">Main behaviour concern</span>
           <textarea value={form.lastIncident} onChange={(event) => update('lastIncident', event.target.value)} className="mt-1 min-h-24 w-full rounded-lg border border-brand-200 px-3 py-2" />
         </label>
-        <DogProfileImageField value={form.profileImageUrl} onChange={(value) => update('profileImageUrl', value)} />
+        <DogProfileImageField
+          value={form.profileImageUrl}
+          onChange={saveProfileImage}
+          uploadSuccessMessage="Photo uploaded and saved."
+        />
       </div>
       <div className="flex items-center gap-3">
         <button type="submit" disabled={loading} className="rounded-lg bg-brand-700 px-4 py-2 text-white disabled:opacity-60">

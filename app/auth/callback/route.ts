@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import type { EmailOtpType } from '@supabase/supabase-js';
 import { createClient } from '@/lib/supabase/server';
+import { createAppSession } from '@/lib/session';
+import prisma from '@/lib/prisma';
 
 const allowedRedirects = new Set(['/auth/resolve', '/dashboard', '/customer', '/register/owner', '/login', '/auth/confirm']);
 
@@ -10,6 +12,47 @@ function safeRedirectPath(value: string | null) {
 
   const path = value.split('?')[0];
   return allowedRedirects.has(path) ? value : '/auth/resolve';
+}
+
+async function findOrCreateAppUser({
+  email,
+  supabaseAuthId,
+  name,
+}: {
+  email: string;
+  supabaseAuthId: string;
+  name?: string | null;
+}) {
+  const normalizedEmail = email.trim().toLowerCase();
+  const existingUser = await prisma.user.findUnique({ where: { email: normalizedEmail } });
+
+  if (existingUser) {
+    return prisma.user.update({
+      where: { id: existingUser.id },
+      data: {
+        supabaseAuthId: existingUser.supabaseAuthId || supabaseAuthId,
+        emailVerified: existingUser.emailVerified || new Date(),
+        name: existingUser.name || name || existingUser.email,
+      },
+    });
+  }
+
+  const [trainer, customer] = await Promise.all([
+    prisma.trainer.findUnique({ where: { email: normalizedEmail } }),
+    prisma.customer.findUnique({ where: { email: normalizedEmail } }),
+  ]);
+
+  if (!trainer && !customer) return null;
+
+  return prisma.user.create({
+    data: {
+      email: normalizedEmail,
+      name: customer?.name || trainer?.name || name || normalizedEmail,
+      role: customer ? 'CUSTOMER' : 'TRAINER',
+      supabaseAuthId,
+      emailVerified: new Date(),
+    },
+  });
 }
 
 export async function GET(request: Request) {
@@ -43,6 +86,29 @@ export async function GET(request: Request) {
   } else {
     return NextResponse.redirect(new URL('/login?error=missing-code', requestUrl.origin));
   }
+
+  const { data, error: userError } = await supabase.auth.getUser();
+  if (userError || !data.user?.email) {
+    console.error('Supabase user lookup failed after callback', { status: userError?.status, code: userError?.code });
+    return NextResponse.redirect(new URL('/login?error=auth-callback', requestUrl.origin));
+  }
+
+  const appUser = await findOrCreateAppUser({
+    email: data.user.email,
+    supabaseAuthId: data.user.id,
+    name:
+      typeof data.user.user_metadata?.full_name === 'string'
+        ? data.user.user_metadata.full_name
+        : typeof data.user.user_metadata?.name === 'string'
+          ? data.user.user_metadata.name
+          : null,
+  });
+
+  if (!appUser) {
+    return NextResponse.redirect(new URL(`/login?error=account-not-linked&email=${encodeURIComponent(data.user.email)}`, requestUrl.origin));
+  }
+
+  await createAppSession(appUser.id);
 
   return NextResponse.redirect(new URL(next, requestUrl.origin));
 }

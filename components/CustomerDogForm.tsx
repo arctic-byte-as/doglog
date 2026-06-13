@@ -72,7 +72,12 @@ export default function CustomerDogForm({ disabled = false }: { disabled?: boole
             ))}
           </select>
         </label>
-        <DogProfileImageField disabled={disabled} value={form.profileImageUrl} onChange={(value) => setForm({ ...form, profileImageUrl: value })} />
+        <DogProfileImageField
+          disabled={disabled}
+          value={form.profileImageUrl}
+          onChange={(value) => setForm({ ...form, profileImageUrl: value })}
+          uploadSuccessMessage="Photo uploaded. Add dog to keep this picture."
+        />
       </div>
       <div className="flex items-center gap-3">
         <button type="submit" disabled={disabled || loading} className="rounded-lg bg-brand-700 px-4 py-2 text-white disabled:opacity-60">

@@ -13,12 +13,16 @@ const allowedTypes: Record<string, string> = {
 const bucketName = process.env.SUPABASE_STORAGE_DOG_IMAGES_BUCKET || 'dog-profile-images';
 let bucketReady = false;
 
+export const runtime = 'nodejs';
+
 function getSupabaseStorageClient() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const secretKey = process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY;
 
   if (!url || !secretKey) {
-    throw new Error('Supabase Storage is not configured.');
+    throw new Error(
+      'Supabase Storage upload credentials are missing. Set SUPABASE_SECRET_KEY or SUPABASE_SERVICE_ROLE_KEY.',
+    );
   }
 
   return createClient(url, secretKey, {
@@ -73,7 +77,10 @@ export async function POST(request: Request) {
     await ensureBucket();
   } catch (error) {
     console.error('Dog image storage setup failed', error);
-    return NextResponse.json({ error: 'Photo storage is not configured yet.' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Photo uploads are not configured yet. Please contact Norse Paw support.' },
+      { status: 500 },
+    );
   }
 
   const filename = `${randomUUID()}.${extension}`;

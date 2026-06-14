@@ -2,7 +2,6 @@ import Link from 'next/link';
 import Logo from './Logo';
 import AuthStatus from './AuthStatus';
 import SignOutMenuButton from './SignOutMenuButton';
-import CustomerLanguageSwitcher from './CustomerLanguageSwitcher';
 import { getCurrentUser } from '@/lib/auth';
 import { getCustomerDictionary, getCustomerLocale } from '@/lib/i18n/customer';
 import prisma from '@/lib/prisma';
@@ -20,6 +19,46 @@ const nav = [
 
 const hiddenCustomerMenuItems = new Set(['/customer/tips', '/customer/training-library']);
 
+function DogAvatarStrip({
+  dogs,
+  label,
+}: {
+  dogs: { name: string; profileImageUrl: string | null }[];
+  label: string;
+}) {
+  const visibleDogs = dogs.slice(0, 2);
+  const title = visibleDogs.length ? visibleDogs.map((dog) => dog.name).join(', ') : label;
+
+  return (
+    <Link
+      href="/customer"
+      aria-label={label}
+      title={title}
+      className="flex h-11 min-w-11 items-center justify-center gap-1 rounded-full border border-brand-200 bg-white px-1.5 text-sm font-semibold text-brand-800 transition hover:border-brand-400 hover:bg-brand-50"
+    >
+      {visibleDogs.length ? (
+        visibleDogs.map((dog) => (
+          <span
+            key={dog.name}
+            className="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-full bg-brand-100 text-xs font-semibold text-brand-700"
+          >
+            {dog.profileImageUrl ? (
+              <span
+                className="h-full w-full bg-cover bg-center"
+                style={{ backgroundImage: `url(${dog.profileImageUrl})` }}
+              />
+            ) : (
+              dog.name.slice(0, 1).toUpperCase()
+            )}
+          </span>
+        ))
+      ) : (
+        <span className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-100 text-xs font-semibold text-brand-700">P</span>
+      )}
+    </Link>
+  );
+}
+
 export async function SiteShell({ children }: { children: React.ReactNode }) {
   const user = await getCurrentUser();
   const customerLocale = getCustomerLocale();
@@ -32,14 +71,15 @@ export async function SiteShell({ children }: { children: React.ReactNode }) {
     { href: '/customer/skills-library', label: t.nav.skillsLibrary },
     { href: '/customer/profile', label: t.nav.profile },
   ];
-  const customerDog =
+  const customerDogs =
     isCustomerMenu && user?.customer
-      ? await prisma.dog.findFirst({
+      ? await prisma.dog.findMany({
           where: { customerId: user.customer.id },
           orderBy: { name: 'asc' },
+          take: 2,
           select: { name: true, profileImageUrl: true },
         })
-      : null;
+      : [];
   const visibleNav =
     isTrainerMenu
       ? nav.filter((item) => !['/customer', '/customer/plan', '/login'].includes(item.href))
@@ -58,21 +98,7 @@ export async function SiteShell({ children }: { children: React.ReactNode }) {
             </Link>
             <div className="flex items-center gap-3 md:hidden">
               {isCustomerMenu ? (
-                <Link
-                  href="/customer"
-                  aria-label={t.nav.customerHome}
-                  title={customerDog ? `${customerDog.name} ${t.nav.customerHome.toLowerCase()}` : t.nav.customerHome}
-                  className="flex h-11 w-11 items-center justify-center overflow-hidden rounded-full border border-brand-200 bg-white text-sm font-semibold text-brand-800 transition hover:border-brand-400 hover:bg-brand-50"
-                >
-                  {customerDog?.profileImageUrl ? (
-                    <span
-                      className="h-full w-full bg-cover bg-center"
-                      style={{ backgroundImage: `url(${customerDog.profileImageUrl})` }}
-                    />
-                  ) : (
-                    <span>{customerDog?.name.slice(0, 1).toUpperCase() || 'P'}</span>
-                  )}
-                </Link>
+                <DogAvatarStrip dogs={customerDogs} label={t.nav.customerHome} />
               ) : null}
               {visibleNav.length ? (
                 <details className="relative">
@@ -135,12 +161,11 @@ export async function SiteShell({ children }: { children: React.ReactNode }) {
               ) : null}
             </nav>
             <div className="flex flex-wrap items-center gap-3">
-              {isCustomerMenu ? <CustomerLanguageSwitcher locale={customerLocale} /> : null}
+              {isCustomerMenu ? <DogAvatarStrip dogs={customerDogs} label={t.nav.customerHome} /> : null}
               {!isCustomerMenu ? <AuthStatus /> : null}
             </div>
           </div>
           <div className="md:hidden">
-            {isCustomerMenu ? <CustomerLanguageSwitcher locale={customerLocale} /> : null}
             {!isCustomerMenu ? <AuthStatus /> : null}
           </div>
         </div>

@@ -9,13 +9,31 @@ type Exercise = {
   steps: string[];
   progress: string;
   avoid: string;
+  translations?: {
+    nb?: {
+      title?: string;
+      goal?: string;
+      setup?: string[];
+      steps?: string[];
+      progress?: string;
+      avoid?: string;
+    };
+  };
 };
 
 type Category = {
   title: string;
   summary: string;
   exercises: Exercise[];
+  translations?: {
+    nb?: {
+      title?: string;
+      summary?: string;
+    };
+  };
 };
+
+type TrainingLibraryLocale = 'en' | 'nb';
 
 export const categories: Category[] = [
   {
@@ -75,6 +93,109 @@ export const categories: Category[] = [
         steps: ['Wait for the dog to glance toward you.', 'Cue recall once.', 'Move backward and encourage.', 'Mark arrival.', 'Reward generously and release the dog back to sniffing.'],
         progress: 'The dog returns quickly and does not see recall as the end of fun.',
         avoid: 'Do not call repeatedly or call only when something unpleasant is about to happen.',
+      },
+    ],
+  },
+  {
+    title: 'Engagement',
+    summary: 'Reward-based exercises that help the dog choose connection, movement with the handler, and focus around everyday distractions.',
+    translations: {
+      nb: {
+        title: 'Engasjement',
+        summary:
+          'Belønningsbaserte øvelser som hjelper hunden å velge kontakt, bevegelse sammen med fører og fokus rundt hverdagslige forstyrrelser.',
+      },
+    },
+    exercises: [
+      {
+        title: 'Offer and Reward Check-Ins',
+        goal: 'Build voluntary attention so the dog learns that checking in with the handler is worthwhile.',
+        setup: ['Quiet room or garden', 'Small high-value rewards', 'Marker word or clicker', 'Optional treat pouch'],
+        steps: [
+          'Stand still or move slowly without repeating the dog’s name.',
+          'Mark the moment the dog looks toward you, turns back, or comes closer.',
+          'Reward immediately, then reset by tossing a treat away or releasing to sniff.',
+          'Wait for the next offered check-in instead of asking again.',
+          'Build from one quick glance to several relaxed seconds of connection.',
+        ],
+        progress: 'The dog offers several check-ins within a short session without being prompted.',
+        avoid: 'Do not force eye contact, hold food at your face, pull the lead, or repeat the dog’s name until they tune it out.',
+        translations: {
+          nb: {
+            title: 'Frivillige innsjekk',
+            goal: 'Bygg frivillig oppmerksomhet slik at hunden lærer at det lønner seg å ta kontakt med fører.',
+            setup: ['Rolig rom eller hage', 'Små belønninger med høy verdi', 'Markørord eller klikker', 'Eventuelt godbitveske'],
+            steps: [
+              'Stå stille eller beveg deg sakte uten å gjenta hundens navn.',
+              'Marker øyeblikket hunden ser mot deg, vender tilbake eller kommer nærmere.',
+              'Belønn med en gang, og nullstill ved å kaste en godbit bort eller gi lov til å snuse.',
+              'Vent på neste frivillige innsjekk i stedet for å spørre igjen.',
+              'Bygg fra et raskt blikk til flere avslappede sekunder med kontakt.',
+            ],
+            progress: 'Hunden tilbyr flere innsjekk i en kort økt uten å bli bedt om det.',
+            avoid: 'Ikke tving øyekontakt, hold mat ved ansiktet, dra i båndet eller gjenta hundens navn til den slutter å lytte.',
+          },
+        },
+      },
+      {
+        title: 'Reward Zone Movement',
+        goal: 'Help the dog enjoy moving with the handler and finding the reward zone near the handler’s leg.',
+        setup: ['Safe low-distraction space', 'Food rewards', 'Comfortable harness and lead if outdoors'],
+        steps: [
+          'Start with the dog close to you and take one or two easy steps.',
+          'Mark when the dog moves with you, catches up, or checks where you are going.',
+          'Deliver the reward close to your leg so the reward placement teaches position.',
+          'Change direction gently before the dog disconnects.',
+          'Add short sniff or play breaks so engagement leads to access, not constant control.',
+        ],
+        progress: 'The dog happily follows changes of direction and returns to the reward zone with a loose body.',
+        avoid: 'Do not use the lead to steer the dog into place or make the session so long that the dog loses interest.',
+        translations: {
+          nb: {
+            title: 'Belønningssone i bevegelse',
+            goal: 'Hjelp hunden å like å bevege seg sammen med fører og finne belønningssonen ved førers bein.',
+            setup: ['Trygt sted med få forstyrrelser', 'Matbelønninger', 'Behagelig sele og bånd hvis dere trener ute'],
+            steps: [
+              'Start med hunden nær deg og ta ett eller to enkle skritt.',
+              'Marker når hunden beveger seg med deg, tar deg igjen eller følger med på hvor du går.',
+              'Gi belønningen nær beinet ditt slik at plasseringen lærer hunden hvor det lønner seg å være.',
+              'Bytt retning rolig før hunden kobler av.',
+              'Legg inn korte snuse- eller lekepauser slik at engasjement gir tilgang, ikke bare kontroll.',
+            ],
+            progress: 'Hunden følger retningsendringer med glede og finner tilbake til belønningssonen med myk kropp.',
+            avoid: 'Ikke bruk båndet til å styre hunden på plass eller gjør økten så lang at hunden mister interessen.',
+          },
+        },
+      },
+      {
+        title: 'Engagement Near Distractions',
+        goal: 'Teach the dog to notice distractions and then choose to reconnect while staying under threshold.',
+        setup: ['Large distance from the distraction', 'High-value rewards', 'Escape route or extra space', 'Harness and lead or long line'],
+        steps: [
+          'Begin far enough away that the dog can eat, move, and respond easily.',
+          'Let the dog notice the distraction without cueing or correcting.',
+          'Mark any small reconnecting choice, such as looking back, softening, turning, or moving with you.',
+          'Reward generously with food, distance, sniffing, play, or calm praise.',
+          'Only reduce distance when the dog recovers quickly and stays relaxed.',
+        ],
+        progress: 'The dog can look at a distraction and reconnect without barking, lunging, freezing, or becoming frantic.',
+        avoid: 'Do not move closer to prove progress. If the dog cannot respond, increase distance and make the setup easier.',
+        translations: {
+          nb: {
+            title: 'Engasjement nær forstyrrelser',
+            goal: 'Lær hunden å legge merke til forstyrrelser og deretter velge kontakt mens den fortsatt er under terskel.',
+            setup: ['Stor avstand til forstyrrelsen', 'Belønninger med høy verdi', 'Fluktvei eller ekstra plass', 'Sele og bånd eller langline'],
+            steps: [
+              'Start så langt unna at hunden lett kan spise, bevege seg og respondere.',
+              'La hunden oppdage forstyrrelsen uten å gi kommando eller korrigere.',
+              'Marker ethvert lite valg om å koble på igjen, som å se tilbake, mykne i kroppen, vende seg eller bevege seg med deg.',
+              'Belønn godt med mat, avstand, snusing, lek eller rolig ros.',
+              'Reduser avstanden bare når hunden henter seg raskt inn og forblir avslappet.',
+            ],
+            progress: 'Hunden kan se på en forstyrrelse og koble på igjen uten å bjeffe, kaste seg frem, fryse eller bli stresset.',
+            avoid: 'Ikke gå nærmere for å bevise fremgang. Hvis hunden ikke kan respondere, øk avstanden og gjør oppsettet lettere.',
+          },
+        },
       },
     ],
   },
@@ -232,12 +353,62 @@ const defaultTrainingLibraryLabels = {
   addSubcategoryPrompt: 'Add a sub category to start building this category.',
 };
 
+function mergeEngagementCategory(nextCategories: Category[]) {
+  const engagement = categories.find((category) => category.title === 'Engagement');
+  if (!engagement) return nextCategories;
+
+  const existingIndex = nextCategories.findIndex((category) => category.title.toLowerCase() === 'engagement');
+  if (existingIndex < 0) {
+    const looseLeadIndex = nextCategories.findIndex((category) => category.title === 'Loose Lead and Recall');
+    const insertAt = looseLeadIndex >= 0 ? looseLeadIndex + 1 : nextCategories.length;
+    return [...nextCategories.slice(0, insertAt), engagement, ...nextCategories.slice(insertAt)];
+  }
+
+  return nextCategories.map((category, index) => {
+    if (index !== existingIndex) return category;
+    if (category.exercises.length) return category;
+    return {
+      ...engagement,
+      title: category.title || engagement.title,
+      summary: category.summary || engagement.summary,
+    };
+  });
+}
+
+function translatedCategory(category: Category, locale: TrainingLibraryLocale) {
+  if (locale !== 'nb') return category;
+
+  const translation = category.translations?.nb;
+  return {
+    ...category,
+    title: translation?.title || category.title,
+    summary: translation?.summary || category.summary,
+  };
+}
+
+function translatedExercise(exercise: Exercise | undefined, locale: TrainingLibraryLocale) {
+  if (!exercise || locale !== 'nb') return exercise;
+
+  const translation = exercise.translations?.nb;
+  return {
+    ...exercise,
+    title: translation?.title || exercise.title,
+    goal: translation?.goal || exercise.goal,
+    setup: translation?.setup || exercise.setup,
+    steps: translation?.steps || exercise.steps,
+    progress: translation?.progress || exercise.progress,
+    avoid: translation?.avoid || exercise.avoid,
+  };
+}
+
 export default function TrainingLibraryClient({
   editable = false,
   labels = defaultTrainingLibraryLabels,
+  locale = 'en',
 }: {
   editable?: boolean;
   labels?: typeof defaultTrainingLibraryLabels;
+  locale?: TrainingLibraryLocale;
 }) {
   const [libraryCategories, setLibraryCategories] = useState<Category[]>(categories);
   const [selectedCategoryTitle, setSelectedCategoryTitle] = useState(categories[0].title);
@@ -252,9 +423,13 @@ export default function TrainingLibraryClient({
     try {
       const parsed = JSON.parse(saved) as Category[];
       if (Array.isArray(parsed) && parsed.length) {
-        setLibraryCategories(parsed);
-        setSelectedCategoryTitle(parsed[0].title);
-        setSelectedExerciseTitle(parsed[0].exercises[0]?.title || '');
+        const nextCategories = mergeEngagementCategory(parsed);
+        setLibraryCategories(nextCategories);
+        setSelectedCategoryTitle(nextCategories[0].title);
+        setSelectedExerciseTitle(nextCategories[0].exercises[0]?.title || '');
+        if (JSON.stringify(nextCategories) !== JSON.stringify(parsed)) {
+          window.localStorage.setItem(libraryStorageKey, JSON.stringify(nextCategories));
+        }
       }
     } catch {
       window.localStorage.removeItem(libraryStorageKey);
@@ -274,6 +449,8 @@ export default function TrainingLibraryClient({
     () => selectedCategory?.exercises.find((exercise) => exercise.title === selectedExerciseTitle) || selectedCategory?.exercises[0],
     [selectedCategory, selectedExerciseTitle],
   );
+  const displayedCategory = translatedCategory(selectedCategory, locale);
+  const displayedExercise = translatedExercise(selectedExercise, locale);
 
   function chooseCategory(category: Category) {
     setSelectedCategoryTitle(category.title);
@@ -337,8 +514,8 @@ export default function TrainingLibraryClient({
               selectedCategory.title === category.title ? 'border-brand-700' : 'border-brand-200'
             }`}
           >
-            <span className="block font-semibold">{category.title}</span>
-            <span className="mt-2 block text-sm leading-5 text-brand-700">{category.summary}</span>
+            <span className="block font-semibold">{translatedCategory(category, locale).title}</span>
+            <span className="mt-2 block text-sm leading-5 text-brand-700">{translatedCategory(category, locale).summary}</span>
           </button>
         ))}
 
@@ -376,7 +553,7 @@ export default function TrainingLibraryClient({
             >
               {selectedCategory.exercises.map((exercise) => (
                 <option key={exercise.title} value={exercise.title}>
-                  {exercise.title}
+                  {translatedExercise(exercise, locale)?.title || exercise.title}
                 </option>
               ))}
             </select>
@@ -385,29 +562,29 @@ export default function TrainingLibraryClient({
 
         {selectedExercise ? (
           <article className="rounded-2xl border border-brand-200 bg-white p-6 shadow-sm">
-            <p className="text-sm font-medium text-brand-700">{selectedCategory.title}</p>
-            <h2 className="mt-2 text-2xl font-semibold text-brand-950">{selectedExercise.title}</h2>
-            <p className="mt-3 text-sm leading-6 text-brand-700">{selectedExercise.goal}</p>
+            <p className="text-sm font-medium text-brand-700">{displayedCategory.title}</p>
+            <h2 className="mt-2 text-2xl font-semibold text-brand-950">{displayedExercise?.title || selectedExercise.title}</h2>
+            <p className="mt-3 text-sm leading-6 text-brand-700">{displayedExercise?.goal || selectedExercise.goal}</p>
 
             <div className="mt-6 grid gap-5 md:grid-cols-2">
               <div>
                 <h3 className="text-sm font-semibold text-brand-950">{labels.setup}</h3>
                 <ul className="mt-2 space-y-2 text-sm leading-6 text-brand-700">
-                  {selectedExercise.setup.map((item) => (
+                  {(displayedExercise?.setup || selectedExercise.setup).map((item) => (
                     <li key={item}>{item}</li>
                   ))}
                 </ul>
               </div>
               <div>
                 <h3 className="text-sm font-semibold text-brand-950">{labels.progressMarker}</h3>
-                <p className="mt-2 text-sm leading-6 text-brand-700">{selectedExercise.progress}</p>
+                <p className="mt-2 text-sm leading-6 text-brand-700">{displayedExercise?.progress || selectedExercise.progress}</p>
               </div>
             </div>
 
             <div className="mt-6">
               <h3 className="text-sm font-semibold text-brand-950">{labels.trainingDetails}</h3>
               <ol className="mt-2 space-y-2 text-sm leading-6 text-brand-700">
-                {selectedExercise.steps.map((step, index) => (
+                {(displayedExercise?.steps || selectedExercise.steps).map((step, index) => (
                   <li key={step}>
                     {index + 1}. {step}
                   </li>
@@ -417,7 +594,7 @@ export default function TrainingLibraryClient({
 
             <div className="mt-6 rounded-2xl border border-brand-200 bg-brand-50 p-4">
               <h3 className="text-sm font-semibold text-brand-950">{labels.avoid}</h3>
-              <p className="mt-2 text-sm leading-6 text-brand-700">{selectedExercise.avoid}</p>
+              <p className="mt-2 text-sm leading-6 text-brand-700">{displayedExercise?.avoid || selectedExercise.avoid}</p>
             </div>
           </article>
         ) : (

@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { requireAdmin } from '@/lib/auth';
+import { ensureDogBreed } from '@/lib/dog-breeds-server';
 import prisma from '@/lib/prisma';
 import { hashPassword } from '@/lib/password';
 
@@ -34,6 +35,8 @@ export async function POST(request: Request) {
 
   if (!trainer) return NextResponse.json({ error: 'No trainer is available yet. Please create a trainer account first.' }, { status: 400 });
 
+  const dogBreed = await ensureDogBreed(body.dogBreed);
+
   const result = await prisma.$transaction(async (tx) => {
     await tx.user.upsert({
       where: { email },
@@ -63,7 +66,7 @@ export async function POST(request: Request) {
       data: {
         name: dogName,
         age: clean(body.dogAge),
-        breed: clean(body.dogBreed),
+        breed: dogBreed,
         status: 'Admin created customer',
         owner: ownerName,
         lastIncident: behaviourConcern,

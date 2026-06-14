@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { SiteShell } from '@/components/SiteShell';
+import AdminCustomerEditForm from '@/components/AdminCustomerEditForm';
 import CustomerServiceAccessForm from '@/components/CustomerServiceAccessForm';
 import BackToDashboardLink from '@/components/BackToDashboardLink';
 import DeleteCustomerButton from '@/components/DeleteCustomerButton';
@@ -65,7 +66,16 @@ export default async function AdminCustomersPage() {
                       customerId={customer.id}
                       enabledServices={customer.serviceAccess.map((service) => service.serviceKey)}
                     />
-                    <div className="xl:col-start-3">
+                    <div className="space-y-3 xl:col-start-3">
+                      <AdminCustomerEditForm
+                        customer={{
+                          id: customer.id,
+                          name: customer.name,
+                          email: customer.email,
+                          phone: customer.phone,
+                          notes: customer.notes,
+                        }}
+                      />
                       <DeleteCustomerButton customerId={customer.id} customerName={customer.name} />
                     </div>
                   </div>

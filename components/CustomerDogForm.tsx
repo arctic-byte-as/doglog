@@ -2,27 +2,16 @@
 
 import type { ComponentProps } from 'react';
 import { useState } from 'react';
+import BreedSelect from '@/components/BreedSelect';
 import DogProfileImageField from '@/components/DogProfileImageField';
-
-const breedOptions = [
-  'Beagle',
-  'Border Collie',
-  'French Bulldog',
-  'German Shepherd Dog',
-  'Golden Retriever',
-  'Great Dane',
-  'Labrador Retriever',
-  'Norwegian Buhund',
-  'Norwegian Elkhound',
-  'Norwegian Lundehund',
-  'Poodle',
-];
 
 const defaultDogLabels = {
   name: 'Dog name',
   age: 'Age',
   breed: 'Breed',
   selectBreed: 'Select a breed',
+  otherBreed: 'Other / Add breed',
+  newBreed: 'Enter breed name',
   add: 'Add dog',
   adding: 'Adding...',
   added: 'Dog added',
@@ -87,14 +76,14 @@ export default function CustomerDogForm({
         </label>
         <label className="block">
           <span className="text-sm font-medium text-brand-800">{labels.breed}</span>
-          <select disabled={disabled} value={form.breed} onChange={(event) => setForm({ ...form, breed: event.target.value })} className="mt-1 w-full rounded-lg border border-brand-200 px-3 py-2 disabled:bg-brand-50">
-            <option value="">{labels.selectBreed}</option>
-            {breedOptions.map((breed) => (
-              <option key={breed} value={breed}>
-                {breed}
-              </option>
-            ))}
-          </select>
+          <div className="mt-1">
+            <BreedSelect
+              disabled={disabled}
+              value={form.breed}
+              onChange={(breed) => setForm({ ...form, breed })}
+              labels={labels}
+            />
+          </div>
         </label>
         <DogProfileImageField
           disabled={disabled}

@@ -2,6 +2,7 @@
 
 import type { ComponentProps } from 'react';
 import { useState } from 'react';
+import BreedSelect from '@/components/BreedSelect';
 import DogProfileImageField from '@/components/DogProfileImageField';
 
 type DogProfile = {
@@ -14,25 +15,13 @@ type DogProfile = {
   profileImageUrl: string | null;
 };
 
-const breedOptions = [
-  'Beagle',
-  'Border Collie',
-  'French Bulldog',
-  'German Shepherd Dog',
-  'Golden Retriever',
-  'Great Dane',
-  'Labrador Retriever',
-  'Norwegian Buhund',
-  'Norwegian Elkhound',
-  'Norwegian Lundehund',
-  'Poodle',
-];
-
 const defaultDogLabels = {
   name: 'Dog name',
   age: 'Age',
   breed: 'Breed',
   selectBreed: 'Select a breed',
+  otherBreed: 'Other / Add breed',
+  newBreed: 'Enter breed name',
   status: 'Status',
   mainConcern: 'Main behaviour concern',
   save: 'Save dog',
@@ -117,14 +106,9 @@ export default function CustomerDogProfileForm({
         </label>
         <label className="block">
           <span className="text-sm font-medium text-brand-800">{labels.breed}</span>
-          <select value={form.breed} onChange={(event) => update('breed', event.target.value)} className="mt-1 w-full rounded-lg border border-brand-200 px-3 py-2">
-            <option value="">{labels.selectBreed}</option>
-            {breedOptions.map((breed) => (
-              <option key={breed} value={breed}>
-                {breed}
-              </option>
-            ))}
-          </select>
+          <div className="mt-1">
+            <BreedSelect value={form.breed} onChange={(breed) => update('breed', breed)} labels={labels} />
+          </div>
         </label>
         <label className="block">
           <span className="text-sm font-medium text-brand-800">{labels.status}</span>

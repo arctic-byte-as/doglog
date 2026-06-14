@@ -6,13 +6,14 @@ import { getCustomerDictionary, getCustomerLocale } from '@/lib/i18n/customer';
 
 export default async function CustomerTrainingLibraryPage() {
   await requireCustomer();
-  const t = getCustomerDictionary(getCustomerLocale());
+  const locale = getCustomerLocale();
+  const t = getCustomerDictionary(locale);
 
   return (
     <SiteShell>
       <div className="space-y-8">
         <SectionCard title={t.library.training}>
-          <TrainingLibraryClient labels={t.library} />
+          <TrainingLibraryClient labels={t.library} locale={locale} />
         </SectionCard>
       </div>
     </SiteShell>

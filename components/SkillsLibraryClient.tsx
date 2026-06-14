@@ -5,6 +5,8 @@ import type { CoreSkill, SkillSubcategory } from '@/lib/skills-library';
 
 const legacyStorageKey = 'norsepaw-skills-library';
 
+type SkillsLibraryLocale = 'en' | 'nb';
+
 const defaultSkills: CoreSkill[] = [
   {
     title: 'Boundaries',
@@ -123,6 +125,76 @@ const defaultSkills: CoreSkill[] = [
         coachingNotes:
           'If the dog cannot eat, turn, or respond, increase distance and lower the difficulty.',
         youtubeUrl: '',
+      },
+    ],
+  },
+  {
+    title: 'Engagement',
+    summary: 'Build a dog who happily chooses to connect, follow, and work with the handler through rewards, play, movement, and choice.',
+    translations: {
+      nb: {
+        title: 'Engasjement',
+        summary:
+          'Bygg en hund som frivillig velger kontakt, følger fører og samarbeider gjennom belønning, lek, bevegelse og valgfrihet.',
+      },
+    },
+    subcategories: [
+      {
+        title: 'Offered engagement',
+        goal: 'The dog learns that voluntarily orienting toward the handler makes good things happen.',
+        steps:
+          'Start in a quiet, low-distraction space. Stand or walk slowly without repeating the dog name. When the dog looks at you, turns toward you, moves with you, or chooses to come closer, mark with a clear word such as "yes" and reward immediately. Reset by tossing a treat away or releasing the dog to sniff, then wait for the next offered choice. Build from one quick check-in to several seconds of relaxed connection before adding a cue.',
+        coachingNotes:
+          'Do not force eye contact, pull the dog into position, or nag for attention. Engagement should feel like an invitation. Use food, toys, praise, movement, sniffing, or a short play break depending on what the dog genuinely finds rewarding.',
+        youtubeUrl: '',
+        translations: {
+          nb: {
+            title: 'Frivillig engasjement',
+            goal: 'Hunden lærer at det lønner seg å vende seg frivillig mot fører.',
+            steps:
+              'Start på et rolig sted med få forstyrrelser. Stå stille eller gå sakte uten å gjenta hundens navn. Når hunden ser på deg, vender seg mot deg, følger bevegelsen din eller velger å komme nærmere, markerer du med et tydelig ord som "bra" eller "yes" og belønner med en gang. Nullstill ved å kaste en godbit bort eller gi hunden lov til å snuse, og vent deretter på neste frivillige valg. Bygg fra et kort innsjekk til flere sekunder med avslappet kontakt før du legger på et signal.',
+            coachingNotes:
+              'Ikke tving øyekontakt, dra hunden på plass eller mas om oppmerksomhet. Engasjement skal føles som en invitasjon. Bruk mat, leker, ros, bevegelse, snusing eller en kort lekepause ut fra hva hunden faktisk opplever som belønnende.',
+          },
+        },
+      },
+      {
+        title: 'Follow the movement',
+        goal: 'The dog builds enthusiasm for moving with the handler and checking where the handler is going.',
+        steps:
+          'Begin in a safe open area. Move a few steps away from the dog with light, inviting body language. When the dog follows or catches up, mark and reward close to your leg. Change direction gently before the dog disconnects, then reward again when they rejoin you. Keep the game short and finish while the dog still wants more.',
+        coachingNotes:
+          'Make yourself interesting without overwhelming the dog. If the dog does not follow, lower the difficulty: use better rewards, reduce distractions, move less, or begin indoors. The lead is only for safety, not for steering or correcting.',
+        youtubeUrl: '',
+        translations: {
+          nb: {
+            title: 'Følg bevegelsen',
+            goal: 'Hunden bygger glede for å bevege seg sammen med fører og følge med på hvor fører går.',
+            steps:
+              'Start på et trygt og åpent område. Beveg deg noen få skritt bort fra hunden med lett og inviterende kroppsspråk. Når hunden følger etter eller tar deg igjen, markerer du og belønner nær beinet ditt. Bytt retning rolig før hunden kobler av, og belønn igjen når den finner tilbake til deg. Hold leken kort og avslutt mens hunden fortsatt har lyst på mer.',
+            coachingNotes:
+              'Gjør deg interessant uten å overvelde hunden. Hvis hunden ikke følger, gjør øvelsen lettere: bruk bedre belønninger, reduser forstyrrelser, beveg deg mindre eller start inne. Båndet er kun for sikkerhet, ikke for å styre eller korrigere.',
+          },
+        },
+      },
+      {
+        title: 'Engagement around distractions',
+        goal: 'The dog can notice the environment and then choose to reconnect with the handler.',
+        steps:
+          'Work far enough from distractions that the dog can still eat, move, and think. Let the dog notice the distraction. The moment they look back, turn toward you, soften their body, or choose to move with you, mark and reward generously. You can reward with food, distance from the distraction, sniffing, or a simple movement game. Gradually decrease distance only when recovery is easy.',
+        coachingNotes:
+          'If the dog cannot respond, you are too close or the situation is too hard. Increase distance, reduce duration, and reward small choices. This exercise is about confidence and voluntary reconnection, not suppressing interest in the world.',
+        youtubeUrl: '',
+        translations: {
+          nb: {
+            title: 'Engasjement rundt forstyrrelser',
+            goal: 'Hunden kan legge merke til miljøet og deretter velge å ta kontakt med fører igjen.',
+            steps:
+              'Jobb på så stor avstand fra forstyrrelser at hunden fortsatt kan spise, bevege seg og tenke. La hunden oppdage forstyrrelsen. I det øyeblikket den ser tilbake, vender seg mot deg, mykner i kroppen eller velger å bevege seg sammen med deg, markerer du og belønner godt. Du kan belønne med mat, større avstand fra forstyrrelsen, snusing eller en enkel bevegelseslek. Reduser avstanden gradvis bare når hunden enkelt klarer å hente seg inn igjen.',
+            coachingNotes:
+              'Hvis hunden ikke klarer å respondere, er dere for nær eller situasjonen er for vanskelig. Øk avstanden, gjør økten kortere og belønn små valg. Øvelsen handler om trygghet og frivillig kontakt, ikke om å undertrykke hundens interesse for verden.',
+          },
+        },
       },
     ],
   },
@@ -247,6 +319,32 @@ const defaultSkillsLibraryLabels = {
   videoUnavailable: 'Video preview unavailable',
 };
 
+function translatedSkill(skill: CoreSkill | undefined, locale: SkillsLibraryLocale) {
+  if (!skill) return null;
+  if (locale !== 'nb') return skill;
+
+  const translation = skill.translations?.nb;
+  return {
+    ...skill,
+    title: translation?.title || skill.title,
+    summary: translation?.summary || skill.summary,
+  };
+}
+
+function translatedSubcategory(subcategory: SkillSubcategory | undefined, locale: SkillsLibraryLocale) {
+  if (!subcategory) return null;
+  if (locale !== 'nb') return subcategory;
+
+  const translation = subcategory.translations?.nb;
+  return {
+    ...subcategory,
+    title: translation?.title || subcategory.title,
+    goal: translation?.goal || subcategory.goal,
+    steps: translation?.steps || subcategory.steps,
+    coachingNotes: translation?.coachingNotes || subcategory.coachingNotes,
+  };
+}
+
 function isLikelyYoutubeUrl(value: string) {
   if (!value.trim()) return true;
 
@@ -279,9 +377,11 @@ function getYoutubeVideoId(value: string) {
 export default function SkillsLibraryClient({
   editable = true,
   labels = defaultSkillsLibraryLabels,
+  locale = 'en',
 }: {
   editable?: boolean;
   labels?: typeof defaultSkillsLibraryLabels;
+  locale?: SkillsLibraryLocale;
 }) {
   const [skills, setSkills] = useState<CoreSkill[]>(defaultSkills);
   const [selectedSkillTitle, setSelectedSkillTitle] = useState(defaultSkills[0].title);
@@ -407,6 +507,8 @@ export default function SkillsLibraryClient({
     [selectedSkill, selectedSubcategoryTitle],
   );
   const youtubeVideoId = selectedSubcategory?.youtubeUrl ? getYoutubeVideoId(selectedSubcategory.youtubeUrl) : null;
+  const displayedSkill = translatedSkill(selectedSkill, locale);
+  const displayedSubcategory = translatedSubcategory(selectedSubcategory, locale);
 
   function chooseSkill(skill: CoreSkill) {
     setSelectedSkillTitle(skill.title);
@@ -552,7 +654,7 @@ export default function SkillsLibraryClient({
             >
               {skills.map((skill) => (
                 <option key={skill.title} value={skill.title}>
-                  {skill.title}
+                  {translatedSkill(skill, locale)?.title || skill.title}
                 </option>
               ))}
             </select>
@@ -607,7 +709,7 @@ export default function SkillsLibraryClient({
               <div className="aspect-video w-full max-w-full bg-black">
                 <iframe
                   src={`https://www.youtube.com/embed/${youtubeVideoId}`}
-                  title={`YouTube instruction for ${selectedSubcategory.title}`}
+                  title={`YouTube instruction for ${displayedSubcategory?.title || selectedSubcategory.title}`}
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                   allowFullScreen
                   className="block h-full w-full max-w-full border-0"
@@ -631,8 +733,8 @@ export default function SkillsLibraryClient({
 
         <div className="rounded-2xl border border-brand-200 bg-white p-5 shadow-sm">
           <p className="text-sm font-medium text-brand-700">{labels.coreSkill}</p>
-          <h2 className="mt-1 text-2xl font-semibold text-brand-950">{selectedSkill.title}</h2>
-          <p className="mt-3 text-sm leading-6 text-brand-700">{selectedSkill.summary}</p>
+          <h2 className="mt-1 text-2xl font-semibold text-brand-950">{displayedSkill?.title || selectedSkill.title}</h2>
+          <p className="mt-3 text-sm leading-6 text-brand-700">{displayedSkill?.summary || selectedSkill.summary}</p>
         </div>
 
         <div className="rounded-2xl border border-brand-200 bg-white p-5 shadow-sm">
@@ -645,7 +747,7 @@ export default function SkillsLibraryClient({
             >
               {selectedSkill.subcategories.map((subcategory) => (
                 <option key={subcategory.title} value={subcategory.title}>
-                  {subcategory.title}
+                  {translatedSubcategory(subcategory, locale)?.title || subcategory.title}
                 </option>
               ))}
             </select>
@@ -715,15 +817,17 @@ export default function SkillsLibraryClient({
               <div className="space-y-5">
                 <div>
                   <p className="text-sm font-medium text-brand-700">{labels.goal}</p>
-                  <p className="mt-1 text-sm leading-6 text-brand-800">{selectedSubcategory.goal}</p>
+                  <p className="mt-1 text-sm leading-6 text-brand-800">{displayedSubcategory?.goal || selectedSubcategory.goal}</p>
                 </div>
                 <div>
                   <p className="text-sm font-medium text-brand-700">{labels.trainingDetails}</p>
-                  <p className="mt-1 whitespace-pre-line text-sm leading-6 text-brand-800">{selectedSubcategory.steps}</p>
+                  <p className="mt-1 whitespace-pre-line text-sm leading-6 text-brand-800">{displayedSubcategory?.steps || selectedSubcategory.steps}</p>
                 </div>
                 <div>
                   <p className="text-sm font-medium text-brand-700">{labels.coachingNotes}</p>
-                  <p className="mt-1 whitespace-pre-line text-sm leading-6 text-brand-800">{selectedSubcategory.coachingNotes}</p>
+                  <p className="mt-1 whitespace-pre-line text-sm leading-6 text-brand-800">
+                    {displayedSubcategory?.coachingNotes || selectedSubcategory.coachingNotes}
+                  </p>
                 </div>
               </div>
             )}

@@ -1,20 +1,7 @@
 "use client";
 
 import { useState } from 'react';
-
-const breedOptions = [
-  'Beagle',
-  'Border Collie',
-  'French Bulldog',
-  'German Shepherd Dog',
-  'Golden Retriever',
-  'Great Dane',
-  'Labrador Retriever',
-  'Norwegian Buhund',
-  'Norwegian Elkhound',
-  'Norwegian Lundehund',
-  'Poodle',
-];
+import BreedSelect from '@/components/BreedSelect';
 
 export default function AdminCreateCustomerForm() {
   const [form, setForm] = useState({
@@ -82,12 +69,9 @@ export default function AdminCreateCustomerForm() {
         </label>
         <label className="block">
           <span className="text-sm font-medium text-brand-800">Dog breed</span>
-          <select value={form.dogBreed} onChange={(event) => setForm({ ...form, dogBreed: event.target.value })} className="mt-1 w-full rounded-lg border border-brand-200 px-3 py-2">
-            <option value="">Select a breed</option>
-            {breedOptions.map((breed) => (
-              <option key={breed} value={breed}>{breed}</option>
-            ))}
-          </select>
+          <div className="mt-1">
+            <BreedSelect value={form.dogBreed} onChange={(dogBreed) => setForm({ ...form, dogBreed })} />
+          </div>
         </label>
         <label className="block md:col-span-2">
           <span className="text-sm font-medium text-brand-800">Profile picture URL</span>

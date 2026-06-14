@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { ensureDogBreed } from '@/lib/dog-breeds-server';
 import prisma from '@/lib/prisma';
 import { requireTrainer } from '@/lib/auth';
 
@@ -20,11 +21,13 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Dog name and owner are required.' }, { status: 400 });
   }
 
+  const breed = await ensureDogBreed(body.breed);
+
   const dog = await prisma.dog.create({
     data: {
       name: body.name,
       age: body.age || '',
-      breed: body.breed || '',
+      breed,
       status: body.status || 'Active',
       owner: body.owner,
       lastIncident: body.lastIncident || null,

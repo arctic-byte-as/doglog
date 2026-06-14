@@ -55,6 +55,12 @@ model Dog {
   serviceSessions ServiceSession[]
 }
 
+model DogBreed {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  createdAt DateTime @default(now())
+}
+
 model Observation {
   id       String   @id @default(uuid())
   category String

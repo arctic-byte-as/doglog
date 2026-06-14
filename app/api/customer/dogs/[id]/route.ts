@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { requireCustomer } from '@/lib/auth';
+import { ensureDogBreed } from '@/lib/dog-breeds-server';
 import prisma from '@/lib/prisma';
 
 export async function PATCH(req: Request, { params }: { params: { id: string } }) {
@@ -21,12 +22,14 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
     return NextResponse.json({ error: 'Dog name is required.' }, { status: 400 });
   }
 
+  const breed = await ensureDogBreed(body.breed);
+
   const dog = await prisma.dog.update({
     where: { id: params.id },
     data: {
       name: body.name,
       age: body.age || '',
-      breed: body.breed || '',
+      breed,
       status: body.status || existing.status,
       owner: user.customer.name,
       lastIncident: body.lastIncident || null,

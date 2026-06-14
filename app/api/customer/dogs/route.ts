@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { requireCustomer } from '@/lib/auth';
+import { ensureDogBreed } from '@/lib/dog-breeds-server';
 import prisma from '@/lib/prisma';
 
 export async function POST(req: Request) {
@@ -11,11 +12,13 @@ export async function POST(req: Request) {
   const trainer = await prisma.trainer.findFirst({ orderBy: { createdAt: 'asc' } });
   if (!trainer) return NextResponse.json({ error: 'No trainer is available yet.' }, { status: 400 });
 
+  const breed = await ensureDogBreed(body.breed);
+
   const dog = await prisma.dog.create({
     data: {
       name: body.name,
       age: body.age || '',
-      breed: body.breed || '',
+      breed,
       status: body.status || 'New customer dog',
       owner: user.customer.name,
       lastIncident: body.lastIncident || null,

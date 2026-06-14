@@ -28,6 +28,10 @@ const defaultDogLabels = {
   saving: 'Saving...',
   saved: 'Dog saved',
   saveError: 'Could not save dog.',
+  delete: 'Delete dog',
+  deleting: 'Deleting...',
+  deleteError: 'Could not delete dog.',
+  deleteConfirm: 'Delete this dog? This will also remove training records for this dog.',
 };
 
 type ImageLabels = ComponentProps<typeof DogProfileImageField>['labels'];
@@ -55,6 +59,7 @@ export default function CustomerDogProfileForm({
   });
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   async function saveDog(nextForm: typeof form, successMessage: string) {
     setLoading(true);
@@ -93,6 +98,23 @@ export default function CustomerDogProfileForm({
     await saveDog(nextForm, photoSavedMessage);
   }
 
+  async function deleteDog() {
+    const confirmed = window.confirm(labels.deleteConfirm || defaultDogLabels.deleteConfirm);
+    if (!confirmed) return;
+
+    setDeleting(true);
+    setMessage('');
+    try {
+      const res = await fetch(`/api/customer/dogs/${dog.id}`, { method: 'DELETE' });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data?.error || labels.deleteError || defaultDogLabels.deleteError);
+      window.location.reload();
+    } catch (error: any) {
+      setMessage(error.message || labels.deleteError || defaultDogLabels.deleteError);
+      setDeleting(false);
+    }
+  }
+
   return (
     <form onSubmit={handleSubmit} className="space-y-4 rounded-2xl border border-brand-200 bg-white p-5 shadow-sm">
       <div className="grid gap-3 md:grid-cols-2">
@@ -128,6 +150,14 @@ export default function CustomerDogProfileForm({
       <div className="flex items-center gap-3">
         <button type="submit" disabled={loading} className="rounded-lg bg-brand-700 px-4 py-2 text-white disabled:opacity-60">
           {loading ? labels.saving : labels.save}
+        </button>
+        <button
+          type="button"
+          onClick={deleteDog}
+          disabled={deleting}
+          className="rounded-lg border border-red-200 px-4 py-2 text-sm font-medium text-red-700 transition hover:bg-red-50 disabled:opacity-60"
+        >
+          {deleting ? labels.deleting || defaultDogLabels.deleting : labels.delete || defaultDogLabels.delete}
         </button>
         {message ? <p className="text-sm text-brand-700">{message}</p> : null}
       </div>

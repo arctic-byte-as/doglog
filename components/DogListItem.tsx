@@ -21,6 +21,23 @@ type Dog = {
 
 export function DogListItem({ dog }: { dog: Dog }) {
   const [editing, setEditing] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+
+  async function deleteDog() {
+    const confirmed = window.confirm(`Delete ${dog.name}? This will also remove any observations, consultations, and service sessions for this dog.`);
+    if (!confirmed) return;
+
+    setDeleting(true);
+    try {
+      const response = await fetch(`/api/dogs/${dog.id}`, { method: 'DELETE' });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data?.error || 'Could not delete dog.');
+      window.location.reload();
+    } catch (error: any) {
+      alert(error.message || 'Could not delete dog.');
+      setDeleting(false);
+    }
+  }
 
   if (editing) {
     return (
@@ -63,9 +80,19 @@ export function DogListItem({ dog }: { dog: Dog }) {
             ) : null}
           </div>
         </div>
-        <button onClick={() => setEditing(true)} className="rounded-lg border border-brand-200 px-3 py-1 text-sm text-brand-800">
-          Edit
-        </button>
+        <div className="flex shrink-0 flex-col gap-2 sm:flex-row">
+          <button onClick={() => setEditing(true)} className="rounded-lg border border-brand-200 px-3 py-1 text-sm text-brand-800">
+            Edit
+          </button>
+          <button
+            type="button"
+            onClick={deleteDog}
+            disabled={deleting}
+            className="rounded-lg border border-red-200 px-3 py-1 text-sm font-medium text-red-700 transition hover:bg-red-50 disabled:opacity-60"
+          >
+            {deleting ? 'Deleting...' : 'Delete'}
+          </button>
+        </div>
       </div>
       <div className="mt-4 flex flex-wrap gap-2 text-sm">
         <span className="rounded-full bg-brand-100 px-3 py-1 text-brand-800">Status: {dog.status}</span>

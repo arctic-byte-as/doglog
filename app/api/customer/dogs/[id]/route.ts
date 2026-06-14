@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { requireCustomer } from '@/lib/auth';
+import { deleteDogById } from '@/lib/delete-dog';
 import { ensureDogBreed } from '@/lib/dog-breeds-server';
 import prisma from '@/lib/prisma';
 
@@ -38,4 +39,24 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
   });
 
   return NextResponse.json({ dog });
+}
+
+export async function DELETE(_req: Request, { params }: { params: { id: string } }) {
+  const user = await requireCustomer();
+
+  const existing = await prisma.dog.findFirst({
+    where: {
+      id: params.id,
+      customerId: user.customer.id,
+    },
+    select: { id: true },
+  });
+
+  if (!existing) {
+    return NextResponse.json({ error: 'Dog not found.' }, { status: 404 });
+  }
+
+  await deleteDogById(params.id);
+
+  return NextResponse.json({ ok: true });
 }

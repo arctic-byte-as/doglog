@@ -87,6 +87,10 @@ export const customerDictionaries = {
         saving: 'Saving...',
         saved: 'Dog saved',
         saveError: 'Could not save dog.',
+        delete: 'Delete dog',
+        deleting: 'Deleting...',
+        deleteError: 'Could not delete dog.',
+        deleteConfirm: 'Delete this dog? This will also remove training records for this dog.',
       },
       image: {
         profilePicture: 'Profile picture',
@@ -233,6 +237,10 @@ export const customerDictionaries = {
         saving: 'Lagrer...',
         saved: 'Hund lagret',
         saveError: 'Kunne ikke lagre hund.',
+        delete: 'Slett hund',
+        deleting: 'Sletter...',
+        deleteError: 'Kunne ikke slette hund.',
+        deleteConfirm: 'Slette denne hunden? Dette vil også fjerne treningsdata for denne hunden.',
       },
       image: {
         profilePicture: 'Profilbilde',

@@ -1,5 +1,5 @@
-import Link from 'next/link';
 import { SiteShell } from '@/components/SiteShell';
+import AdminMenuSelect from '@/components/AdminMenuSelect';
 import { SectionCard } from '@/components/SectionCard';
 import { DogForm } from '@/components/DogForm';
 import { DogListItem } from '@/components/DogListItem';
@@ -32,12 +32,8 @@ export default async function DogsPage({ searchParams }: { searchParams?: { filt
       <div className="space-y-8">
         <div className="flex flex-wrap gap-3">
           <BackToDashboardLink />
-          {customerOnly ? (
-            <Link href="/admin/accounts" className="inline-flex rounded-full border border-brand-200 bg-white px-4 py-2 text-sm font-medium text-brand-800">
-              Back to admin
-            </Link>
-          ) : null}
         </div>
+        {customerOnly ? <AdminMenuSelect selectedHref="/dogs?filter=customers" /> : null}
 
         <SectionCard title="Add dog">
           <DogForm />

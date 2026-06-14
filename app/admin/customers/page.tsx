@@ -1,6 +1,6 @@
-import Link from 'next/link';
 import { SiteShell } from '@/components/SiteShell';
 import AdminCustomerEditForm from '@/components/AdminCustomerEditForm';
+import AdminMenuSelect from '@/components/AdminMenuSelect';
 import CustomerServiceAccessForm from '@/components/CustomerServiceAccessForm';
 import BackToDashboardLink from '@/components/BackToDashboardLink';
 import DeleteCustomerButton from '@/components/DeleteCustomerButton';
@@ -30,10 +30,9 @@ export default async function AdminCustomersPage() {
       <div className="space-y-6">
         <div className="flex flex-wrap gap-3">
           <BackToDashboardLink />
-          <Link href="/admin/accounts" className="inline-flex rounded-full border border-brand-200 bg-white px-4 py-2 text-sm font-medium text-brand-800">
-            Back to admin
-          </Link>
         </div>
+
+        <AdminMenuSelect selectedHref="/admin/customers" />
 
         <section className="overflow-hidden rounded-2xl border border-brand-200 bg-brand-50 p-4 sm:rounded-3xl sm:p-6">
           <h1 className="mb-4 text-xl font-semibold text-brand-950 sm:text-2xl">Customer records</h1>

@@ -345,6 +345,7 @@ const emptyExercise = {
 };
 
 const defaultTrainingLibraryLabels = {
+  category: 'Category',
   subcategory: 'Sub category',
   setup: 'Setup',
   progressMarker: 'Progress marker',
@@ -457,6 +458,11 @@ export default function TrainingLibraryClient({
     setSelectedExerciseTitle(category.exercises[0]?.title || '');
   }
 
+  function chooseCategoryByTitle(title: string) {
+    const category = libraryCategories.find((item) => item.title === title);
+    if (category) chooseCategory(category);
+  }
+
   function addCategory(event: React.FormEvent) {
     event.preventDefault();
     if (!categoryForm.title.trim()) return;
@@ -504,20 +510,24 @@ export default function TrainingLibraryClient({
 
   return (
     <div className="grid gap-6 lg:grid-cols-[280px_1fr]">
-      <aside className="flex gap-3 overflow-x-auto pb-2 lg:block lg:space-y-4 lg:overflow-visible lg:pb-0">
-        {libraryCategories.map((category) => (
-          <button
-            key={category.title}
-            type="button"
-            onClick={() => chooseCategory(category)}
-            className={`block min-w-64 rounded-2xl border bg-white p-4 text-left text-brand-950 shadow-sm transition hover:border-brand-300 lg:w-full lg:min-w-0 ${
-              selectedCategory.title === category.title ? 'border-brand-700' : 'border-brand-200'
-            }`}
-          >
-            <span className="block font-semibold">{translatedCategory(category, locale).title}</span>
-            <span className="mt-2 block text-sm leading-5 text-brand-700">{translatedCategory(category, locale).summary}</span>
-          </button>
-        ))}
+      <aside className="space-y-4">
+        <div className="rounded-2xl border border-brand-200 bg-white p-4 shadow-sm">
+          <label className="block min-w-0">
+            <span className="text-sm font-medium text-brand-800">{labels.category}</span>
+            <select
+              value={selectedCategory.title}
+              onChange={(event) => chooseCategoryByTitle(event.target.value)}
+              className="mt-2 w-full rounded-lg border border-brand-200 bg-white px-3 py-2 text-brand-900"
+            >
+              {libraryCategories.map((category) => (
+                <option key={category.title} value={category.title}>
+                  {translatedCategory(category, locale).title}
+                </option>
+              ))}
+            </select>
+          </label>
+          <p className="mt-3 text-sm leading-6 text-brand-700">{displayedCategory.summary}</p>
+        </div>
 
         {editable ? (
           <form onSubmit={addCategory} className="min-w-72 space-y-3 rounded-2xl border border-brand-200 bg-white p-4 shadow-sm lg:min-w-0">

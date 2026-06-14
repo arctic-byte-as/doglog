@@ -8,6 +8,7 @@ export const customerDictionaries = {
       norwegian: 'Norsk',
     },
     nav: {
+      myHome: 'My Home',
       myServices: 'My Services',
       myTrainingPlan: 'My Training Plan',
       skillsLibrary: 'Skills Library',
@@ -105,6 +106,7 @@ export const customerDictionaries = {
     },
     plan: {
       title: 'Your consultations and training plan',
+      selectTrainingPlan: 'Training plan',
       consultation: 'Consultation',
       outcome: 'Outcome',
       notRecorded: 'Not recorded yet',
@@ -132,6 +134,7 @@ export const customerDictionaries = {
       skills: 'Skills Library',
       training: 'Training Library',
       tips: 'Training tips and tricks',
+      category: 'Category',
       subcategory: 'Sub category',
       setup: 'Setup',
       progressMarker: 'Progress marker',
@@ -151,6 +154,7 @@ export const customerDictionaries = {
       norwegian: 'Norsk',
     },
     nav: {
+      myHome: 'Min startside',
       myServices: 'Mine tjenester',
       myTrainingPlan: 'Min treningsplan',
       skillsLibrary: 'Ferdighetsbibliotek',
@@ -248,6 +252,7 @@ export const customerDictionaries = {
     },
     plan: {
       title: 'Konsultasjoner og treningsplan',
+      selectTrainingPlan: 'Treningsplan',
       consultation: 'Konsultasjon',
       outcome: 'Resultat',
       notRecorded: 'Ikke registrert ennå',
@@ -275,6 +280,7 @@ export const customerDictionaries = {
       skills: 'Ferdighetsbibliotek',
       training: 'Treningsbibliotek',
       tips: 'Treningstips og råd',
+      category: 'Kategori',
       subcategory: 'Underkategori',
       setup: 'Oppsett',
       progressMarker: 'Tegn på fremgang',

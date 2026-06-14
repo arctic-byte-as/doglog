@@ -402,10 +402,14 @@ const norwegianCourseText = {
 
 const courseUiText = {
   en: {
+    courseLabel: 'Course',
+    weekLabel: 'Week',
     activitiesHeading: 'Activities to concentrate on',
     addFocus: 'Add focus',
   },
   nb: {
+    courseLabel: 'Kurs',
+    weekLabel: 'Uke',
     activitiesHeading: 'Aktiviteter å fokusere på',
     addFocus: 'Legg til fokus',
   },
@@ -500,50 +504,47 @@ export default function CoursesClient({
           <p className="mt-3 text-sm leading-6 text-brand-700">{selectedCourse.summary}</p>
         </div>
       ) : (
-        <div className="grid gap-4 md:grid-cols-2">
-          {visibleCourses.map((course) => (
-            <button
-              key={course.id}
-              type="button"
-              onClick={() => {
-                setSelectedCourseId(course.id);
+        <div className="rounded-2xl border border-brand-200 bg-white p-5 shadow-sm">
+          <label className="block min-w-0">
+            <span className="text-sm font-medium text-brand-800">{uiText.courseLabel}</span>
+            <select
+              value={selectedCourse.id}
+              onChange={(event) => {
+                setSelectedCourseId(event.target.value as CourseId);
                 setSelectedWeekIndex(0);
               }}
-              className={`flex min-h-36 flex-col justify-between rounded-3xl border bg-white p-6 text-left text-brand-950 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-300 hover:shadow-soft ${
-                selectedCourse.id === course.id ? 'border-brand-700' : 'border-brand-200'
-              }`}
+              className="mt-2 w-full rounded-lg border border-brand-200 bg-white px-3 py-2 text-brand-900"
             >
-              <h2 className="text-xl font-semibold">{course.title}</h2>
-              <p className="mt-4 text-sm leading-6 text-brand-700">{course.summary}</p>
-            </button>
-          ))}
+              {visibleCourses.map((course) => (
+                <option key={course.id} value={course.id}>
+                  {course.title}
+                </option>
+              ))}
+            </select>
+          </label>
+          <p className="mt-3 text-sm leading-6 text-brand-700">{selectedCourse.summary}</p>
         </div>
       )}
 
-      <div className="grid gap-6 md:grid-cols-[minmax(17rem,22rem)_minmax(0,1fr)] xl:grid-cols-[minmax(18rem,24rem)_minmax(0,1fr)]">
-        <section className="space-y-3">
-          {selectedCourse.weeks.map((week, index) => (
-            <div key={`${week.title}-${index}`} className="space-y-3">
-              <button
-                type="button"
-                onClick={() => setSelectedWeekIndex(index)}
-                className={`min-h-32 w-full rounded-2xl border bg-white p-5 text-left shadow-sm transition hover:border-brand-300 md:min-h-0 md:p-3 ${
-                  selectedWeekIndex === index ? 'border-brand-700' : 'border-brand-200'
-                }`}
-              >
-                <div className="min-w-0">
-                  <p className="text-sm font-medium text-brand-700">{week.title}</p>
-                  <h3 className="mt-1 text-base font-semibold leading-5 text-brand-950">{week.focus || uiText.addFocus}</h3>
-                </div>
-              </button>
-              {selectedWeekIndex === index
-                ? renderWeekDetail('rounded-2xl border border-brand-200 bg-white p-5 shadow-sm md:hidden')
-                : null}
-            </div>
-          ))}
-        </section>
+      <div className="space-y-6">
+        <div className="rounded-2xl border border-brand-200 bg-white p-5 shadow-sm">
+          <label className="block min-w-0">
+            <span className="text-sm font-medium text-brand-800">{uiText.weekLabel}</span>
+            <select
+              value={selectedWeekIndex}
+              onChange={(event) => setSelectedWeekIndex(Number(event.target.value))}
+              className="mt-2 w-full rounded-lg border border-brand-200 bg-white px-3 py-2 text-brand-900"
+            >
+              {selectedCourse.weeks.map((week, index) => (
+                <option key={`${week.title}-${index}`} value={index}>
+                  {week.title} - {week.focus || uiText.addFocus}
+                </option>
+              ))}
+            </select>
+          </label>
+        </div>
 
-        {renderWeekDetail('hidden rounded-2xl border border-brand-200 bg-white p-6 shadow-sm md:block')}
+        {renderWeekDetail('rounded-2xl border border-brand-200 bg-white p-5 shadow-sm md:p-6')}
       </div>
     </div>
   );

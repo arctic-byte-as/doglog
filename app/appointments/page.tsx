@@ -1,4 +1,5 @@
 import { SiteShell } from '@/components/SiteShell';
+import AdminMenuSelect from '@/components/AdminMenuSelect';
 import { SectionCard } from '@/components/SectionCard';
 import BackToDashboardLink from '@/components/BackToDashboardLink';
 import { requireTrainer } from '@/lib/auth';
@@ -10,6 +11,7 @@ export default async function AppointmentsPage() {
     <SiteShell>
       <div className="space-y-8">
         <BackToDashboardLink />
+        <AdminMenuSelect selectedHref="/appointments" />
 
         <SectionCard title="Appointments">
           <p className="rounded-2xl border border-brand-200 bg-white p-5 text-brand-700">

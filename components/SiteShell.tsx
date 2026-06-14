@@ -13,7 +13,6 @@ const nav = [
   { href: '/customer', label: 'Profile' },
   { href: '/customer/plan', label: 'My plan' },
   { href: '/admin/accounts', label: 'Admin' },
-  { href: '/admin/testing', label: 'Test views' },
   { href: '/login', label: 'Login' },
 ];
 
@@ -26,7 +25,9 @@ function DogAvatarStrip({
   dogs: { name: string; profileImageUrl: string | null }[];
   label: string;
 }) {
-  const visibleDogs = dogs.slice(0, 2);
+  const visibleDogs = dogs.filter((dog) => dog.profileImageUrl).slice(0, 2);
+  if (!visibleDogs.length) return null;
+
   const title = visibleDogs.length ? visibleDogs.map((dog) => dog.name).join(', ') : label;
 
   return (
@@ -36,25 +37,17 @@ function DogAvatarStrip({
       title={title}
       className="flex h-11 min-w-11 items-center justify-center gap-1 rounded-full border border-brand-200 bg-white px-1.5 text-sm font-semibold text-brand-800 transition hover:border-brand-400 hover:bg-brand-50"
     >
-      {visibleDogs.length ? (
-        visibleDogs.map((dog) => (
+      {visibleDogs.map((dog) => (
+        <span
+          key={dog.name}
+          className="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-full bg-brand-100 text-xs font-semibold text-brand-700"
+        >
           <span
-            key={dog.name}
-            className="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-full bg-brand-100 text-xs font-semibold text-brand-700"
-          >
-            {dog.profileImageUrl ? (
-              <span
-                className="h-full w-full bg-cover bg-center"
-                style={{ backgroundImage: `url(${dog.profileImageUrl})` }}
-              />
-            ) : (
-              dog.name.slice(0, 1).toUpperCase()
-            )}
-          </span>
-        ))
-      ) : (
-        <span className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-100 text-xs font-semibold text-brand-700">P</span>
-      )}
+            className="h-full w-full bg-cover bg-center"
+            style={{ backgroundImage: `url(${dog.profileImageUrl})` }}
+          />
+        </span>
+      ))}
     </Link>
   );
 }
@@ -66,6 +59,7 @@ export async function SiteShell({ children }: { children: React.ReactNode }) {
   const isTrainerMenu = user?.role === 'TRAINER' || user?.role === 'ADMIN';
   const isCustomerMenu = user?.role === 'CUSTOMER';
   const customerNav = [
+    { href: '/customer', label: t.nav.myHome },
     { href: '/customer/services', label: t.nav.myServices },
     { href: '/customer/plan', label: t.nav.myTrainingPlan },
     { href: '/customer/skills-library', label: t.nav.skillsLibrary },

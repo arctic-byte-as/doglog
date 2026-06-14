@@ -1,5 +1,5 @@
-import Link from 'next/link';
 import { SiteShell } from '@/components/SiteShell';
+import AdminMenuSelect from '@/components/AdminMenuSelect';
 import BackToDashboardLink from '@/components/BackToDashboardLink';
 import CustomerOverviewTable from '@/components/CustomerOverviewTable';
 import { requireAdmin } from '@/lib/auth';
@@ -45,10 +45,9 @@ export default async function CustomerOverviewPage() {
       <div className="space-y-6">
         <div className="flex flex-wrap gap-3">
           <BackToDashboardLink />
-          <Link href="/admin/accounts" className="inline-flex rounded-full border border-brand-200 bg-white px-4 py-2 text-sm font-medium text-brand-800">
-            Back to admin
-          </Link>
         </div>
+
+        <AdminMenuSelect selectedHref="/admin/customer-overview" />
 
         <section className="overflow-hidden rounded-2xl border border-brand-200 bg-brand-50 p-4 sm:rounded-3xl sm:p-6">
           <div className="mb-4">

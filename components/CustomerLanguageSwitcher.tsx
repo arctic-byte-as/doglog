@@ -14,20 +14,17 @@ export default function CustomerLanguageSwitcher({ locale }: { locale: CustomerL
   }
 
   return (
-    <div className="flex rounded-full border border-brand-200 bg-white p-1 text-xs font-semibold text-brand-800">
-      {(['nb', 'en'] as const).map((option) => (
-        <button
-          key={option}
-          type="button"
-          disabled={pending || locale === option}
-          onClick={() => changeLocale(option)}
-          className={`rounded-full px-3 py-1 transition ${
-            locale === option ? 'bg-brand-700 text-white' : 'hover:bg-brand-50 disabled:opacity-70'
-          }`}
-        >
-          {option === 'nb' ? 'Norsk' : 'English'}
-        </button>
-      ))}
-    </div>
+    <label className="block min-w-40">
+      <span className="sr-only">Language</span>
+      <select
+        value={locale}
+        disabled={pending}
+        onChange={(event) => changeLocale(event.target.value as CustomerLocale)}
+        className="w-full rounded-lg border border-brand-200 bg-white px-3 py-2 text-sm font-medium text-brand-900 disabled:opacity-70"
+      >
+        <option value="nb">Norsk</option>
+        <option value="en">English</option>
+      </select>
+    </label>
   );
 }

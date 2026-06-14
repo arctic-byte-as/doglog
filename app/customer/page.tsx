@@ -31,6 +31,12 @@ export default async function CustomerPage() {
               consultations: {
                 orderBy: { date: 'desc' },
               },
+              serviceSessions: {
+                where: {
+                  serviceKey: { in: ['PRIVATE_TRAINING', 'OPEN_TRAINING'] },
+                },
+                orderBy: { date: 'desc' },
+              },
             },
             orderBy: { name: 'asc' },
           },
@@ -39,15 +45,31 @@ export default async function CustomerPage() {
     : null;
 
   const dogs = customer?.dogs ?? [];
-  const consultations = dogs.flatMap((dog) => dog.consultations.map((consultation) => ({ ...consultation, dogName: dog.name })));
-  const latestConsultation = consultations.sort((a, b) => b.date.getTime() - a.date.getTime())[0];
-  const prescribedExercises = consultations.flatMap((consultation) =>
+  const enabledServiceKeys = new Set(customer?.serviceAccess.map((service) => service.serviceKey) || []);
+  const consultations = enabledServiceKeys.has('CONSULTATIONS')
+    ? dogs.flatMap((dog) => dog.consultations.map((consultation) => ({ ...consultation, dogName: dog.name })))
+    : [];
+  const serviceSessions = dogs.flatMap((dog) =>
+    dog.serviceSessions
+      .filter((session) => enabledServiceKeys.has(session.serviceKey))
+      .map((session) => ({ ...session, dogName: dog.name })),
+  );
+  const trainingAssignments = [...consultations, ...serviceSessions].sort((a, b) => b.date.getTime() - a.date.getTime());
+  const latestTraining = trainingAssignments[0];
+  const prescribedExercises = [
+    ...consultations.flatMap((consultation) =>
     trainingPlanNames(consultation.prescribedPlan).map((exercise) => ({
       exercise,
-      consultationId: consultation.id,
+      href: `/customer/consultations/${consultation.id}`,
     }))
-  );
-  const enabledServiceKeys = new Set(customer?.serviceAccess.map((service) => service.serviceKey) || []);
+  ),
+    ...serviceSessions.flatMap((session) =>
+      trainingPlanNames(session.prescribedPlan).map((exercise) => ({
+        exercise,
+        href: session.serviceKey === 'OPEN_TRAINING' ? '/customer/services/open-training' : '/customer/services/private-training',
+      }))
+    ),
+  ];
   const serviceTiles = customerServiceOptions
     .filter((service) => enabledServiceKeys.has(service.key))
     .map((service) => ({
@@ -82,7 +104,7 @@ export default async function CustomerPage() {
               {prescribedExercises.map((exercise, index) => (
                 <Link
                   key={`${exercise.exercise}-${index}`}
-                  href={`/customer/consultations/${exercise.consultationId}`}
+                  href={exercise.href}
                   className="block rounded-2xl border border-brand-200 bg-white p-4 text-sm font-medium text-brand-800 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-300 hover:shadow-soft"
                 >
                   {exercise.exercise}
@@ -90,7 +112,7 @@ export default async function CustomerPage() {
               ))}
             </div>
           ) : null}
-          {!latestConsultation ? (
+          {!latestTraining ? (
             <p className="rounded-2xl border border-brand-200 bg-white p-5 text-brand-700">
               {t.dashboard.trainingSummaryEmpty}
             </p>

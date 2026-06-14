@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { SiteShell } from '@/components/SiteShell';
+import AdminMenuSelect from '@/components/AdminMenuSelect';
 import { SectionCard } from '@/components/SectionCard';
 import { requireAdmin } from '@/lib/auth';
 import prisma from '@/lib/prisma';
@@ -82,6 +83,8 @@ export default async function AdminTestingPage({ searchParams }: { searchParams?
             Trainer dashboard
           </Link>
         </div>
+
+        <AdminMenuSelect selectedHref="/admin/testing" />
 
         <div className="grid gap-5 lg:grid-cols-[18rem_1fr]">
           <aside className="space-y-5">

@@ -1,5 +1,5 @@
-import Link from 'next/link';
 import { SiteShell } from '@/components/SiteShell';
+import AdminMenuSelect from '@/components/AdminMenuSelect';
 import BackToDashboardLink from '@/components/BackToDashboardLink';
 import CreateTrainerForm from '@/components/CreateTrainerForm';
 import TrainerListItem from '@/components/TrainerListItem';
@@ -16,13 +16,9 @@ export default async function AdminTrainersPage() {
       <div className="space-y-6">
         <div className="flex flex-wrap items-center gap-3">
           <BackToDashboardLink />
-          <Link
-            href="/admin/accounts"
-            className="inline-flex rounded-full border border-brand-200 bg-white px-4 py-2 text-sm font-semibold text-brand-800 shadow-sm transition hover:border-brand-300 hover:bg-brand-50"
-          >
-            Back to admin
-          </Link>
         </div>
+
+        <AdminMenuSelect selectedHref="/admin/trainers" />
 
         <section className="rounded-3xl border border-brand-200 bg-white p-6 shadow-sm">
           <div className="mb-5">

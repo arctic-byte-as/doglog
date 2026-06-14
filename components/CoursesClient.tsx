@@ -3,6 +3,8 @@
 import Image from 'next/image';
 import { useState } from 'react';
 
+type CourseId = 'puppy' | 'skills';
+
 type CourseWeek = {
   title: string;
   focus: string;
@@ -15,7 +17,7 @@ type CourseWeek = {
 };
 
 type Course = {
-  id: 'puppy' | 'skills';
+  id: CourseId;
   title: string;
   summary: string;
   weeks: CourseWeek[];
@@ -424,13 +426,15 @@ export default function CoursesClient({
   initialCourseId = 'puppy',
   lockedCourse = false,
   locale = 'en',
+  availableCourseIds,
 }: {
   editable?: boolean;
-  initialCourseId?: 'puppy' | 'skills';
+  initialCourseId?: CourseId;
   lockedCourse?: boolean;
   locale?: CourseLocale;
+  availableCourseIds?: CourseId[];
 }) {
-  const [selectedCourseId, setSelectedCourseId] = useState<'puppy' | 'skills'>(initialCourseId);
+  const [selectedCourseId, setSelectedCourseId] = useState<CourseId>(initialCourseId);
   const [selectedWeekIndex, setSelectedWeekIndex] = useState(0);
 
   const courses: Course[] = [
@@ -447,19 +451,23 @@ export default function CoursesClient({
       weeks: localizeWeeks(defaultSkillsWeeks, 'skills', locale),
     },
   ];
+  const visibleCourses = availableCourseIds?.length
+    ? courses.filter((course) => availableCourseIds.includes(course.id))
+    : courses;
   const uiText = courseUiText[locale];
-  const selectedCourse = courses.find((course) => course.id === selectedCourseId) || courses[0];
+  const selectedCourse = visibleCourses.find((course) => course.id === selectedCourseId) || visibleCourses[0] || courses[0];
   const selectedWeek = selectedCourse.weeks[selectedWeekIndex] || selectedCourse.weeks[0];
+  const showCourseSwitcher = !lockedCourse || visibleCourses.length > 1;
 
   function renderWeekDetail(className: string) {
     return (
       <section className={className}>
-        <div className="relative mb-5 aspect-[4/3] overflow-hidden rounded-xl border border-brand-100 bg-brand-50">
+        <div className="relative mb-5 aspect-[4/3] w-full max-w-md overflow-hidden rounded-xl border border-brand-100 bg-brand-50">
           <Image
             src={selectedWeek.image.src}
             alt={selectedWeek.image.alt}
             fill
-            sizes="(min-width: 1280px) 420px, (min-width: 768px) 50vw, 100vw"
+            sizes="(min-width: 768px) 448px, calc(100vw - 48px)"
             className="object-cover"
           />
         </div>
@@ -486,14 +494,14 @@ export default function CoursesClient({
 
   return (
     <div className="space-y-6">
-      {lockedCourse ? (
+      {!showCourseSwitcher ? (
         <div className="rounded-2xl border border-brand-200 bg-white p-5 text-brand-950 shadow-sm">
           <h2 className="text-xl font-semibold">{selectedCourse.title}</h2>
           <p className="mt-3 text-sm leading-6 text-brand-700">{selectedCourse.summary}</p>
         </div>
       ) : (
         <div className="grid gap-4 md:grid-cols-2">
-          {courses.map((course) => (
+          {visibleCourses.map((course) => (
             <button
               key={course.id}
               type="button"
@@ -523,14 +531,9 @@ export default function CoursesClient({
                   selectedWeekIndex === index ? 'border-brand-700' : 'border-brand-200'
                 }`}
               >
-                <div className="flex items-center gap-4 md:gap-3">
-                  <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-xl border border-brand-100 bg-brand-50 md:h-12 md:w-12">
-                    <Image src={week.image.src} alt={week.image.alt} fill sizes="(min-width: 768px) 48px, 64px" className="object-cover" />
-                  </div>
-                  <div className="min-w-0">
-                    <p className="text-sm font-medium text-brand-700">{week.title}</p>
-                    <h3 className="mt-1 text-base font-semibold leading-5 text-brand-950">{week.focus || uiText.addFocus}</h3>
-                  </div>
+                <div className="min-w-0">
+                  <p className="text-sm font-medium text-brand-700">{week.title}</p>
+                  <h3 className="mt-1 text-base font-semibold leading-5 text-brand-950">{week.focus || uiText.addFocus}</h3>
                 </div>
               </button>
               {selectedWeekIndex === index

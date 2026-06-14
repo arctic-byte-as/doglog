@@ -40,6 +40,19 @@ export default async function CustomerServicePage({ params }: { params: { servic
   if (!access) notFound();
 
   const courseId = service.key === 'PUPPY_COURSE' ? 'puppy' : service.key === 'SKILLS_COURSE' ? 'skills' : null;
+  const courseAccess = courseId
+    ? await prisma.customerServiceAccess.findMany({
+        where: {
+          customerId: user.customer.id,
+          serviceKey: { in: ['PUPPY_COURSE', 'SKILLS_COURSE'] },
+        },
+        select: { serviceKey: true },
+      })
+    : [];
+  const availableCourseIds = courseAccess
+    .map((item) => (item.serviceKey === 'PUPPY_COURSE' ? 'puppy' : item.serviceKey === 'SKILLS_COURSE' ? 'skills' : null))
+    .filter((item): item is 'puppy' | 'skills' => Boolean(item));
+  const sectionTitle = courseId && availableCourseIds.length > 1 ? (locale === 'nb' ? 'Dine kurs' : 'Your courses') : serviceTitle;
   const consultations =
     service.key === 'CONSULTATIONS'
       ? await prisma.consultation.findMany({
@@ -77,9 +90,15 @@ export default async function CustomerServicePage({ params }: { params: { servic
   return (
     <SiteShell>
       <div className="space-y-8">
-        <SectionCard title={serviceTitle}>
+        <SectionCard title={sectionTitle}>
           {courseId ? (
-            <CoursesClient editable={false} initialCourseId={courseId} lockedCourse locale={locale} />
+            <CoursesClient
+              editable={false}
+              initialCourseId={courseId}
+              lockedCourse
+              locale={locale}
+              availableCourseIds={availableCourseIds}
+            />
           ) : service.key === 'CONSULTATIONS' ? (
             consultations.length ? (
               <div className="space-y-4">

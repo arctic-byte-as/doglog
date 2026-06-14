@@ -134,7 +134,7 @@ export async function SiteShell({ children }: { children: React.ReactNode }) {
                     {isCustomerMenu ? (
                       <SignOutMenuButton
                         label={t.nav.logOut}
-                        className="block w-full rounded-xl px-4 py-3 text-left text-sm font-medium text-brand-800 transition hover:bg-brand-50"
+                        className="flex min-h-11 w-full items-center rounded-xl px-4 text-left text-sm font-medium leading-none text-brand-800 transition hover:bg-brand-50"
                       />
                     ) : null}
                   </div>
@@ -148,7 +148,7 @@ export async function SiteShell({ children }: { children: React.ReactNode }) {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="rounded-full border border-brand-200 bg-white px-4 py-2 text-sm font-medium text-brand-900 transition hover:border-brand-400 hover:bg-brand-50 hover:text-brand-800"
+                  className="inline-flex h-10 items-center justify-center rounded-full border border-brand-200 bg-white px-4 text-sm font-medium leading-none text-brand-900 transition hover:border-brand-400 hover:bg-brand-50 hover:text-brand-800"
                 >
                   {item.label}
                 </Link>
@@ -156,7 +156,7 @@ export async function SiteShell({ children }: { children: React.ReactNode }) {
               {isCustomerMenu ? (
                 <SignOutMenuButton
                   label={t.nav.logOut}
-                  className="rounded-full border border-brand-200 bg-white px-4 py-2 text-sm font-medium text-brand-900 transition hover:border-brand-400 hover:bg-brand-50 hover:text-brand-800"
+                  className="inline-flex h-10 items-center justify-center rounded-full border border-brand-200 bg-white px-4 text-sm font-medium leading-none text-brand-900 transition hover:border-brand-400 hover:bg-brand-50 hover:text-brand-800"
                 />
               ) : null}
             </nav>

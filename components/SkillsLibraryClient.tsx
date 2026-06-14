@@ -237,6 +237,16 @@ const emptyCoreSkill = {
   summary: '',
 };
 
+const defaultSkillsLibraryLabels = {
+  coreSkillHeading: 'Core skill heading',
+  coreSkill: 'Core skill',
+  subcategory: 'Sub category',
+  goal: 'Goal',
+  trainingDetails: 'Training details',
+  coachingNotes: 'Coaching notes',
+  videoUnavailable: 'Video preview unavailable',
+};
+
 function isLikelyYoutubeUrl(value: string) {
   if (!value.trim()) return true;
 
@@ -266,7 +276,13 @@ function getYoutubeVideoId(value: string) {
   return null;
 }
 
-export default function SkillsLibraryClient({ editable = true }: { editable?: boolean }) {
+export default function SkillsLibraryClient({
+  editable = true,
+  labels = defaultSkillsLibraryLabels,
+}: {
+  editable?: boolean;
+  labels?: typeof defaultSkillsLibraryLabels;
+}) {
   const [skills, setSkills] = useState<CoreSkill[]>(defaultSkills);
   const [selectedSkillTitle, setSelectedSkillTitle] = useState(defaultSkills[0].title);
   const [selectedSubcategoryTitle, setSelectedSubcategoryTitle] = useState(defaultSkills[0].subcategories[0].title);
@@ -528,7 +544,7 @@ export default function SkillsLibraryClient({ editable = true }: { editable?: bo
       <div className="min-w-0 space-y-4">
         <div className="rounded-2xl border border-brand-200 bg-white p-4 shadow-sm">
           <label className="block min-w-0">
-            <span className="text-sm font-medium text-brand-800">Core skill heading</span>
+            <span className="text-sm font-medium text-brand-800">{labels.coreSkillHeading}</span>
             <select
               value={selectedSkill.title}
               onChange={(event) => chooseSkillByTitle(event.target.value)}
@@ -599,7 +615,7 @@ export default function SkillsLibraryClient({ editable = true }: { editable?: bo
               </div>
             ) : (
               <div className="p-4">
-                <p className="text-sm font-semibold">Video preview unavailable</p>
+                <p className="text-sm font-semibold">{labels.videoUnavailable}</p>
                 <a
                   href={selectedSubcategory.youtubeUrl}
                   target="_blank"
@@ -614,14 +630,14 @@ export default function SkillsLibraryClient({ editable = true }: { editable?: bo
         ) : null}
 
         <div className="rounded-2xl border border-brand-200 bg-white p-5 shadow-sm">
-          <p className="text-sm font-medium text-brand-700">Core skill</p>
+          <p className="text-sm font-medium text-brand-700">{labels.coreSkill}</p>
           <h2 className="mt-1 text-2xl font-semibold text-brand-950">{selectedSkill.title}</h2>
           <p className="mt-3 text-sm leading-6 text-brand-700">{selectedSkill.summary}</p>
         </div>
 
         <div className="rounded-2xl border border-brand-200 bg-white p-5 shadow-sm">
           <label className="block min-w-0">
-            <span className="text-sm font-medium text-brand-800">Sub category</span>
+            <span className="text-sm font-medium text-brand-800">{labels.subcategory}</span>
             <select
               value={selectedSubcategory?.title || ''}
               onChange={(event) => chooseSubcategory(event.target.value)}
@@ -698,15 +714,15 @@ export default function SkillsLibraryClient({ editable = true }: { editable?: bo
             ) : (
               <div className="space-y-5">
                 <div>
-                  <p className="text-sm font-medium text-brand-700">Goal</p>
+                  <p className="text-sm font-medium text-brand-700">{labels.goal}</p>
                   <p className="mt-1 text-sm leading-6 text-brand-800">{selectedSubcategory.goal}</p>
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-brand-700">Training details</p>
+                  <p className="text-sm font-medium text-brand-700">{labels.trainingDetails}</p>
                   <p className="mt-1 whitespace-pre-line text-sm leading-6 text-brand-800">{selectedSubcategory.steps}</p>
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-brand-700">Coaching notes</p>
+                  <p className="text-sm font-medium text-brand-700">{labels.coachingNotes}</p>
                   <p className="mt-1 whitespace-pre-line text-sm leading-6 text-brand-800">{selectedSubcategory.coachingNotes}</p>
                 </div>
               </div>

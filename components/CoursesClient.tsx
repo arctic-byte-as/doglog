@@ -21,6 +21,8 @@ type Course = {
   weeks: CourseWeek[];
 };
 
+type CourseLocale = 'en' | 'nb';
+
 const puppyWeeks: CourseWeek[] = [
   {
     title: 'Week 1',
@@ -234,13 +236,199 @@ const defaultSkillsWeeks: CourseWeek[] = [
   },
 ];
 
+const norwegianCourseText = {
+  puppy: {
+    title: 'Valpekurs',
+    summary: 'Seks uker med valpegrunnlag basert på positiv forsterkning, sosial trygghet og praktisk støtte til eier.',
+    weeks: [
+      {
+        title: 'Uke 1',
+        focus: 'Introduksjon',
+        details: 'Introduksjon til kjerneideer og forberedelser for moderne, belønningsbasert valpetrening.',
+        activities: [
+          'Introduksjon til moderne hundetrening.',
+          'Forstå hundens kroppsspråk.',
+          'Teknikker for positiv forsterkning.',
+          'Effektiv bruk av godbiter.',
+          'Forberedelser for å lykkes.',
+          'Trening med bilbur.',
+          'Roligtrening med Magic Mat.',
+        ],
+      },
+      {
+        title: 'Uke 2',
+        focus: 'Kontakt og samarbeid',
+        details: 'Bygg kontakt, samarbeid, frisignal, håndtering og tidlig posisjonsarbeid.',
+        activities: [
+          'Roligtrening - videreføring.',
+          'Tilvenning til nye miljøer.',
+          'Grunnleggende læringsteori.',
+          'Kontakt 1, 2 og 3.',
+          'Frisignal (OK).',
+          'Håndtarget-teknikker.',
+          'Midtposisjon.',
+          'Håndtering på matten.',
+        ],
+      },
+      {
+        title: 'Uke 3',
+        focus: 'Sosialisering',
+        details: 'Utvikle sosial trygghet gjennom valg, kontroll, kontakt med mennesker, samspill med hunder, berøring, lek og snusing.',
+        activities: [
+          'Valg og kontroll.',
+          'Skape kontakt med mennesker.',
+          'Samspill med andre hunder.',
+          'Utforske berøring.',
+          'Delta i lek.',
+          'Snurr.',
+          'Gå og snus (superkraft).',
+        ],
+      },
+      {
+        title: 'Uke 4',
+        focus: 'Sosialisering videre',
+        details: 'Fortsett sosialiseringen med gå pent i bånd, rolige passeringer, miljømestring og varig kontakt.',
+        activities: [
+          'Gå pent i bånd.',
+          'Mestre navigering i verden.',
+          'Passere andre hunder rolig og med kontroll.',
+          'Vanlige utfordringer og løsninger.',
+          'Bygge kontakt over tid.',
+          'Berøring og fokusteknikker.',
+        ],
+      },
+      {
+        title: 'Uke 5',
+        focus: 'Innkalling',
+        details: 'Bygg innkalling gjennom rolig fokus, trinnvis innkalling, verifisering og trygg testing.',
+        activities: [
+          'Ro og fokus.',
+          'Innkalling - trinn 1, 2 og 3.',
+          'Hvordan verifisere innkallingen.',
+          'Hvordan teste innkalling trygt.',
+        ],
+      },
+      {
+        title: 'Uke 6',
+        focus: 'Ta vare på hunden din',
+        details: 'Fokus på stell, håndtering, pelspleie, kloklipp, veterinærbesøk og forståelse av valpens vekst og utvikling.',
+        activities: [
+          'Håndtering av hunden.',
+          'Børsting og pelsstell.',
+          'Kloklipp.',
+          'Besøk hos veterinæren.',
+          'Valpens vekst og utvikling.',
+        ],
+      },
+    ],
+  },
+  skills: {
+    title: 'Ferdighetskurs',
+    summary: 'Seks ukers ferdighetskurs for hunder fra 9 måneder, med positiv forsterkning, valg og kontroll, og relasjonsbygging.',
+    weeks: [
+      {
+        title: 'Uke 1',
+        focus: 'Grunnferdigheter',
+        details: 'Lær hvordan hunder lærer, og bygg felles treningsspråk, belønningsrutiner og rolige grunnferdigheter for resten av kurset.',
+        activities: [
+          'Hvordan hunder lærer.',
+          'Positiv forsterkning.',
+          'Markørord.',
+          'Belønningsplassering.',
+          'Engasjement.',
+          'Magic Mat - rolig mattrening.',
+          'OK / frisignal.',
+        ],
+      },
+      {
+        title: 'Uke 2',
+        focus: 'Bygge engasjement',
+        details: 'Utvikle praktiske engasjementsferdigheter slik at hunden kan orientere seg mot fører, følge enkle targeter og bygge fokus med god belønningstiming.',
+        activities: [
+          'Kontakt.',
+          'Håndtarget.',
+          'Belønningstiming.',
+          'Bygge fokus og oppmerksomhet på fører.',
+        ],
+      },
+      {
+        title: 'Uke 3',
+        focus: 'Trygghet og selvkontroll',
+        details: 'Bruk grenser, posisjonering og valgbasert trening for å hjelpe hunden å bli tryggere samtidig som den lærer nyttig selvkontroll.',
+        activities: [
+          'Grenser - grensetrening.',
+          'Midtposisjon - mellom beina.',
+          'Valg og kontroll.',
+        ],
+      },
+      {
+        title: 'Uke 4',
+        focus: 'Lek og innkalling',
+        details: 'Utforsk ulike typer lek og bruk motivasjon, leker og belønningsbasert øving for å bygge de første lagene av innkalling.',
+        activities: [
+          'Ulike typer lek.',
+          'Motivasjon.',
+          'Belønning gjennom lek og spill.',
+          'Grunnleggende innkalling.',
+        ],
+      },
+      {
+        title: 'Uke 5',
+        focus: 'Gå pent i bånd',
+        details: 'Lær hunden hvor belønning skjer, hvordan den kan følge fører, og hvordan den holder kontakt rundt hverdagslige forstyrrelser.',
+        activities: [
+          'Belønningssoner.',
+          'Følge fører.',
+          'Førerverdi - verdien av å være med fører.',
+          'Miljøforstyrrelser og distraksjoner.',
+        ],
+      },
+      {
+        title: 'Uke 6',
+        focus: 'Den virkelige verden',
+        details: 'Sett kursferdighetene sammen for hverdagslig håndtering, problemløsning og en langsiktig plan for videre trening etter kurset.',
+        activities: [
+          'Kombinere ferdigheter.',
+          'Hverdagslig håndtering.',
+          'Problemløsning.',
+          'Langsiktig suksess og videre treningsutvikling.',
+        ],
+      },
+    ],
+  },
+} as const;
+
+const courseUiText = {
+  en: {
+    activitiesHeading: 'Activities to concentrate on',
+    addFocus: 'Add focus',
+  },
+  nb: {
+    activitiesHeading: 'Aktiviteter å fokusere på',
+    addFocus: 'Legg til fokus',
+  },
+} as const;
+
+function localizeWeeks(weeks: CourseWeek[], courseId: 'puppy' | 'skills', locale: CourseLocale): CourseWeek[] {
+  if (locale === 'en') return weeks;
+  return weeks.map((week, index) => ({
+    ...week,
+    title: norwegianCourseText[courseId].weeks[index]?.title || week.title,
+    focus: norwegianCourseText[courseId].weeks[index]?.focus || week.focus,
+    details: norwegianCourseText[courseId].weeks[index]?.details || week.details,
+    activities: norwegianCourseText[courseId].weeks[index]?.activities ? [...norwegianCourseText[courseId].weeks[index].activities] : week.activities,
+  }));
+}
+
 export default function CoursesClient({
   initialCourseId = 'puppy',
   lockedCourse = false,
+  locale = 'en',
 }: {
   editable?: boolean;
   initialCourseId?: 'puppy' | 'skills';
   lockedCourse?: boolean;
+  locale?: CourseLocale;
 }) {
   const [selectedCourseId, setSelectedCourseId] = useState<'puppy' | 'skills'>(initialCourseId);
   const [selectedWeekIndex, setSelectedWeekIndex] = useState(0);
@@ -248,17 +436,18 @@ export default function CoursesClient({
   const courses: Course[] = [
     {
       id: 'puppy',
-      title: 'Puppy Course',
-      summary: 'Six-week puppy foundations based on positive reinforcement, social confidence, and practical owner support.',
-      weeks: puppyWeeks,
+      title: locale === 'nb' ? norwegianCourseText.puppy.title : 'Puppy Course',
+      summary: locale === 'nb' ? norwegianCourseText.puppy.summary : 'Six-week puppy foundations based on positive reinforcement, social confidence, and practical owner support.',
+      weeks: localizeWeeks(puppyWeeks, 'puppy', locale),
     },
     {
       id: 'skills',
-      title: 'Skills Course',
-      summary: 'Six-week skills course for dogs 9 months and older, using positive reinforcement, choice and control, and relationship-building.',
-      weeks: defaultSkillsWeeks,
+      title: locale === 'nb' ? norwegianCourseText.skills.title : 'Skills Course',
+      summary: locale === 'nb' ? norwegianCourseText.skills.summary : 'Six-week skills course for dogs 9 months and older, using positive reinforcement, choice and control, and relationship-building.',
+      weeks: localizeWeeks(defaultSkillsWeeks, 'skills', locale),
     },
   ];
+  const uiText = courseUiText[locale];
   const selectedCourse = courses.find((course) => course.id === selectedCourseId) || courses[0];
   const selectedWeek = selectedCourse.weeks[selectedWeekIndex] || selectedCourse.weeks[0];
 
@@ -282,7 +471,7 @@ export default function CoursesClient({
           <p className="text-sm leading-6 text-brand-700">{selectedWeek.details}</p>
           {selectedWeek.activities?.length ? (
             <div className="rounded-2xl border border-brand-200 bg-brand-50 p-4">
-              <h3 className="text-sm font-semibold text-brand-950">Activities to concentrate on</h3>
+              <h3 className="text-sm font-semibold text-brand-950">{uiText.activitiesHeading}</h3>
               <ul className="mt-3 space-y-2 text-sm leading-6 text-brand-700">
                 {selectedWeek.activities.map((activity) => (
                   <li key={activity}>- {activity}</li>
@@ -340,7 +529,7 @@ export default function CoursesClient({
                   </div>
                   <div className="min-w-0">
                     <p className="text-sm font-medium text-brand-700">{week.title}</p>
-                    <h3 className="mt-1 text-base font-semibold leading-5 text-brand-950">{week.focus || 'Add focus'}</h3>
+                    <h3 className="mt-1 text-base font-semibold leading-5 text-brand-950">{week.focus || uiText.addFocus}</h3>
                   </div>
                 </div>
               </button>

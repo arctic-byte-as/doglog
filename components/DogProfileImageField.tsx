@@ -16,11 +16,23 @@ export default function DogProfileImageField({
   onChange,
   disabled = false,
   uploadSuccessMessage = 'Photo uploaded. Save the dog to keep this picture.',
+  labels,
 }: {
   value: string;
   onChange: (value: string) => void | Promise<void>;
   disabled?: boolean;
   uploadSuccessMessage?: string;
+  labels?: {
+    profilePicture: string;
+    dog: string;
+    uploadPhoto: string;
+    uploading: string;
+    remove: string;
+    chooseAvatar: string;
+    imageUrl: string;
+    placeholder: string;
+    uploadError: string;
+  };
 }) {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [uploading, setUploading] = useState(false);
@@ -40,11 +52,11 @@ export default function DogProfileImageField({
         body,
       });
       const data = await response.json();
-      if (!response.ok) throw new Error(data?.error || 'Could not upload image.');
+      if (!response.ok) throw new Error(data?.error || labels?.uploadError || 'Could not upload image.');
       await onChange(data.url);
       setMessage(uploadSuccessMessage);
     } catch (error: any) {
-      setMessage(error.message || 'Could not upload image.');
+      setMessage(error.message || labels?.uploadError || 'Could not upload image.');
     } finally {
       setUploading(false);
       if (fileInputRef.current) fileInputRef.current.value = '';
@@ -53,11 +65,11 @@ export default function DogProfileImageField({
 
   return (
     <div className="space-y-3 md:col-span-2">
-      <span className="text-sm font-medium text-brand-800">Profile picture</span>
+      <span className="text-sm font-medium text-brand-800">{labels?.profilePicture || 'Profile picture'}</span>
 
       <div className="flex flex-wrap items-center gap-4">
         <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-full border border-brand-200 bg-brand-50 text-xl font-semibold text-brand-700">
-          {value ? <span className="h-full w-full bg-cover bg-center" style={{ backgroundImage: `url(${value})` }} /> : 'Dog'}
+          {value ? <span className="h-full w-full bg-cover bg-center" style={{ backgroundImage: `url(${value})` }} /> : labels?.dog || 'Dog'}
         </div>
 
         <div className="flex flex-wrap gap-2">
@@ -67,7 +79,7 @@ export default function DogProfileImageField({
             onClick={() => fileInputRef.current?.click()}
             className="rounded-lg border border-brand-200 bg-white px-4 py-2 text-sm font-medium text-brand-800 disabled:opacity-60"
           >
-            {uploading ? 'Uploading...' : 'Upload photo'}
+            {uploading ? labels?.uploading || 'Uploading...' : labels?.uploadPhoto || 'Upload photo'}
           </button>
           {value ? (
             <button
@@ -76,7 +88,7 @@ export default function DogProfileImageField({
               onClick={() => onChange('')}
               className="rounded-lg border border-brand-200 bg-white px-4 py-2 text-sm font-medium text-brand-800 disabled:opacity-60"
             >
-              Remove
+              {labels?.remove || 'Remove'}
             </button>
           ) : null}
         </div>
@@ -101,7 +113,7 @@ export default function DogProfileImageField({
             className={`aspect-square overflow-hidden rounded-full border bg-white p-1 transition hover:border-brand-400 disabled:opacity-60 ${
               value === avatar ? 'border-brand-700' : 'border-brand-200'
             }`}
-            aria-label="Choose dog avatar"
+            aria-label={labels?.chooseAvatar || 'Choose dog avatar'}
           >
             <span className="block h-full w-full rounded-full bg-cover bg-center" style={{ backgroundImage: `url(${avatar})` }} />
           </button>
@@ -109,13 +121,13 @@ export default function DogProfileImageField({
       </div>
 
       <label className="block">
-        <span className="text-sm font-medium text-brand-800">Image URL</span>
+        <span className="text-sm font-medium text-brand-800">{labels?.imageUrl || 'Image URL'}</span>
         <input
           disabled={disabled}
           type="text"
           value={value}
           onChange={(event) => onChange(event.target.value)}
-          placeholder="https://example.com/dog-photo.jpg or /uploads/dogs/photo.jpg"
+          placeholder={labels?.placeholder || 'https://example.com/dog-photo.jpg or /uploads/dogs/photo.jpg'}
           className="mt-1 w-full rounded-lg border border-brand-200 px-3 py-2 disabled:bg-brand-50"
         />
       </label>

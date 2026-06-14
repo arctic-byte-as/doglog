@@ -223,7 +223,22 @@ const emptyExercise = {
   avoid: '',
 };
 
-export default function TrainingLibraryClient({ editable = false }: { editable?: boolean }) {
+const defaultTrainingLibraryLabels = {
+  subcategory: 'Sub category',
+  setup: 'Setup',
+  progressMarker: 'Progress marker',
+  trainingDetails: 'Training details',
+  avoid: 'Avoid',
+  addSubcategoryPrompt: 'Add a sub category to start building this category.',
+};
+
+export default function TrainingLibraryClient({
+  editable = false,
+  labels = defaultTrainingLibraryLabels,
+}: {
+  editable?: boolean;
+  labels?: typeof defaultTrainingLibraryLabels;
+}) {
   const [libraryCategories, setLibraryCategories] = useState<Category[]>(categories);
   const [selectedCategoryTitle, setSelectedCategoryTitle] = useState(categories[0].title);
   const [selectedExerciseTitle, setSelectedExerciseTitle] = useState(categories[0].exercises[0].title);
@@ -353,7 +368,7 @@ export default function TrainingLibraryClient({ editable = false }: { editable?:
       <main className="space-y-6">
         <div className="rounded-2xl border border-brand-200 bg-white p-5 shadow-sm">
           <label className="block">
-            <span className="text-sm font-semibold text-brand-950">Sub category</span>
+            <span className="text-sm font-semibold text-brand-950">{labels.subcategory}</span>
             <select
               value={selectedExercise?.title || ''}
               onChange={(event) => setSelectedExerciseTitle(event.target.value)}
@@ -376,7 +391,7 @@ export default function TrainingLibraryClient({ editable = false }: { editable?:
 
             <div className="mt-6 grid gap-5 md:grid-cols-2">
               <div>
-                <h3 className="text-sm font-semibold text-brand-950">Setup</h3>
+                <h3 className="text-sm font-semibold text-brand-950">{labels.setup}</h3>
                 <ul className="mt-2 space-y-2 text-sm leading-6 text-brand-700">
                   {selectedExercise.setup.map((item) => (
                     <li key={item}>{item}</li>
@@ -384,13 +399,13 @@ export default function TrainingLibraryClient({ editable = false }: { editable?:
                 </ul>
               </div>
               <div>
-                <h3 className="text-sm font-semibold text-brand-950">Progress marker</h3>
+                <h3 className="text-sm font-semibold text-brand-950">{labels.progressMarker}</h3>
                 <p className="mt-2 text-sm leading-6 text-brand-700">{selectedExercise.progress}</p>
               </div>
             </div>
 
             <div className="mt-6">
-              <h3 className="text-sm font-semibold text-brand-950">Training details</h3>
+              <h3 className="text-sm font-semibold text-brand-950">{labels.trainingDetails}</h3>
               <ol className="mt-2 space-y-2 text-sm leading-6 text-brand-700">
                 {selectedExercise.steps.map((step, index) => (
                   <li key={step}>
@@ -401,12 +416,12 @@ export default function TrainingLibraryClient({ editable = false }: { editable?:
             </div>
 
             <div className="mt-6 rounded-2xl border border-brand-200 bg-brand-50 p-4">
-              <h3 className="text-sm font-semibold text-brand-950">Avoid</h3>
+              <h3 className="text-sm font-semibold text-brand-950">{labels.avoid}</h3>
               <p className="mt-2 text-sm leading-6 text-brand-700">{selectedExercise.avoid}</p>
             </div>
           </article>
         ) : (
-          <p className="rounded-2xl border border-brand-200 bg-white p-5 text-brand-700">Add a sub category to start building this category.</p>
+          <p className="rounded-2xl border border-brand-200 bg-white p-5 text-brand-700">{labels.addSubcategoryPrompt}</p>
         )}
 
         {editable ? (

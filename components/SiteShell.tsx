@@ -2,7 +2,9 @@ import Link from 'next/link';
 import Logo from './Logo';
 import AuthStatus from './AuthStatus';
 import SignOutMenuButton from './SignOutMenuButton';
+import CustomerLanguageSwitcher from './CustomerLanguageSwitcher';
 import { getCurrentUser } from '@/lib/auth';
+import { getCustomerDictionary, getCustomerLocale } from '@/lib/i18n/customer';
 import prisma from '@/lib/prisma';
 
 const nav = [
@@ -18,17 +20,18 @@ const nav = [
 
 const hiddenCustomerMenuItems = new Set(['/customer/tips', '/customer/training-library']);
 
-const customerNav = [
-  { href: '/customer/services', label: 'My Services' },
-  { href: '/customer/plan', label: 'My Training Plan' },
-  { href: '/customer/skills-library', label: 'Skills Library' },
-  { href: '/customer/profile', label: 'Profile' },
-];
-
 export async function SiteShell({ children }: { children: React.ReactNode }) {
   const user = await getCurrentUser();
+  const customerLocale = getCustomerLocale();
+  const t = getCustomerDictionary(customerLocale);
   const isTrainerMenu = user?.role === 'TRAINER' || user?.role === 'ADMIN';
   const isCustomerMenu = user?.role === 'CUSTOMER';
+  const customerNav = [
+    { href: '/customer/services', label: t.nav.myServices },
+    { href: '/customer/plan', label: t.nav.myTrainingPlan },
+    { href: '/customer/skills-library', label: t.nav.skillsLibrary },
+    { href: '/customer/profile', label: t.nav.profile },
+  ];
   const customerDog =
     isCustomerMenu && user?.customer
       ? await prisma.dog.findFirst({
@@ -43,7 +46,7 @@ export async function SiteShell({ children }: { children: React.ReactNode }) {
       : isCustomerMenu
         ? customerNav.filter((item) => !hiddenCustomerMenuItems.has(item.href))
       : nav;
-  const logoSubtitle = isCustomerMenu ? user?.customer?.name || user?.user.name || 'Customer' : 'Trainer dashboard';
+  const logoSubtitle = isCustomerMenu ? user?.customer?.name || user?.user.name || t.nav.customer : 'Trainer dashboard';
 
   return (
     <div className="min-h-screen text-brand-900">
@@ -57,8 +60,8 @@ export async function SiteShell({ children }: { children: React.ReactNode }) {
               {isCustomerMenu ? (
                 <Link
                   href="/customer"
-                  aria-label="Customer home"
-                  title={customerDog ? `${customerDog.name} customer home` : 'Customer home'}
+                  aria-label={t.nav.customerHome}
+                  title={customerDog ? `${customerDog.name} ${t.nav.customerHome.toLowerCase()}` : t.nav.customerHome}
                   className="flex h-11 w-11 items-center justify-center overflow-hidden rounded-full border border-brand-200 bg-white text-sm font-semibold text-brand-800 transition hover:border-brand-400 hover:bg-brand-50"
                 >
                   {customerDog?.profileImageUrl ? (
@@ -74,8 +77,8 @@ export async function SiteShell({ children }: { children: React.ReactNode }) {
               {visibleNav.length ? (
                 <details className="relative">
                   <summary
-                    aria-label="Menu"
-                    title="Menu"
+                    aria-label={t.nav.menu}
+                    title={t.nav.menu}
                     className={
                       isCustomerMenu
                         ? "flex h-11 w-11 cursor-pointer list-none flex-col items-center justify-center gap-1.5 rounded-full border border-brand-200 bg-white text-brand-800 transition hover:border-brand-400 hover:bg-brand-50"
@@ -89,7 +92,7 @@ export async function SiteShell({ children }: { children: React.ReactNode }) {
                         <span className="h-0.5 w-5 rounded-full bg-current" />
                       </>
                     ) : (
-                      'Menu'
+                      t.nav.menu
                     )}
                   </summary>
                   <div className="absolute right-0 z-20 mt-2 w-64 rounded-2xl border border-brand-200 bg-white p-2 shadow-soft">
@@ -104,7 +107,7 @@ export async function SiteShell({ children }: { children: React.ReactNode }) {
                     ))}
                     {isCustomerMenu ? (
                       <SignOutMenuButton
-                        label="Log Out"
+                        label={t.nav.logOut}
                         className="block w-full rounded-xl px-4 py-3 text-left text-sm font-medium text-brand-800 transition hover:bg-brand-50"
                       />
                     ) : null}
@@ -126,16 +129,18 @@ export async function SiteShell({ children }: { children: React.ReactNode }) {
               ))}
               {isCustomerMenu ? (
                 <SignOutMenuButton
-                  label="Log Out"
+                  label={t.nav.logOut}
                   className="rounded-full border border-brand-200 bg-white px-4 py-2 text-sm font-medium text-brand-900 transition hover:border-brand-400 hover:bg-brand-50 hover:text-brand-800"
                 />
               ) : null}
             </nav>
             <div className="flex flex-wrap items-center gap-3">
+              {isCustomerMenu ? <CustomerLanguageSwitcher locale={customerLocale} /> : null}
               {!isCustomerMenu ? <AuthStatus /> : null}
             </div>
           </div>
           <div className="md:hidden">
+            {isCustomerMenu ? <CustomerLanguageSwitcher locale={customerLocale} /> : null}
             {!isCustomerMenu ? <AuthStatus /> : null}
           </div>
         </div>

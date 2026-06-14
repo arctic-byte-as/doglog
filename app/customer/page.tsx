@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { SiteShell } from '@/components/SiteShell';
 import { SectionCard } from '@/components/SectionCard';
 import { requireUser } from '@/lib/auth';
+import { getCustomerDictionary, getCustomerLocale } from '@/lib/i18n/customer';
 import prisma from '@/lib/prisma';
 import { customerServiceOptions } from '@/lib/service-options';
 
@@ -17,6 +18,8 @@ function trainingPlanNames(plan?: string | null) {
 
 export default async function CustomerPage() {
   const user = await requireUser();
+  const locale = getCustomerLocale();
+  const t = getCustomerDictionary(locale);
   const email = user.email;
   const customer = email
     ? await prisma.customer.findUnique({
@@ -48,8 +51,8 @@ export default async function CustomerPage() {
   const serviceTiles = customerServiceOptions
     .filter((service) => enabledServiceKeys.has(service.key))
     .map((service) => ({
-      title: service.title,
-      description: service.description,
+      title: t.services[service.key]?.title || service.title,
+      description: t.services[service.key]?.description || service.description,
       href: service.href,
     }));
 
@@ -57,7 +60,7 @@ export default async function CustomerPage() {
     <SiteShell>
       <div className="space-y-8">
         {serviceTiles.length ? (
-          <SectionCard title="Assigned services">
+          <SectionCard title={t.dashboard.assignedServices}>
             <div className="grid gap-4 md:grid-cols-2">
               {serviceTiles.map((service) => (
                 <Link
@@ -73,7 +76,7 @@ export default async function CustomerPage() {
           </SectionCard>
         ) : null}
 
-        <SectionCard title="Summary of training">
+        <SectionCard title={t.dashboard.summaryOfTraining}>
           {prescribedExercises.length ? (
             <div className="grid gap-3 md:grid-cols-2">
               {prescribedExercises.map((exercise, index) => (
@@ -89,12 +92,12 @@ export default async function CustomerPage() {
           ) : null}
           {!latestConsultation ? (
             <p className="rounded-2xl border border-brand-200 bg-white p-5 text-brand-700">
-              Training summaries will appear once your trainer shares an update.
+              {t.dashboard.trainingSummaryEmpty}
             </p>
           ) : null}
         </SectionCard>
 
-        <SectionCard title="Your dogs">
+        <SectionCard title={t.dashboard.yourDogs}>
           {customer?.dogs.length ? (
             <div className="grid gap-4 md:grid-cols-2">
               {customer.dogs.map((dog) => (
@@ -109,14 +112,14 @@ export default async function CustomerPage() {
                     )}
                     <div>
                       <h3 className="font-semibold text-brand-950">{dog.name}</h3>
-                      <p className="text-sm text-brand-700">{dog.breed || 'Breed not set'} {dog.age ? `- ${dog.age}` : ''}</p>
+                      <p className="text-sm text-brand-700">{dog.breed || t.dashboard.breedNotSet} {dog.age ? `- ${dog.age}` : ''}</p>
                     </div>
                   </div>
                 </article>
               ))}
             </div>
           ) : (
-            <p className="rounded-2xl border border-brand-200 bg-white p-5 text-brand-700">No dogs added yet.</p>
+            <p className="rounded-2xl border border-brand-200 bg-white p-5 text-brand-700">{t.dashboard.noDogs}</p>
           )}
         </SectionCard>
       </div>

@@ -1,5 +1,6 @@
 "use client";
 
+import type { ComponentProps } from 'react';
 import { useState } from 'react';
 import DogProfileImageField from '@/components/DogProfileImageField';
 
@@ -27,7 +28,34 @@ const breedOptions = [
   'Poodle',
 ];
 
-export default function CustomerDogProfileForm({ dog }: { dog: DogProfile }) {
+const defaultDogLabels = {
+  name: 'Dog name',
+  age: 'Age',
+  breed: 'Breed',
+  selectBreed: 'Select a breed',
+  status: 'Status',
+  mainConcern: 'Main behaviour concern',
+  save: 'Save dog',
+  saving: 'Saving...',
+  saved: 'Dog saved',
+  saveError: 'Could not save dog.',
+};
+
+type ImageLabels = ComponentProps<typeof DogProfileImageField>['labels'];
+
+export default function CustomerDogProfileForm({
+  dog,
+  labels = defaultDogLabels,
+  imageLabels,
+  uploadSuccessMessage = 'Photo uploaded and saved.',
+  photoSavedMessage = 'Photo saved',
+}: {
+  dog: DogProfile;
+  labels?: typeof defaultDogLabels;
+  imageLabels?: ImageLabels;
+  uploadSuccessMessage?: string;
+  photoSavedMessage?: string;
+}) {
   const [form, setForm] = useState({
     name: dog.name,
     age: dog.age,
@@ -50,12 +78,12 @@ export default function CustomerDogProfileForm({ dog }: { dog: DogProfile }) {
         body: JSON.stringify(nextForm),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data?.error || 'Could not save dog.');
+      if (!res.ok) throw new Error(data?.error || labels.saveError);
       setForm(nextForm);
       setMessage(successMessage);
       window.location.reload();
     } catch (error: any) {
-      setMessage(error.message || 'Could not save dog.');
+      setMessage(error.message || labels.saveError);
       throw error;
     } finally {
       setLoading(false);
@@ -64,7 +92,7 @@ export default function CustomerDogProfileForm({ dog }: { dog: DogProfile }) {
 
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
-    await saveDog(form, 'Dog saved');
+    await saveDog(form, labels.saved);
   }
 
   function update(field: keyof typeof form, value: string) {
@@ -73,24 +101,24 @@ export default function CustomerDogProfileForm({ dog }: { dog: DogProfile }) {
 
   async function saveProfileImage(value: string) {
     const nextForm = { ...form, profileImageUrl: value };
-    await saveDog(nextForm, 'Photo saved');
+    await saveDog(nextForm, photoSavedMessage);
   }
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4 rounded-2xl border border-brand-200 bg-white p-5 shadow-sm">
       <div className="grid gap-3 md:grid-cols-2">
         <label className="block">
-          <span className="text-sm font-medium text-brand-800">Dog name</span>
+          <span className="text-sm font-medium text-brand-800">{labels.name}</span>
           <input required value={form.name} onChange={(event) => update('name', event.target.value)} className="mt-1 w-full rounded-lg border border-brand-200 px-3 py-2" />
         </label>
         <label className="block">
-          <span className="text-sm font-medium text-brand-800">Age</span>
+          <span className="text-sm font-medium text-brand-800">{labels.age}</span>
           <input value={form.age} onChange={(event) => update('age', event.target.value)} className="mt-1 w-full rounded-lg border border-brand-200 px-3 py-2" />
         </label>
         <label className="block">
-          <span className="text-sm font-medium text-brand-800">Breed</span>
+          <span className="text-sm font-medium text-brand-800">{labels.breed}</span>
           <select value={form.breed} onChange={(event) => update('breed', event.target.value)} className="mt-1 w-full rounded-lg border border-brand-200 px-3 py-2">
-            <option value="">Select a breed</option>
+            <option value="">{labels.selectBreed}</option>
             {breedOptions.map((breed) => (
               <option key={breed} value={breed}>
                 {breed}
@@ -99,22 +127,23 @@ export default function CustomerDogProfileForm({ dog }: { dog: DogProfile }) {
           </select>
         </label>
         <label className="block">
-          <span className="text-sm font-medium text-brand-800">Status</span>
+          <span className="text-sm font-medium text-brand-800">{labels.status}</span>
           <input value={form.status} onChange={(event) => update('status', event.target.value)} className="mt-1 w-full rounded-lg border border-brand-200 px-3 py-2" />
         </label>
         <label className="block md:col-span-2">
-          <span className="text-sm font-medium text-brand-800">Main behaviour concern</span>
+          <span className="text-sm font-medium text-brand-800">{labels.mainConcern}</span>
           <textarea value={form.lastIncident} onChange={(event) => update('lastIncident', event.target.value)} className="mt-1 min-h-24 w-full rounded-lg border border-brand-200 px-3 py-2" />
         </label>
         <DogProfileImageField
           value={form.profileImageUrl}
           onChange={saveProfileImage}
-          uploadSuccessMessage="Photo uploaded and saved."
+          uploadSuccessMessage={uploadSuccessMessage}
+          labels={imageLabels}
         />
       </div>
       <div className="flex items-center gap-3">
         <button type="submit" disabled={loading} className="rounded-lg bg-brand-700 px-4 py-2 text-white disabled:opacity-60">
-          {loading ? 'Saving...' : 'Save dog'}
+          {loading ? labels.saving : labels.save}
         </button>
         {message ? <p className="text-sm text-brand-700">{message}</p> : null}
       </div>

@@ -1,82 +1,98 @@
 # Development setup
 
-Status checked 15 October 2026.
+Updated 15 October 2026. Tracking ticket: DL-030.
 
 ## Preserved work
 
-Existing work is preserved on `backup/pre-development-setup-2026-10-15` at
-`3f62ef4`, including the six commits ahead of `origin/main` and the assigned
-services styling edits. Setup work continues on
-`chore/development-setup-2026-10-15`. Neither branch has been pushed.
+`backup/pre-development-setup-2026-10-15` preserves commit `3f62ef4`, including
+six pre-existing commits ahead of `origin/main` and the assigned-services
+styling edits. Setup work is on `chore/development-setup-2026-10-15`.
+No Git branches have been pushed.
 
-## Runtime and access
+## Development resources
 
-Use Node 24 (`nvm install` followed by `nvm use`), matching Vercel's configured
-runtime. Node 24.22.0 is installed through nvm. GitHub, Vercel, and Supabase CLI
-access are verified. The linked Vercel project
-is `tectrap-projects/doglog`; production at https://app.norsepaw.com is Ready.
-Supabase project `iawdeugeoiwmjrvwtkff` reports `ACTIVE_HEALTHY` in Frankfurt.
-Only one project was returned by the account listing. Provisioning a separate
-development project requires confirming that a free slot is available or
-reviewing its cost first.
+- Supabase: `doglog-development`, reference `gksrxfnghehimzuiqyfs`, Frankfurt.
+  Created using the free project slot confirmed by the owner.
+- Dedicated Vercel project: `tectrap-projects/doglog-development`.
+- Live production remains in the separate `tectrap-projects/doglog` project at
+  https://app.norsepaw.com. Its environment variables and data were not changed.
+- The local `.vercel/project.json` now links to **doglog-development**.
+- Local runtime: Node 24.22.0 through nvm, matching production's Node 24 family.
+- GitHub, Vercel, and Supabase CLI authentication are verified.
 
-Production currently has no Preview or Development environment variables.
-Do not deploy a preview until separate development credentials are configured.
-Do not copy production customer data or secrets into the development environment.
+The development database has all six existing migrations, two synthetic users
+(`admin@example.test`, `customer@example.test`), one trainer, one customer,
+and one dog. No production or legacy SQLite records were imported.
+Public-schema tables have RLS enabled and grants to `anon` and `authenticated`
+revoked; app-owned password sessions access the database through server Prisma.
+The `dog-profile-images` Storage bucket is public, with image MIME restrictions
+and a 4 MB limit, matching the upload route.
 
-## Local configuration
+## Run locally
 
-The original local `.env` was backed up, with owner-only permissions, to the
-ignored `.vercel/local-env-before-development-2026-10-15.env` file. It is an
-existing local configuration backup, not an export from Vercel. The duplicate
-invalid Resend key and unused `SQLDBPW` assignment were removed from `.env`.
-The local site URL is now `http://localhost:3000`. Email delivery is disabled
-until a valid development email key is configured.
+```sh
+nvm use
+npm run dev -- --hostname 127.0.0.1
+```
 
-The existing local database connection still fails. Do not run production seed,
-baseline, password-change, or import scripts to fix it.
+Open http://127.0.0.1:3000. Synthetic login credentials are stored in the ignored,
+owner-only `.vercel/development-logins.txt`; do not commit or share that file.
+The local `.env` now contains only development settings. Prisma CLI reads this
+file, so schema commands also target development. Before any database write,
+confirm the project reference is `gksrxfnghehimzuiqyfs`.
 
-After Supabase access is restored:
-
-1. Identify the live project and any existing nonproduction project. Use a
-   separate nonproduction Supabase project for local development and previews.
-2. Copy `.env.development.example` to ignored `.env.local` and fill it with only
-   the nonproduction project's connection settings and API keys. Confirm both
-   database URLs and the Supabase URL identify that project.
-3. Prisma CLI does not load `.env.local` automatically. For schema setup, supply
-   the development variables explicitly in the process environment. Verify the
-   target before applying `prisma migrate deploy` to the empty development DB.
-4. Create synthetic admin and customer fixtures; do not import the old SQLite
-   database or production customer records. Verify both account types can log in.
-5. Configure the development Storage bucket and test a synthetic image upload.
-6. Use a separate Resend test key/sender and a controlled recipient to verify
-   password-reset delivery. An empty key disables delivery; it does not prove
-   the reset flow works.
+The original local `.env` backup is
+`.vercel/local-env-before-development-2026-10-15.env`, also ignored and owner-only.
+It contains stale credentials and is not used. The duplicate invalid Resend
+key and unused `SQLDBPW` assignment were removed. No production secrets were
+exported. `.env.development.example` contains placeholders only.
 
 ## Preview
 
-Add the nonproduction credentials to Vercel's Preview environment, initially
-scoped to the setup branch. Keep Production settings unchanged. Set the preview
-site URL to its actual preview origin before testing password-reset links.
-Deploy with `vercel` (without `--prod`) only after these settings are present.
+The dedicated development Vercel project's Preview variables point only to
+Supabase development. They are not installed in the live Vercel project.
+Preview site origin: https://doglog-development-tectrap-projects.vercel.app.
+The Preview is Ready and verified:
+https://doglog-development-2b6id27at-tectrap-projects.vercel.app.
+The stable development origin above aliases this Preview. Vercel deployment
+protection remains enabled; sign into Vercel to open it in a browser.
 
-Verify signed-out route redirects, synthetic customer/admin login, database
-reads and writes, image uploads, and password-reset delivery on the preview.
-Record the preview URL and nonproduction project reference here when verified.
+```sh
+vercel deploy --target=preview
+```
 
-## Remaining gates
+The new project's first deployment was automatically treated as its initial
+production deployment by Vercel; it was followed by an explicit Preview
+deployment. Both belong only to `doglog-development`, not the live app project.
+`.vercelignore` excludes local env files, credentials, SQLite databases,
+exports, and build caches from deployment uploads. `vercel.json` pins Next.js
+framework detection.
 
-- Confirm the organization plan and provision a nonproduction database.
-- Verify local database access with the new credentials.
-- Configure a valid development email key and Storage credentials.
-- Configure and deploy an isolated Vercel preview, then run the smoke checks.
+## Validation and remaining work
 
-## Validation
+On Node 24, lint, TypeScript checking, Prisma schema validation, and the local
+production build pass, with two existing image optimization warnings.
+Verified against development:
 
-On Node 24.22.0, lint, TypeScript checking, PostgreSQL Prisma schema validation,
-and the full Next.js production build pass. Lint retains two existing image
-optimization warnings. These checks do not verify database connectivity or
-email delivery.
+- Database connection and all six migrations applied successfully.
+- Synthetic admin and customer login return 200 with the expected access modes.
+- Admin trainers and customer profile pages return 200 after login.
+- Customer profile write returns 200 and test PNG upload returns 201.
+- Anonymous direct reads of the User table return 401; all public tables have RLS.
+- Preview: signed-out customer route redirects with 307; admin/customer login,
+  access modes, and protected pages pass; profile write returns 200 and image
+  upload returns 201.
 
-Production secret export was blocked by automatic approval review. It is not
-needed for the separate development setup and no production values were pulled.
+Password-reset email delivery remains unverified. `RESEND_API_KEY` is empty
+locally and absent in the development Vercel project until a separate valid
+key is provided. Configure a controlled recipient and verified sender before
+email testing. A successful reset-request response alone does not prove delivery.
+
+The remote build reported a security vulnerability in the existing Next.js
+14.2.5 dependency and linked https://nextjs.org/blog/security-update-2025-12-11.
+Dependency remediation is separate follow-up work before the next live release;
+no application dependency versions were changed during environment setup.
+
+Automatic approval review rejected production secret export and credentials
+shared across all Preview branches in the live project. Neither action was
+performed. The separate development project avoids both issues.

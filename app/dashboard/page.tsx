@@ -87,6 +87,7 @@ export default async function DashboardPage() {
         <DashboardCustomers customers={customers.map((customer) => ({
           id: customer.id, name: customer.name, email: customer.email, phone: customer.phone,
           dogs: customer.dogs,
+          serviceKeys: customer.serviceAccess.map((access) => access.serviceKey),
           services: customer.serviceAccess.map((access) => customerServiceOptions.find((service) => service.key === access.serviceKey)?.title || access.serviceKey),
         }))} />
 

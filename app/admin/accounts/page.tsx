@@ -15,8 +15,8 @@ export default async function AccountsPage() {
         <AdminMenuSelect />
 
         <div className="grid gap-6">
-          <section className="overflow-hidden rounded-3xl border border-brand-200 bg-brand-50 p-6">
-            <h2 className="mb-4 text-lg font-semibold text-brand-950">Create customer</h2>
+          <section id="add-customer" aria-labelledby="add-customer-title" tabIndex={-1} className="scroll-mt-6 overflow-hidden rounded-3xl border border-brand-200 bg-brand-50 p-6">
+            <h1 id="add-customer-title" className="mb-4 text-xl font-semibold text-brand-950">Add customer</h1>
             <AdminCreateCustomerForm />
           </section>
         </div>

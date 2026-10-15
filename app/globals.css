@@ -100,3 +100,82 @@ summary::-webkit-details-marker {
 .assigned-services-description {
   color: #747474 !important;
 }
+
+/* Optional dashboard colour concept; the rest of the application keeps its palette. */
+.dashboard-colour-preview {
+  background: #f3f6ef;
+  border: 1px solid #d3dfd2;
+  border-radius: 1.5rem;
+  padding: clamp(1rem, 2.5vw, 1.75rem);
+}
+
+.dashboard-colour-preview .dashboard-intro {
+  background: #123d2b;
+  border-radius: 1.15rem;
+  padding: clamp(1.25rem, 2.5vw, 1.75rem);
+}
+
+.dashboard-colour-preview .dashboard-intro h1 {
+  color: #ffffff !important;
+}
+
+
+.dashboard-colour-preview :is(h2, .text-brand-950) {
+  color: #123d2b !important;
+}
+
+.dashboard-colour-preview :is(.text-brand-700, .text-brand-800, .text-brand-900) {
+  color: #405548 !important;
+}
+
+.dashboard-colour-preview .customer-tile {
+  border-color: #c9d7c8;
+  box-shadow: 0 4px 16px rgb(18 61 43 / 7%);
+}
+
+.dashboard-colour-preview .customer-tile:hover {
+  border-color: #12622d;
+  box-shadow: 0 10px 26px rgb(18 61 43 / 13%);
+}
+
+.dashboard-colour-preview .customer-service-badge {
+  background: #e3f0d6;
+  color: #123d2b !important;
+}
+
+.dashboard-colour-preview .customer-services-action {
+  background: #123d2b;
+  border-color: #123d2b;
+  color: #ffffff !important;
+}
+
+.dashboard-colour-preview .customer-services-action:hover {
+  background: #12622d;
+}
+
+.dashboard-colour-preview .customer-add-action {
+  background: #bde873 !important;
+  color: #123d2b !important;
+}
+
+.dashboard-colour-preview .customer-add-action:hover {
+  background: #d0f39a !important;
+}
+
+.dashboard-colour-preview .customer-manage-action {
+  background: transparent;
+  border-color: #7f9d84;
+  color: #ffffff !important;
+}
+
+.dashboard-colour-preview .customer-manage-action:hover {
+  background: #1b5039;
+}
+
+.dashboard-colour-preview :is(p, li, label) {
+  color: #405548;
+}
+
+.dashboard-colour-preview .dashboard-intro .dashboard-intro-copy {
+  color: #e2efdc !important;
+}

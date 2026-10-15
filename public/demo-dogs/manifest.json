@@ -1,0 +1,54 @@
+{
+  "mode": "Built-in image generation",
+  "purpose": "Illustrative synthetic demo dogs only",
+  "assets": [
+    {
+      "path": "public/demo-dogs/labrador.png",
+      "prompt": "Use case: photorealistic-natural. Asset type: demo dog photograph for a dog-training application's customer card. One friendly adult yellow Labrador retriever sitting outdoors on a quiet Scandinavian woodland path. Natural editorial photography, believable fur and anatomy, warm soft daylight, muted green foliage bokeh. Landscape 3:2 composition, head and shoulders centered with generous room around ears for responsive card cropping. No people, no text, no logos, no watermark. This is an illustrative synthetic demo dog, not a real customer's animal."
+    },
+    {
+      "path": "public/demo-dogs/border-collie.png",
+      "prompt": "Use case: photorealistic-natural. Asset type: demo dog photograph for a dog-training application's customer card. One friendly black-and-white adult Border Collie sitting on a quiet Scandinavian woodland or meadow path. Natural editorial photography, believable fur and anatomy, soft daylight, muted green foliage bokeh. Landscape 3:2 composition, head and shoulders centered with generous room around ears for responsive card cropping. No people, no text, no logos, no watermark. This is an illustrative synthetic demo dog, not a real customer's animal."
+    },
+    {
+      "path": "public/demo-dogs/golden-retriever.png",
+      "prompt": "Use case: photorealistic-natural. Asset type: demo dog photograph for a dog-training application's customer card. One friendly adult Golden Retriever with golden wavy fur sitting on a quiet Scandinavian woodland or meadow path. Natural editorial photography, believable fur and anatomy, soft daylight, muted green foliage bokeh. Landscape 3:2 composition, head and shoulders centered with generous room around ears for responsive card cropping. No people, no text, no logos, no watermark. This is an illustrative synthetic demo dog, not a real customer's animal."
+    },
+    {
+      "path": "public/demo-dogs/dachshund.png",
+      "prompt": "Use case: photorealistic-natural. Asset type: demo dog photograph for a dog-training application's customer card. One friendly short-haired reddish brown Dachshund sitting on a quiet Scandinavian woodland or meadow path. Natural editorial photography, believable fur and anatomy, soft daylight, muted green foliage bokeh. Landscape 3:2 composition, head and shoulders centered with generous room around ears for responsive card cropping. No people, no text, no logos, no watermark. This is an illustrative synthetic demo dog, not a real customer's animal."
+    },
+    {
+      "path": "public/demo-dogs/german-shepherd.png",
+      "prompt": "Use case: photorealistic-natural. Asset type: demo dog photograph for a dog-training application's customer card. One friendly young adult German Shepherd with black-and-tan coat sitting on a quiet Scandinavian woodland or meadow path. Natural editorial photography, believable fur and anatomy, soft daylight, muted green foliage bokeh. Landscape 3:2 composition, head and shoulders centered with generous room around ears for responsive card cropping. No people, no text, no logos, no watermark. This is an illustrative synthetic demo dog, not a real customer's animal."
+    },
+    {
+      "path": "public/demo-dogs/poodle.png",
+      "prompt": "Use case: photorealistic-natural. Asset type: demo dog photograph for a dog-training application's customer card. One friendly apricot adult Poodle with natural curly fur sitting on a quiet Scandinavian woodland or meadow path. Natural editorial photography, believable fur and anatomy, soft daylight, muted green foliage bokeh. Landscape 3:2 composition, head and shoulders centered with generous room around ears for responsive card cropping. No people, no text, no logos, no watermark. This is an illustrative synthetic demo dog, not a real customer's animal."
+    },
+    {
+      "path": "public/demo-dogs/cocker-spaniel.png",
+      "prompt": "Use case: photorealistic-natural. Asset type: demo dog photograph for a dog-training application's customer card. One friendly golden Cocker Spaniel with long soft ears sitting on a quiet Scandinavian woodland or meadow path. Natural editorial photography, believable fur and anatomy, soft daylight, muted green foliage bokeh. Landscape 3:2 composition, head and shoulders centered with generous room around ears for responsive card cropping. No people, no text, no logos, no watermark. This is an illustrative synthetic demo dog, not a real customer's animal."
+    },
+    {
+      "path": "public/demo-dogs/beagle.png",
+      "prompt": "Use case: photorealistic-natural. Asset type: demo dog photograph for a dog-training application's customer card. One friendly tricolor adult Beagle sitting on a quiet Scandinavian woodland or meadow path. Natural editorial photography, believable fur and anatomy, soft daylight, muted green foliage bokeh. Landscape 3:2 composition, head and shoulders centered with generous room around ears for responsive card cropping. No people, no text, no logos, no watermark. This is an illustrative synthetic demo dog, not a real customer's animal."
+    },
+    {
+      "path": "public/demo-dogs/norwegian-elkhound.png",
+      "prompt": "Use case: photorealistic-natural. Asset type: demo dog photograph for a dog-training application's customer card. One friendly adult grey Norwegian Elkhound with alert pointed ears sitting on a quiet Scandinavian woodland or meadow path. Natural editorial photography, believable fur and anatomy, soft daylight, muted green foliage bokeh. Landscape 3:2 composition, head and shoulders centered with generous room around ears for responsive card cropping. No people, no text, no logos, no watermark. This is an illustrative synthetic demo dog, not a real customer's animal."
+    },
+    {
+      "path": "public/demo-dogs/cavalier.png",
+      "prompt": "Use case: photorealistic-natural. Asset type: demo dog photograph for a dog-training application's customer card. One friendly Blenheim Cavalier King Charles Spaniel sitting on a quiet Scandinavian woodland or meadow path. Natural editorial photography, believable fur and anatomy, soft daylight, muted green foliage bokeh. Landscape 3:2 composition, head and shoulders centered with generous room around ears for responsive card cropping. No people, no text, no logos, no watermark. This is an illustrative synthetic demo dog, not a real customer's animal."
+    },
+    {
+      "path": "public/demo-dogs/husky.png",
+      "prompt": "Use case: photorealistic-natural. Asset type: demo dog photograph for a dog-training application's customer card. One friendly adult grey-and-white Siberian Husky sitting on a quiet Scandinavian woodland or meadow path. Natural editorial photography, believable fur and anatomy, soft daylight, muted green foliage bokeh. Landscape 3:2 composition, head and shoulders centered with generous room around ears for responsive card cropping. No people, no text, no logos, no watermark. This is an illustrative synthetic demo dog, not a real customer's animal."
+    },
+    {
+      "path": "public/demo-dogs/mixed-breed.png",
+      "prompt": "Use case: photorealistic-natural. Asset type: demo dog photograph for a dog-training application's customer card. One friendly friendly medium-sized tan mixed-breed dog with soft floppy ears sitting on a quiet Scandinavian woodland or meadow path. Natural editorial photography, believable fur and anatomy, soft daylight, muted green foliage bokeh. Landscape 3:2 composition, head and shoulders centered with generous room around ears for responsive card cropping. No people, no text, no logos, no watermark. This is an illustrative synthetic demo dog, not a real customer's animal."
+    }
+  ]
+}

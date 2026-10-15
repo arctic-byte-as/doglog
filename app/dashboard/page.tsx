@@ -27,7 +27,7 @@ function buildMonthCalendar(date: Date) {
   };
 }
 
-export default async function DashboardPage() {
+export default async function DashboardPage({ searchParams }: { searchParams?: { palette?: string } }) {
   const user = await requireTrainer();
 
   const [dogCount, customers, consultationCount, activeCourseParticipants, activeCourseGroups] = await Promise.all([
@@ -39,7 +39,7 @@ export default async function DashboardPage() {
       orderBy: [{ name: 'asc' }, { id: 'asc' }],
       select: {
         id: true, name: true, email: true, phone: true,
-        dogs: { where: { trainerId: user.trainer.id }, orderBy: { name: 'asc' }, select: { id: true, name: true, breed: true } },
+        dogs: { where: { trainerId: user.trainer.id }, orderBy: { name: 'asc' }, select: { id: true, name: true, breed: true, profileImageUrl: true } },
         serviceAccess: { select: { serviceKey: true } },
       },
     }),
@@ -84,7 +84,7 @@ export default async function DashboardPage() {
   return (
     <SiteShell>
       <div className="space-y-8">
-        <DashboardCustomers customers={customers.map((customer) => ({
+        <DashboardCustomers contrastPreview={searchParams?.palette === 'contrast'} customers={customers.map((customer) => ({
           id: customer.id, name: customer.name, email: customer.email, phone: customer.phone,
           dogs: customer.dogs,
           serviceKeys: customer.serviceAccess.map((access) => access.serviceKey),

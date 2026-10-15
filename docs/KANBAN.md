@@ -54,6 +54,7 @@ Last updated: 2026-05-31
 
 | ID | Card | Owner | Acceptance Criteria |
 | --- | --- | --- | --- |
+| DL-037 | Add floating phone navigation and compact desktop customer tiles | Lead Engineer Agent | Phone navigation, accessible More sheet, safe-area spacing, approximately 50% smaller desktop card area and responsive verification |
 | DL-036 | Add trainer Calendar menu item | Lead Engineer Agent | Dedicated trainer-protected calendar page, desktop/mobile navigation and shared dashboard calendar |
 | DL-035 | Add dashboard customer shortcut, dog photos and contrast colour concept | Lead Engineer Agent | Direct Add customer link, uploaded/demo photo handling, optional Forest & lime preview, responsive layout and contrast checks |
 | DL-034 | Manage services and course access from customer cards | Lead Engineer Agent | Card action supports add/remove services and courses, explicit save/cancel, refreshed badges and counts, and trainer-scoped authorization |

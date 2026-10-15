@@ -179,3 +179,35 @@ summary::-webkit-details-marker {
 .dashboard-colour-preview .dashboard-intro .dashboard-intro-copy {
   color: #e2efdc !important;
 }
+
+/* Keep mobile navigation above the home indicator and reserve page space for it. */
+.mobile-floating-nav {
+  bottom: calc(0.75rem + env(safe-area-inset-bottom, 0px));
+  left: max(0.75rem, env(safe-area-inset-left, 0px));
+  right: max(0.75rem, env(safe-area-inset-right, 0px));
+  max-width: 30rem;
+  margin-inline: auto;
+}
+.mobile-menu-sheet {
+  inset: auto 0 0;
+  max-height: 85dvh;
+  padding-bottom: calc(1.25rem + env(safe-area-inset-bottom, 0px));
+  overscroll-behavior: contain;
+}
+@media (max-width: 767px) {
+  .mobile-nav-content { padding-bottom: calc(7rem + env(safe-area-inset-bottom, 0px)); }
+}
+/* Four compact desktop cards replace three large cards, roughly halving area. */
+@media (min-width: 1024px) {
+  .customer-grid { gap: 0.75rem; }
+  .customer-tile { padding: 0.875rem; }
+  .customer-tile .customer-photo { aspect-ratio: 2.4; margin-bottom: 0.75rem; }
+  .customer-tile h2 { font-size: 0.875rem; line-height: 1.4; }
+  .customer-tile .customer-photo + div { gap: 0.5rem; }
+  .customer-tile .customer-photo + div > span { width: 2rem; height: 2rem; border-radius: 0.75rem; }
+  .customer-tile a > div.border-t { margin-top: 0.75rem; padding-top: 0.5rem; }
+  .customer-tile a > div.mt-4 { margin-top: 0.5rem; gap: 0.25rem; }
+  .customer-tile a > span:last-child { padding-top: 0.75rem; font-size: 0.75rem; }
+  .customer-tile .customer-service-badge { padding: 0.25rem 0.5rem; }
+  .customer-tile .customer-services-action { margin-top: 0.5rem; padding: 0.5rem; font-size: 0.75rem; }
+}

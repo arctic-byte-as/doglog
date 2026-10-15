@@ -63,7 +63,7 @@ export default function DashboardCustomers({ customers, contrastPreview = false 
             </div>
             <p role="status" className="text-sm text-brand-700">{visible.length} {visible.length === 1 ? 'customer' : 'customers'}{query ? ` of ${customers.length}` : ''}</p>
           </div>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="customer-grid grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {visible.map((customer) => (
               <article key={customer.id} className="customer-tile group flex min-w-0 flex-col rounded-2xl border border-brand-200 bg-white p-5 shadow-sm transition hover:border-brand-500 hover:shadow-soft focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-700 sm:p-6">
                 <Link href={`/dogs?customer=${encodeURIComponent(customer.id)}`} aria-label={`Open ${customer.name}'s dogs`} className="flex flex-1 flex-col rounded-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand-700">

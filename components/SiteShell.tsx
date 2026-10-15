@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import Logo from './Logo';
+import MobileNavigation from './MobileNavigation';
 import AuthStatus from './AuthStatus';
 import SignOutMenuButton from './SignOutMenuButton';
 import { getCurrentUser } from '@/lib/auth';
@@ -96,46 +97,8 @@ export async function SiteShell({ children }: { children: React.ReactNode }) {
               {isCustomerMenu ? (
                 <DogAvatarStrip dogs={customerDogs} label={t.nav.customerHome} />
               ) : null}
-              {visibleNav.length ? (
-                <details className="relative">
-                  <summary
-                    aria-label={t.nav.menu}
-                    title={t.nav.menu}
-                    className={
-                      isCustomerMenu
-                        ? "flex h-11 w-11 cursor-pointer list-none flex-col items-center justify-center gap-1.5 rounded-full border border-brand-200 bg-white text-brand-800 transition hover:border-brand-400 hover:bg-brand-50"
-                        : "cursor-pointer list-none rounded-full border border-brand-200 bg-white px-4 py-2 text-sm font-medium text-brand-800 transition hover:border-brand-400 hover:bg-brand-50"
-                    }
-                  >
-                    {isCustomerMenu ? (
-                      <>
-                        <span className="h-0.5 w-5 rounded-full bg-current" />
-                        <span className="h-0.5 w-5 rounded-full bg-current" />
-                        <span className="h-0.5 w-5 rounded-full bg-current" />
-                      </>
-                    ) : (
-                      t.nav.menu
-                    )}
-                  </summary>
-                  <div className="absolute right-0 z-20 mt-2 w-64 rounded-2xl border border-brand-200 bg-white p-2 shadow-soft">
-                    {visibleNav.map((item) => (
-                      <Link
-                        key={item.href}
-                        href={item.href}
-                        className="block rounded-xl px-4 py-3 text-sm font-medium text-brand-800 transition hover:bg-brand-50"
-                      >
-                        {item.label}
-                      </Link>
-                    ))}
-                    {isCustomerMenu ? (
-                      <SignOutMenuButton
-                        label={t.nav.logOut}
-                        className="flex min-h-11 w-full items-center rounded-xl px-4 text-left text-sm font-medium leading-none text-brand-800 transition hover:bg-brand-50"
-                      />
-                    ) : null}
-                  </div>
-                </details>
-              ) : null}
+              {!user ? <details className="relative"><summary className="cursor-pointer rounded-full border border-brand-200 px-4 py-2">Menu</summary><nav className="absolute right-0 z-20 mt-2 w-64 rounded-2xl border border-brand-200 bg-white p-2 shadow-soft">{visibleNav.map((item) => <Link key={item.href} href={item.href} className="block rounded-xl px-4 py-3 text-sm">{item.label}</Link>)}</nav></details> : null}
+
             </div>
           </div>
           <div className="hidden items-center justify-between gap-4 md:flex">
@@ -166,7 +129,8 @@ export async function SiteShell({ children }: { children: React.ReactNode }) {
           </div>
         </div>
       </header>
-      <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8">{children}</main>
+      {user ? <MobileNavigation items={visibleNav} customer={isCustomerMenu} menuLabel={isCustomerMenu ? t.nav.menu : 'More'} signOutLabel={isCustomerMenu ? t.nav.logOut : 'Sign out'} /> : null}
+      <main className={`mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8 ${user ? 'mobile-nav-content' : ''}`}>{children}</main>
     </div>
   );
 }

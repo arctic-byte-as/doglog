@@ -64,8 +64,6 @@ export async function SiteShell({ children, hideDogAvatar = false }: { children:
   const customerNav = [
     { href: '/customer', label: t.nav.myHome },
     { href: '/customer/skills-library', label: t.nav.skillsLibrary },
-    { href: '/customer/services', label: t.nav.myServices },
-    { href: '/customer/plan', label: t.nav.myTrainingPlan },
     { href: '/customer/dogs', label: t.dashboard.yourDogs },
     { href: '/customer/profile', label: t.nav.profile },
   ];
@@ -99,7 +97,7 @@ export async function SiteShell({ children, hideDogAvatar = false }: { children:
               {!user ? <details className="relative"><summary className="cursor-pointer rounded-full border border-brand-200 px-4 py-2">Menu</summary><nav className="absolute right-0 z-20 mt-2 w-64 rounded-2xl border border-brand-200 bg-white p-2 shadow-soft">{visibleNav.map((item) => <Link key={item.href} href={item.href} className="block rounded-xl px-4 py-3 text-sm">{item.label}</Link>)}</nav></details> : null}
             </div>
             <div className="hidden min-w-0 flex-1 items-center gap-4 md:flex">
-              <nav aria-label="Main navigation" className="desktop-text-nav flex min-w-0 flex-1 items-center gap-4 overflow-x-auto whitespace-nowrap lg:gap-5">
+              <nav aria-label="Main navigation" className="desktop-text-nav [&>:first-child]:ml-auto flex min-w-0 flex-1 items-center gap-4 overflow-x-auto whitespace-nowrap lg:gap-5">
                 {visibleNav.map((item) => <Link key={item.href} href={item.href} className="inline-flex shrink-0 items-center py-2 text-sm font-medium text-brand-900 underline-offset-4 hover:underline focus-visible:rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-700">{item.label}</Link>)}
                 {isCustomerMenu ? <SignOutMenuButton label={t.nav.logOut} className="shrink-0 py-2 text-sm font-medium text-brand-900 underline-offset-4 hover:underline" /> : null}
               </nav>

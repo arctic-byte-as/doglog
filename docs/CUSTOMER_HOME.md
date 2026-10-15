@@ -19,3 +19,7 @@ The customer skills reader is a searchable thumbnail grid with topic filters. It
 The development library currently has no saved video links. Existing saved data was not overwritten and no video links were invented. Temporary local fixture tests cover a valid video, missing video and failed thumbnail. The fixture route is removed before deployment.
 
 Build and English/Norwegian browser checks at 320, 390 and 1440px cover white site header, green content hero, search/reset, guidance/player modal, focus restoration, thumbnail fallback and horizontal bounds.
+
+The owner confirmed placeholders are appropriate for development because the live library already has video links. Ready preview for DL-042: `dpl_2qenikUP34Ehb4ToeKEwRF5VjzjG`, https://doglog-development-khdsan7gi-tectrap-projects.vercel.app/customer/skills-library.
+
+Remote customer login, white header/green content, skills thumbnail/search rendering, dogs/profile routes and signed-out access checks pass. The stable development alias now points to this preview.

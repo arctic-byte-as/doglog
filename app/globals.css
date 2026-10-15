@@ -195,7 +195,7 @@ summary::-webkit-details-marker {
   overscroll-behavior: contain;
 }
 @media (max-width: 767px) {
-  .mobile-nav-content { padding-bottom: calc(7rem + env(safe-area-inset-bottom, 0px)); }
+  main.mobile-nav-content { padding-bottom: calc(7rem + env(safe-area-inset-bottom, 0px)); }
 }
 /* Four compact desktop cards replace three large cards, roughly halving area. */
 @media (min-width: 1024px) {

@@ -41,14 +41,13 @@ function LessonPlayer({ lesson, locale, onClose }: { lesson: VideoLesson; locale
 function Thumbnail({ lesson }: { lesson: VideoLesson }) {
   const [failed, setFailed] = useState(false);
   return <div className="skills-thumbnail relative aspect-[2/1] overflow-hidden rounded-t-2xl bg-brand-100">
-    {lesson.videoId && !failed ? <Image src={`https://i.ytimg.com/vi/${lesson.videoId}/hqdefault.jpg`} alt="" fill unoptimized sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw" className="object-cover" onError={() => setFailed(true)} /> : <div className="absolute inset-0 bg-gradient-to-br from-brand-100 to-brand-300" />}
+    {lesson.videoId && !failed ? <Image src={`https://i.ytimg.com/vi/${lesson.videoId}/hqdefault.jpg`} alt="" fill unoptimized sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 100vw" className="object-cover" onError={() => setFailed(true)} /> : <div className="absolute inset-0 bg-gradient-to-br from-brand-100 to-brand-300" />}
     <span aria-hidden="true" className="absolute inset-0 flex items-center justify-center"><span className="flex h-10 w-10 items-center justify-center rounded-full bg-white/95 text-base text-brand-950 shadow-sm">{lesson.videoId ? '▶' : '☰'}</span></span>
   </div>;
 }
 
 export default function SkillsVideoGallery({ skills, locale }: { skills: CoreSkill[]; locale: 'en' | 'nb' }) {
   const [query, setQuery] = useState('');
-  const [category, setCategory] = useState('');
   const [selected, setSelected] = useState<VideoLesson | null>(null);
   const searchId = useId();
   const t = copy[locale];
@@ -56,13 +55,13 @@ export default function SkillsVideoGallery({ skills, locale }: { skills: CoreSki
   const lessons = skills.flatMap((skill, skillIndex) => skill.subcategories.map((lesson, index) => {
     const local = locale === 'nb' ? lesson.translations?.nb : undefined;
     const title = local?.title || lesson.title;
-    return { id: `${skillIndex}-${index}`, category: categories[skillIndex].title, categoryId: skill.title, title, goal: local?.goal || lesson.goal, steps: local?.steps || lesson.steps, coachingNotes: local?.coachingNotes || lesson.coachingNotes, videoId: youtubeId(lesson.youtubeUrl), search: [title, lesson.title, categories[skillIndex].title, skill.title, local?.goal, lesson.goal].join(' ').toLocaleLowerCase() };
+    return { id: `${skillIndex}-${index}`, category: categories[skillIndex].title, title, goal: local?.goal || lesson.goal, steps: local?.steps || lesson.steps, coachingNotes: local?.coachingNotes || lesson.coachingNotes, videoId: youtubeId(lesson.youtubeUrl), search: [title, lesson.title, categories[skillIndex].title, skill.title, local?.goal, lesson.goal].join(' ').toLocaleLowerCase() };
   }));
-  const visible = lessons.filter((lesson) => (!category || lesson.categoryId === category) && lesson.search.includes(query.trim().toLocaleLowerCase()));
+  const visible = lessons.filter((lesson) => lesson.search.includes(query.trim().toLocaleLowerCase()));
   return <div className="space-y-5">
-    <div className="rounded-2xl border border-brand-200 bg-white p-4 sm:p-5"><label htmlFor={searchId} className="text-sm font-semibold">{t.search}</label><input id={searchId} type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder={t.placeholder} className="mt-2 w-full rounded-xl border border-brand-200 bg-white px-4 py-3 text-base" /><div className="mt-4 flex flex-wrap gap-2"><button type="button" aria-pressed={!category} onClick={() => setCategory('')} className={`rounded-full border border-brand-200 px-3 py-2 text-xs ${!category ? 'bg-brand-100 font-semibold' : ''}`}>{t.all}</button>{categories.map((item) => <button key={item.id} type="button" aria-pressed={category === item.id} onClick={() => setCategory(item.id)} className={`rounded-full border border-brand-200 px-3 py-2 text-xs ${category === item.id ? 'bg-brand-100 font-semibold' : ''}`}>{item.title}</button>)}</div><p role="status" className="mt-4 text-sm">{visible.length} {t.count}</p></div>
-    <div className="skills-video-grid grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4">{visible.map((lesson) => <button key={lesson.id} type="button" onClick={() => setSelected(lesson)} aria-haspopup="dialog" className="skill-video-tile min-w-0 overflow-hidden rounded-2xl border border-brand-200 bg-white text-left shadow-sm transition hover:border-brand-500 hover:shadow-soft"><Thumbnail lesson={lesson} /><span className="block p-3"><span className="block text-xs font-semibold text-brand-600">{lesson.category}</span><span className="mt-2 block text-sm font-semibold">{lesson.title}</span><span className="mt-3 block text-xs font-semibold">{lesson.videoId ? t.watch : t.guidance} →</span>{!lesson.videoId ? <span className="mt-1 block text-xs">{t.missing}</span> : null}</span></button>)}</div>
-    {!visible.length ? <div className="rounded-2xl border border-brand-200 bg-white p-5"><p>{t.empty}</p><button type="button" onClick={() => { setQuery(''); setCategory(''); }} className="mt-3 rounded-full border border-brand-200 px-4 py-2 text-sm">{t.clear}</button></div> : null}
+    <div className="rounded-2xl border border-brand-200 bg-white p-4 sm:p-5"><label htmlFor={searchId} className="text-sm font-semibold">{t.search}</label><input id={searchId} type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder={t.placeholder} className="mt-2 w-full rounded-xl border border-brand-200 bg-white px-4 py-3 text-base" /><p role="status" className="mt-4 text-sm">{visible.length} {t.count}</p></div>
+    <div className="skills-video-grid grid grid-cols-1 gap-3 md:grid-cols-3 lg:grid-cols-4">{visible.map((lesson) => <button key={lesson.id} type="button" onClick={() => setSelected(lesson)} aria-haspopup="dialog" className="skill-video-tile min-w-0 overflow-hidden rounded-2xl border border-brand-200 bg-white text-left shadow-sm transition hover:border-brand-500 hover:shadow-soft"><Thumbnail lesson={lesson} /><span className="block p-3"><span className="block text-xs font-semibold text-brand-600">{lesson.category}</span><span className="mt-2 block text-sm font-semibold">{lesson.title}</span><span className="mt-3 block text-xs font-semibold">{lesson.videoId ? t.watch : t.guidance} →</span>{!lesson.videoId ? <span className="mt-1 block text-xs">{t.missing}</span> : null}</span></button>)}</div>
+    {!visible.length ? <div className="rounded-2xl border border-brand-200 bg-white p-5"><p>{t.empty}</p><button type="button" onClick={() => { setQuery(''); }} className="mt-3 rounded-full border border-brand-200 px-4 py-2 text-sm">{t.clear}</button></div> : null}
     {selected ? <LessonPlayer lesson={selected} locale={locale} onClose={() => setSelected(null)} /> : null}
   </div>;
 }

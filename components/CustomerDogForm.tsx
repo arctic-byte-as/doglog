@@ -24,11 +24,13 @@ export default function CustomerDogForm({
   disabled = false,
   labels = defaultDogLabels,
   imageLabels,
+  locale = 'en',
   uploadSuccessMessage = 'Photo uploaded. Add dog to keep this picture.',
 }: {
   disabled?: boolean;
   labels?: typeof defaultDogLabels;
   imageLabels?: ImageLabels;
+  locale?: 'en' | 'nb';
   uploadSuccessMessage?: string;
 }) {
   const [form, setForm] = useState({
@@ -91,6 +93,7 @@ export default function CustomerDogForm({
           onChange={(value) => setForm({ ...form, profileImageUrl: value })}
           uploadSuccessMessage={uploadSuccessMessage}
           labels={imageLabels}
+          locale={locale}
         />
       </div>
       <div className="flex items-center gap-3">

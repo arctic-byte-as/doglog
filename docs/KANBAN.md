@@ -54,6 +54,7 @@ Last updated: 2026-05-31
 
 | ID | Card | Owner | Acceptance Criteria |
 | --- | --- | --- | --- |
+| DL-047 | Add customer camera/photo crop picker in development | Lead Engineer Agent | Camera/library, crop/zoom/preview, resized upload, atomic photo-only save and retry/cancel; development only |
 | DL-046 | Full-width mobile skills tiles and search-only navigation | Lead Engineer Agent | One tile per phone row, topic submenu removed, search/player checked and production main deployment verified |
 | DL-045 | Make skills thumbnail gallery more compact | Lead Engineer Agent | Roughly half-size thumbnails, more tiles per row, phone readability and player/search retained; development branch pushed |
 | DL-044 | Simplify customer home course/calendar headings | Lead Engineer Agent | Plain course/calendar titles on home, other shared headers retained, development build verified and feature branch pushed |

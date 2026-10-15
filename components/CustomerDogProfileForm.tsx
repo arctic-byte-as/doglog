@@ -2,6 +2,8 @@
 
 import type { ComponentProps } from 'react';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { saveDogPhoto } from '@/lib/save-dog-photo';
 import BreedSelect from '@/components/BreedSelect';
 import DogProfileImageField from '@/components/DogProfileImageField';
 
@@ -40,15 +42,18 @@ export default function CustomerDogProfileForm({
   dog,
   labels = defaultDogLabels,
   imageLabels,
+  locale = 'en',
   uploadSuccessMessage = 'Photo uploaded and saved.',
   photoSavedMessage = 'Photo saved',
 }: {
   dog: DogProfile;
   labels?: typeof defaultDogLabels;
   imageLabels?: ImageLabels;
+  locale?: 'en' | 'nb';
   uploadSuccessMessage?: string;
   photoSavedMessage?: string;
 }) {
+  const router = useRouter();
   const [form, setForm] = useState({
     name: dog.name,
     age: dog.age,
@@ -94,8 +99,8 @@ export default function CustomerDogProfileForm({
   }
 
   async function saveProfileImage(value: string) {
-    const nextForm = { ...form, profileImageUrl: value };
-    await saveDog(nextForm, photoSavedMessage);
+    setLoading(true);
+    try { await saveDogPhoto(dog.id, value); setForm((current) => ({ ...current, profileImageUrl: value })); setMessage(photoSavedMessage); router.refresh(); } finally { setLoading(false); }
   }
 
   async function deleteDog() {
@@ -141,10 +146,12 @@ export default function CustomerDogProfileForm({
           <textarea value={form.lastIncident} onChange={(event) => update('lastIncident', event.target.value)} className="mt-1 min-h-24 w-full rounded-lg border border-brand-200 px-3 py-2" />
         </label>
         <DogProfileImageField
+          disabled={loading || deleting}
           value={form.profileImageUrl}
           onChange={saveProfileImage}
           uploadSuccessMessage={uploadSuccessMessage}
           labels={imageLabels}
+          locale={locale}
         />
       </div>
       <div className="flex items-center gap-3">

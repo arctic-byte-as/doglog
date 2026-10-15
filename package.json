@@ -15,7 +15,8 @@
     "prisma:validate:sqlite": "prisma validate --schema prisma/schema.sqlite.prisma",
     "prisma:validate:prod": "prisma validate --schema prisma/schema.prisma",
     "lint": "next lint",
-    "test:training-library": "node --test tests/training-library.test.cjs"
+    "test:training-library": "node --test tests/training-library.test.cjs",
+    "test:photo-crop": "node --test tests/photo-crop.test.cjs"
   },
   "dependencies": {
     "@prisma/client": "5.15.0",

@@ -1,6 +1,7 @@
 "use client";
 
-import { useRef, useState } from 'react';
+import { useState } from 'react';
+import DogPhotoPicker from './DogPhotoPicker';
 
 const avatarOptions = [
   '/dog-avatars/avatar-01.svg',
@@ -17,7 +18,9 @@ export default function DogProfileImageField({
   disabled = false,
   uploadSuccessMessage = 'Photo uploaded. Save the dog to keep this picture.',
   labels,
+  locale = 'en',
 }: {
+  locale?: 'en' | 'nb';
   value: string;
   onChange: (value: string) => void | Promise<void>;
   disabled?: boolean;
@@ -34,12 +37,12 @@ export default function DogProfileImageField({
     uploadError: string;
   };
 }) {
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [open, setOpen] = useState(false);
+  const [failed, setFailed] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [message, setMessage] = useState('');
 
-  async function handleUpload(file?: File) {
-    if (!file) return;
+  async function handleUpload(file: File) {
     setUploading(true);
     setMessage('');
 
@@ -55,12 +58,16 @@ export default function DogProfileImageField({
       if (!response.ok) throw new Error(data?.error || labels?.uploadError || 'Could not upload image.');
       await onChange(data.url);
       setMessage(uploadSuccessMessage);
-    } catch (error: any) {
-      setMessage(error.message || labels?.uploadError || 'Could not upload image.');
     } finally {
       setUploading(false);
-      if (fileInputRef.current) fileInputRef.current.value = '';
     }
+  }
+
+  async function saveChoice(url: string) {
+    setUploading(true); setFailed(false); setMessage('');
+    try { await onChange(url); setMessage(uploadSuccessMessage); }
+    catch { setFailed(true); setMessage(labels?.uploadError || 'Could not save photo. Please try again.'); }
+    finally { setUploading(false); }
   }
 
   return (
@@ -68,15 +75,15 @@ export default function DogProfileImageField({
       <span className="text-sm font-medium text-brand-800">{labels?.profilePicture || 'Profile picture'}</span>
 
       <div className="flex flex-wrap items-center gap-4">
-        <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-full border border-brand-200 bg-brand-50 text-xl font-semibold text-brand-700">
+        <button type="button" aria-label={labels?.uploadPhoto || 'Change photo'} disabled={disabled || uploading} onClick={() => setOpen(true)} className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-full border border-brand-200 bg-brand-50 text-xl font-semibold text-brand-700">
           {value ? <span className="h-full w-full bg-cover bg-center" style={{ backgroundImage: `url(${value})` }} /> : labels?.dog || 'Dog'}
-        </div>
+        </button>
 
         <div className="flex flex-wrap gap-2">
           <button
             type="button"
             disabled={disabled || uploading}
-            onClick={() => fileInputRef.current?.click()}
+            onClick={() => { setFailed(false); setMessage(''); setOpen(true); }}
             className="rounded-lg border border-brand-200 bg-white px-4 py-2 text-sm font-medium text-brand-800 disabled:opacity-60"
           >
             {uploading ? labels?.uploading || 'Uploading...' : labels?.uploadPhoto || 'Upload photo'}
@@ -84,8 +91,8 @@ export default function DogProfileImageField({
           {value ? (
             <button
               type="button"
-              disabled={disabled}
-              onClick={() => onChange('')}
+              disabled={disabled || uploading}
+              onClick={() => saveChoice('')}
               className="rounded-lg border border-brand-200 bg-white px-4 py-2 text-sm font-medium text-brand-800 disabled:opacity-60"
             >
               {labels?.remove || 'Remove'}
@@ -94,22 +101,15 @@ export default function DogProfileImageField({
         </div>
       </div>
 
-      <input
-        ref={fileInputRef}
-        disabled={disabled}
-        type="file"
-        accept="image/png,image/jpeg,image/webp,image/gif"
-        className="hidden"
-        onChange={(event) => handleUpload(event.target.files?.[0])}
-      />
-
+      {open ? <DogPhotoPicker locale={locale} onSave={handleUpload} onClose={() => setOpen(false)} /> : null}
+      <details><summary className="min-h-11 cursor-pointer py-3 text-sm font-medium">{labels?.chooseAvatar || 'Choose dog avatar'}</summary>
       <div className="grid grid-cols-6 gap-2">
         {avatarOptions.map((avatar) => (
           <button
             key={avatar}
             type="button"
-            disabled={disabled}
-            onClick={() => onChange(avatar)}
+            disabled={disabled || uploading}
+            onClick={() => saveChoice(avatar)}
             className={`aspect-square overflow-hidden rounded-full border bg-white p-1 transition hover:border-brand-400 disabled:opacity-60 ${
               value === avatar ? 'border-brand-700' : 'border-brand-200'
             }`}
@@ -120,19 +120,9 @@ export default function DogProfileImageField({
         ))}
       </div>
 
-      <label className="block">
-        <span className="text-sm font-medium text-brand-800">{labels?.imageUrl || 'Image URL'}</span>
-        <input
-          disabled={disabled}
-          type="text"
-          value={value}
-          onChange={(event) => onChange(event.target.value)}
-          placeholder={labels?.placeholder || 'https://example.com/dog-photo.jpg or /uploads/dogs/photo.jpg'}
-          className="mt-1 w-full rounded-lg border border-brand-200 px-3 py-2 disabled:bg-brand-50"
-        />
-      </label>
+      </details>
 
-      {message ? <p className="text-sm text-brand-700">{message}</p> : null}
+      {message ? <p role={failed ? 'alert' : 'status'} className="text-sm text-brand-700">{message}</p> : null}
     </div>
   );
 }

@@ -43,6 +43,7 @@ export default async function CustomerProfilePage() {
                   dog={dog}
                   labels={t.forms.dog}
                   imageLabels={t.forms.image}
+                  locale={locale}
                   uploadSuccessMessage={t.forms.image.uploadedAndSaved}
                   photoSavedMessage={t.forms.image.photoSaved}
                 /></div>
@@ -58,6 +59,7 @@ export default async function CustomerProfilePage() {
             disabled={!customer}
             labels={t.forms.dog}
             imageLabels={t.forms.image}
+                  locale={locale}
             uploadSuccessMessage={t.forms.image.uploadedAddDog}
           />
         </SectionCard></div>

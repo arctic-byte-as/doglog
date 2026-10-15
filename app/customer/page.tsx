@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { SiteShell } from '@/components/SiteShell';
 import { SectionCard } from '@/components/SectionCard';
+import CustomerWelcome from '@/components/CustomerWelcome';
 import CustomerCalendar from '@/components/CustomerCalendar';
 import { requireCustomer } from '@/lib/auth';
 import { getCustomerDictionary, getCustomerLocale } from '@/lib/i18n/customer';
@@ -17,8 +18,8 @@ export default async function CustomerPage() {
     select: {
       name: true,
       serviceAccess: { select: { serviceKey: true } },
-      dogs: { select: {
-        name: true,
+      dogs: { orderBy: { name: 'asc' }, select: {
+        id: true, name: true, profileImageUrl: true,
         consultations: { select: { id: true, date: true, focus: true } },
         serviceSessions: { where: { serviceKey: { in: ['PRIVATE_TRAINING', 'OPEN_TRAINING'] } }, select: { id: true, date: true, focus: true, serviceKey: true } },
       } },
@@ -41,9 +42,9 @@ export default async function CustomerPage() {
   ]).sort((a, b) => a.day.localeCompare(b.day) || a.id.localeCompare(b.id));
 
   return (
-    <SiteShell>
+    <SiteShell hideDogAvatar>
       <div className="customer-home dashboard-colour-preview space-y-8">
-        <div className="dashboard-intro"><h1 className="text-2xl font-semibold sm:text-3xl">{t.dashboard.welcome}</h1><p className="dashboard-intro-copy mt-2 text-sm leading-6">{t.dashboard.welcomeHelp}</p></div>
+        <CustomerWelcome name={customer.name} dogs={customer.dogs.map((dog) => ({ id: dog.id, name: dog.name, profileImageUrl: dog.profileImageUrl }))} title={t.dashboard.welcome} description={t.dashboard.welcomeHelp} locale={locale} />
         <SectionCard title={t.dashboard.assignedServices} plainHeader>
           {services.length ? <div className="grid gap-4 lg:grid-cols-2">
             {services.map((service) => {

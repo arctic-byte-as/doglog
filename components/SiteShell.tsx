@@ -55,7 +55,7 @@ function DogAvatarStrip({
   );
 }
 
-export async function SiteShell({ children }: { children: React.ReactNode }) {
+export async function SiteShell({ children, hideDogAvatar = false }: { children: React.ReactNode; hideDogAvatar?: boolean }) {
   const user = await getCurrentUser();
   const customerLocale = await getCustomerLocale();
   const t = getCustomerDictionary(customerLocale);
@@ -70,7 +70,7 @@ export async function SiteShell({ children }: { children: React.ReactNode }) {
     { href: '/customer/profile', label: t.nav.profile },
   ];
   const customerDogs =
-    isCustomerMenu && user?.customer
+    isCustomerMenu && !hideDogAvatar && user?.customer
       ? await prisma.dog.findMany({
           where: { customerId: user.customer.id },
           orderBy: { name: 'asc' },
@@ -95,7 +95,7 @@ export async function SiteShell({ children }: { children: React.ReactNode }) {
               <Logo subtitle={logoSubtitle} />
             </Link>
             <div className="flex items-center gap-3 md:hidden">
-              {isCustomerMenu ? (
+              {isCustomerMenu && !hideDogAvatar ? (
                 <DogAvatarStrip dogs={customerDogs} label={t.nav.customerHome} />
               ) : null}
               {!user ? <details className="relative"><summary className="cursor-pointer rounded-full border border-brand-200 px-4 py-2">Menu</summary><nav className="absolute right-0 z-20 mt-2 w-64 rounded-2xl border border-brand-200 bg-white p-2 shadow-soft">{visibleNav.map((item) => <Link key={item.href} href={item.href} className="block rounded-xl px-4 py-3 text-sm">{item.label}</Link>)}</nav></details> : null}
@@ -121,7 +121,7 @@ export async function SiteShell({ children }: { children: React.ReactNode }) {
               ) : null}
             </nav>
             <div className="flex flex-wrap items-center gap-3">
-              {isCustomerMenu ? <DogAvatarStrip dogs={customerDogs} label={t.nav.customerHome} /> : null}
+              {isCustomerMenu && !hideDogAvatar ? <DogAvatarStrip dogs={customerDogs} label={t.nav.customerHome} /> : null}
               {!isCustomerMenu ? <AuthStatus /> : null}
             </div>
           </div>

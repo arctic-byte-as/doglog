@@ -54,6 +54,7 @@ Last updated: 2026-05-31
 
 | ID | Card | Owner | Acceptance Criteria |
 | --- | --- | --- | --- |
+| DL-049 | Personalize customer home with a large dog photo | Lead Engineer Agent | Right-hand hero photo beside green welcome, top-centred crop, mobile stacking, own-dog scope and upload fallback; development review |
 | DL-048 | Improve uploaded customer-card photo framing | Lead Engineer Agent | Top-centred uploaded photos keep headroom visible, demo crop retained; development review |
 | DL-047 | Add customer camera/photo crop picker in development | Lead Engineer Agent | Camera/library, crop/zoom/preview, resized upload, atomic photo-only save and retry/cancel; development only |
 | DL-046 | Full-width mobile skills tiles and search-only navigation | Lead Engineer Agent | One tile per phone row, topic submenu removed, search/player checked and production main deployment verified |

@@ -28,14 +28,14 @@ function DogAvatarStrip({
   dogs: { name: string; profileImageUrl: string | null }[];
   label: string;
 }) {
-  const visibleDogs = dogs.filter((dog) => dog.profileImageUrl).slice(0, 2);
+  const visibleDogs = dogs.filter((dog) => dog.profileImageUrl).slice(0, 1);
   if (!visibleDogs.length) return null;
 
   const title = visibleDogs.length ? visibleDogs.map((dog) => dog.name).join(', ') : label;
 
   return (
     <Link
-      href="/customer"
+      href="/customer/dogs"
       aria-label={label}
       title={title}
       className="flex h-11 min-w-11 items-center justify-center gap-1 rounded-full border border-brand-200 bg-white px-1.5 text-sm font-semibold text-brand-800 transition hover:border-brand-400 hover:bg-brand-50"
@@ -66,6 +66,7 @@ export async function SiteShell({ children }: { children: React.ReactNode }) {
     { href: '/customer/services', label: t.nav.myServices },
     { href: '/customer/plan', label: t.nav.myTrainingPlan },
     { href: '/customer/skills-library', label: t.nav.skillsLibrary },
+    { href: '/customer/dogs', label: t.dashboard.yourDogs },
     { href: '/customer/profile', label: t.nav.profile },
   ];
   const customerDogs =
@@ -73,7 +74,7 @@ export async function SiteShell({ children }: { children: React.ReactNode }) {
       ? await prisma.dog.findMany({
           where: { customerId: user.customer.id },
           orderBy: { name: 'asc' },
-          take: 2,
+          take: 1,
           select: { name: true, profileImageUrl: true },
         })
       : [];
@@ -87,7 +88,7 @@ export async function SiteShell({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="min-h-screen text-brand-900">
-      <header className="border-b border-brand-200 bg-white/95 backdrop-blur-sm">
+      <header className={`border-b border-brand-200 bg-white/95 backdrop-blur-sm ${isCustomerMenu ? 'customer-brand-header' : ''}`}>
         <div className="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-4 sm:px-6 sm:py-5">
           <div className="flex items-center justify-between gap-4">
             <Link href="/" className="-mt-1">

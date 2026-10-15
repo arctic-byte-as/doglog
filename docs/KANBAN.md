@@ -54,6 +54,7 @@ Last updated: 2026-05-31
 
 | ID | Card | Owner | Acceptance Criteria |
 | --- | --- | --- | --- |
+| DL-041 | Simplify customer home in development | Lead Engineer Agent | Course content previews, scoped training calendar, dogs menu page, single header photo and approved green header; development only |
 | DL-040 | Replace mobile dock with floating menu button | Lead Engineer Agent | Floating logo-green Menu button and inset navigation panel; phone/desktop checks; main commit/push and production deployment |
 | DL-038 | Match contrast preview to dog logo greens | Lead Engineer Agent | Sampled logo greens, retained contrast and responsive preview, verified development deployment |
 | DL-037 | Add floating phone navigation and compact desktop customer tiles | Lead Engineer Agent | Phone navigation, accessible More sheet, safe-area spacing, approximately 50% smaller desktop card area and responsive verification |

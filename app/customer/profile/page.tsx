@@ -39,14 +39,13 @@ export default async function CustomerProfilePage() {
           {customer?.dogs.length ? (
             <div className="space-y-4">
               {customer.dogs.map((dog) => (
-                <CustomerDogProfileForm
-                  key={dog.id}
+                <div key={dog.id} id={`dog-${dog.id}`} className="scroll-mt-6"><CustomerDogProfileForm
                   dog={dog}
                   labels={t.forms.dog}
                   imageLabels={t.forms.image}
                   uploadSuccessMessage={t.forms.image.uploadedAndSaved}
                   photoSavedMessage={t.forms.image.photoSaved}
-                />
+                /></div>
               ))}
             </div>
           ) : (
@@ -54,14 +53,14 @@ export default async function CustomerProfilePage() {
           )}
         </SectionCard>
 
-        <SectionCard title={t.profile.addAnotherDog}>
+        <div id="add-dog" className="scroll-mt-6"><SectionCard title={t.profile.addAnotherDog}>
           <CustomerDogForm
             disabled={!customer}
             labels={t.forms.dog}
             imageLabels={t.forms.image}
             uploadSuccessMessage={t.forms.image.uploadedAddDog}
           />
-        </SectionCard>
+        </SectionCard></div>
       </div>
     </SiteShell>
   );

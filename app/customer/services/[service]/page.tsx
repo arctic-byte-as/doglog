@@ -138,7 +138,7 @@ export default async function CustomerServicePage(props: { params: Promise<{ ser
               serviceSessions.length ? (
                 <div className="space-y-4">
                   {serviceSessions.map((session) => (
-                    <article key={session.id} className="rounded-2xl border border-brand-200 bg-white p-5 shadow-sm">
+                    <article key={session.id} id={`session-${session.id}`} className="rounded-2xl border border-brand-200 bg-white p-5 shadow-sm">
                       <p className="text-sm text-brand-700">
                         {session.dog.name} · {formatDate(session.date)}
                       </p>

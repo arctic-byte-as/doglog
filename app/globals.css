@@ -210,3 +210,23 @@ summary::-webkit-details-marker {
   .customer-tile .customer-service-badge { padding: 0.25rem 0.5rem; }
   .customer-tile .customer-services-action { margin-top: 0.5rem; padding: 0.5rem; font-size: 0.75rem; }
 }
+
+/* Approved logo greens for the customer area. */
+header.customer-brand-header {
+  background: linear-gradient(115deg, #006934, #067333);
+  border-bottom: 4px solid #89c620;
+}
+.customer-brand-header :is(.text-brand-800, .text-brand-950) { color: #ffffff !important; }
+.customer-brand-header nav > :is(a, button) {
+  background: transparent;
+  border-color: #87b991;
+  color: #ffffff !important;
+}
+.customer-brand-header nav > :is(a, button):hover { background: #006934; }
+.customer-home { color: #324c39; }
+.customer-home :is(p, li) { color: #324c39; }
+.customer-home :is(h1, h2, h3, h4) { color: #006934 !important; }
+.customer-course-action { background: #006934; color: #ffffff; }
+.customer-course-action:hover { background: #067333; }
+.customer-calendar-day.is-selected { background: #006934; color: #ffffff; }
+.customer-brand-header img { background: #ffffff; border-radius: 0.75rem; padding: 0.25rem; }

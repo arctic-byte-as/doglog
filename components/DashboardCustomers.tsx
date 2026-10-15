@@ -49,8 +49,8 @@ export default function DashboardCustomers({ customers, contrastPreview = false 
       </div>
 
       <div className="flex flex-wrap items-center justify-between gap-3 text-sm">
-        <p className="text-brand-700">{contrastPreview ? 'Colour concept: Forest & lime — deeper greens, clearer contrast.' : 'Try a richer green palette for this dashboard.'}</p>
-        <Link href={contrastPreview ? '/dashboard' : '/dashboard?palette=contrast'} className="font-semibold text-brand-800 underline underline-offset-4">{contrastPreview ? 'Back to current colours' : 'Preview Forest & lime'}</Link>
+        <p className="text-brand-700">{contrastPreview ? 'Colour concept: Logo green — matching the dog logo, with clearer contrast.' : 'Try the dog logo’s green palette for this dashboard.'}</p>
+        <Link href={contrastPreview ? '/dashboard' : '/dashboard?palette=contrast'} className="font-semibold text-brand-800 underline underline-offset-4">{contrastPreview ? 'Back to current colours' : 'Preview Logo green'}</Link>
       </div>
       {message ? <p role="status" className="rounded-xl border border-brand-200 bg-brand-50 px-4 py-3 text-sm text-brand-800">{message}</p> : null}
       {editing ? <CustomerServicesEditor customer={editing} onClose={() => setEditing(null)} onSaved={(keys) => { setSavedServices((current) => ({ ...current, [editing.id]: keys })); setMessage(`Services and courses updated for ${editing.name}.`); setEditing(null); router.refresh(); }} /> : null}

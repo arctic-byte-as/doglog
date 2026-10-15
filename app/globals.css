@@ -103,14 +103,15 @@ summary::-webkit-details-marker {
 
 /* Optional dashboard colour concept; the rest of the application keeps its palette. */
 .dashboard-colour-preview {
-  background: #f3f6ef;
+  background: #f3f8ed;
   border: 1px solid #d3dfd2;
   border-radius: 1.5rem;
   padding: clamp(1rem, 2.5vw, 1.75rem);
 }
 
 .dashboard-colour-preview .dashboard-intro {
-  background: #123d2b;
+  background: linear-gradient(115deg, #006934, #067333);
+  border-top: 4px solid #89c620;
   border-radius: 1.15rem;
   padding: clamp(1.25rem, 2.5vw, 1.75rem);
 }
@@ -121,11 +122,11 @@ summary::-webkit-details-marker {
 
 
 .dashboard-colour-preview :is(h2, .text-brand-950) {
-  color: #123d2b !important;
+  color: #006934 !important;
 }
 
 .dashboard-colour-preview :is(.text-brand-700, .text-brand-800, .text-brand-900) {
-  color: #405548 !important;
+  color: #324c39 !important;
 }
 
 .dashboard-colour-preview .customer-tile {
@@ -134,32 +135,32 @@ summary::-webkit-details-marker {
 }
 
 .dashboard-colour-preview .customer-tile:hover {
-  border-color: #12622d;
+  border-color: #067333;
   box-shadow: 0 10px 26px rgb(18 61 43 / 13%);
 }
 
 .dashboard-colour-preview .customer-service-badge {
-  background: #e3f0d6;
-  color: #123d2b !important;
+  background: #e6f3d7;
+  color: #006934 !important;
 }
 
 .dashboard-colour-preview .customer-services-action {
-  background: #123d2b;
-  border-color: #123d2b;
+  background: #006934;
+  border-color: #006934;
   color: #ffffff !important;
 }
 
 .dashboard-colour-preview .customer-services-action:hover {
-  background: #12622d;
+  background: #067333;
 }
 
 .dashboard-colour-preview .customer-add-action {
-  background: #bde873 !important;
-  color: #123d2b !important;
+  background: #89c620 !important;
+  color: #064a28 !important;
 }
 
 .dashboard-colour-preview .customer-add-action:hover {
-  background: #d0f39a !important;
+  background: #a5db50 !important;
 }
 
 .dashboard-colour-preview .customer-manage-action {
@@ -169,15 +170,15 @@ summary::-webkit-details-marker {
 }
 
 .dashboard-colour-preview .customer-manage-action:hover {
-  background: #1b5039;
+  background: #067333;
 }
 
 .dashboard-colour-preview :is(p, li, label) {
-  color: #405548;
+  color: #324c39;
 }
 
 .dashboard-colour-preview .dashboard-intro .dashboard-intro-copy {
-  color: #e2efdc !important;
+  color: #eef8e5 !important;
 }
 
 /* Keep mobile navigation above the home indicator and reserve page space for it. */

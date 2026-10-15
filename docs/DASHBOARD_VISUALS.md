@@ -11,27 +11,27 @@ fall back to the card's existing text and initials. Local demo assets use Next
 image sizing/optimization; uploaded URLs are loaded directly without proxying
 arbitrary external hosts through the image optimizer.
 
-## Suggested palette: Forest & lime
+## Suggested palette: Logo green (DL-038)
 
-Compare `/dashboard` with `/dashboard?palette=contrast`. The current palette is
-the default. The optional concept styles the dashboard customer area only; it
-is a reviewable suggestion for a future broader rollout.
+Compare `/dashboard` with `/dashboard?palette=contrast`. The optional preview
+retains the stronger contrast and now uses greens sampled directly from
+`public/norsepaw-symbol.png`. The default palette remains available.
 
 | Role | Colour |
 | --- | --- |
-| Strong header, card headings, primary service controls | Forest `#123D2B` |
-| Existing brand green and hover emphasis | Norse green `#12622D` |
-| Add customer emphasis | Lime `#BDE873` |
-| Dashboard surface | Mist `#F3F6EF` |
+| Header gradient and primary service controls | Logo green `#006934` to `#067333` |
+| Add customer and header accent | Logo lime `#89C620` |
+| Text on lime | Deep green `#064A28` |
+| Dashboard surface | Pale green `#F3F8ED` |
 | Cards | White `#FFFFFF` |
-| Body text | Deep sage `#405548` |
+| Body text | Deep sage `#324C39` |
 
-The direction adds hierarchy through a forest header, white photo cards,
-darker body text, restrained lime on the main creation action, and green
-service badges. Lime is an accent with dark text, rather than a text colour.
-Calculated contrast: white on forest 12.15:1; forest on lime 8.65:1; body text
-on white 8.04:1 and on mist 7.37:1. These measurements cover these text pairings,
-not a claim that the entire application has undergone an accessibility audit.
+Contrast: white on header ranges from 5.99:1 to 6.84:1; dark text on lime
+is 5.04:1; body text on the pale surface is 8.73:1. Header supporting text
+is at least 5.47:1. These values cover the named pairings, not a full audit.
+Browser checks at 390px and 1440px verify the rendered logo colours, white
+header/button text, palette switching and no horizontal overflow. The
+production build passes with the two existing image warnings.
 
 ## Image provenance
 

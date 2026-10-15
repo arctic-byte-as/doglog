@@ -42,8 +42,8 @@ export default async function CustomerPage() {
 
   return (
     <SiteShell>
-      <div className="customer-home space-y-8">
-        <div><h1 className="text-2xl font-semibold sm:text-3xl">{t.dashboard.welcome}</h1><p className="mt-2 text-sm leading-6">{t.dashboard.welcomeHelp}</p></div>
+      <div className="customer-home dashboard-colour-preview space-y-8">
+        <div className="dashboard-intro"><h1 className="text-2xl font-semibold sm:text-3xl">{t.dashboard.welcome}</h1><p className="dashboard-intro-copy mt-2 text-sm leading-6">{t.dashboard.welcomeHelp}</p></div>
         <SectionCard title={t.dashboard.assignedServices}>
           {services.length ? <div className="grid gap-4 lg:grid-cols-2">
             {services.map((service) => {

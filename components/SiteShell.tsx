@@ -88,7 +88,7 @@ export async function SiteShell({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="min-h-screen text-brand-900">
-      <header className={`border-b border-brand-200 bg-white/95 backdrop-blur-sm ${isCustomerMenu ? 'customer-brand-header' : ''}`}>
+      <header className="border-b border-brand-200 bg-white/95 backdrop-blur-sm">
         <div className="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-4 sm:px-6 sm:py-5">
           <div className="flex items-center justify-between gap-4">
             <Link href="/" className="-mt-1">

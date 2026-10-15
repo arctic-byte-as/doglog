@@ -48,6 +48,7 @@ Last updated: 2026-05-31
 | ID | Card | Owner | Acceptance Criteria |
 | --- | --- | --- | --- |
 | DL-053 | Add trainer photo picker and dashboard photo placeholders | Lead Engineer Agent | Trainer-scoped uploads, upload/crop in dog editor, visible missing-photo cards, tests and production release |
+| DL-054 | Complete trainer customer photo header | Lead Engineer Agent | Large photo beside green customer header, mobile stacking, direct dog editor link and existing trainer upload controls |
 | DL-030 | Restore development access and isolate local/Preview environments | Lead Engineer Agent | Work preserved, access restored, local and dedicated Preview DB/logins/profile/uploads verified; development email delivery awaits a valid Resend key |
 | DL-024 | Harden auth mode derivation | Lead Engineer Agent | Access modes are centralized, sign-in does not auto-create trainer records, and customer guards do not mutate roles |
 

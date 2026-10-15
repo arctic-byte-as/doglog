@@ -230,3 +230,6 @@ summary::-webkit-details-marker {
 }
 .subject-header.subject-header :is(h1, h2, h3, p) { color: #ffffff !important; }
 .subject-header h1 { margin-top: 0; margin-bottom: 0; }
+
+/* Keep trainer customer identity and photo aligned beside one another. */
+.trainer-customer-header > .subject-header { margin-bottom: 0; }

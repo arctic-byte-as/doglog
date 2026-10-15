@@ -19,8 +19,8 @@ type Dog = {
   } | null;
 };
 
-export function DogListItem({ dog }: { dog: Dog }) {
-  const [editing, setEditing] = useState(false);
+export function DogListItem({ dog, initiallyEditing = false }: { dog: Dog; initiallyEditing?: boolean }) {
+  const [editing, setEditing] = useState(initiallyEditing);
   const [deleting, setDeleting] = useState(false);
 
   async function deleteDog() {
@@ -41,7 +41,7 @@ export function DogListItem({ dog }: { dog: Dog }) {
 
   if (editing) {
     return (
-      <div className="rounded-2xl border border-brand-200 bg-white p-5 shadow-sm">
+      <div id={`dog-${dog.id}`} className="scroll-mt-6 rounded-2xl border border-brand-200 bg-white p-5 shadow-sm">
         <DogForm
           dog={{
             ...dog,
@@ -55,7 +55,7 @@ export function DogListItem({ dog }: { dog: Dog }) {
   }
 
   return (
-    <article className="rounded-2xl border border-brand-200 bg-white p-5 shadow-sm">
+    <article id={`dog-${dog.id}`} className="scroll-mt-6 rounded-2xl border border-brand-200 bg-white p-5 shadow-sm">
       <div className="flex items-start justify-between gap-4">
         <div className="flex gap-4">
           {dog.profileImageUrl ? (

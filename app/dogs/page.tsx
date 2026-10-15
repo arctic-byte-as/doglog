@@ -1,5 +1,4 @@
-import SubjectHeader from '@/components/SubjectHeader';
-import Link from 'next/link';
+import TrainerCustomerHeader from '@/components/TrainerCustomerHeader';
 import { notFound } from 'next/navigation';
 import { SiteShell } from '@/components/SiteShell';
 import AdminMenuSelect from '@/components/AdminMenuSelect';
@@ -10,14 +9,14 @@ import BackToDashboardLink from '@/components/BackToDashboardLink';
 import { requireTrainer } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 
-export default async function DogsPage(props: { searchParams?: Promise<{ filter?: string; customer?: string }> }) {
+export default async function DogsPage(props: { searchParams?: Promise<{ filter?: string; customer?: string; editDog?: string }> }) {
   const searchParams = await props.searchParams;
   const user = await requireTrainer();
   const customerOnly = searchParams?.filter === 'customers';
   const customerId = searchParams?.customer;
   const customer = customerId ? await prisma.customer.findFirst({
     where: { id: customerId, dogs: { some: { trainerId: user.trainer.id } } },
-    select: { name: true, email: true, phone: true },
+    select: { id: true, name: true, email: true, phone: true },
   }) : null;
   if (customerId && !customer) notFound();
   const dogs = await prisma.dog.findMany({
@@ -46,13 +45,7 @@ export default async function DogsPage(props: { searchParams?: Promise<{ filter?
         {customerOnly ? <AdminMenuSelect selectedHref="/dogs?filter=customers" /> : null}
 
         {customer ? (
-          <section className="rounded-2xl border border-brand-200 bg-white p-5 sm:p-6">
-            <p className="text-sm font-medium text-brand-700">Customer</p>
-            <SubjectHeader><h1 className="mt-1 break-words text-2xl font-semibold text-brand-950">{customer.name}</h1></SubjectHeader>
-            <p className="mt-2 break-all text-sm text-brand-700">{customer.email}</p>
-            {customer.phone ? <p className="mt-1 text-sm text-brand-700">{customer.phone}</p> : null}
-            <Link href="/dogs" className="mt-4 inline-block text-sm font-semibold text-brand-800 underline">View all dog profiles</Link>
-          </section>
+          <TrainerCustomerHeader customer={customer} dogs={dogs.map(({ id, name, profileImageUrl }) => ({ id, name, profileImageUrl }))} />
         ) : (
           <SectionCard title="Add dog">
             <DogForm />
@@ -63,7 +56,7 @@ export default async function DogsPage(props: { searchParams?: Promise<{ filter?
           {dogs.length ? (
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {dogs.map((dog) => (
-                <DogListItem key={dog.id} dog={dog} />
+                <DogListItem key={dog.id} dog={dog} initiallyEditing={searchParams?.editDog === dog.id} />
               ))}
             </div>
           ) : (

@@ -23,3 +23,5 @@ Build and English/Norwegian browser checks at 320, 390 and 1440px cover white si
 The owner confirmed placeholders are appropriate for development because the live library already has video links. Ready preview for DL-042: `dpl_2qenikUP34Ehb4ToeKEwRF5VjzjG`, https://doglog-development-khdsan7gi-tectrap-projects.vercel.app/customer/skills-library.
 
 Remote customer login, white header/green content, skills thumbnail/search rendering, dogs/profile routes and signed-out access checks pass. The stable development alias now points to this preview.
+
+DL-045: skills tiles now use two columns on phones, three on tablets and four on desktop. Thumbnail crops are 2:1 with smaller play controls and tighter card spacing. Full goals remain in the lesson dialog and search. At 1440px, measured thumbnail area is 51% smaller than the former three-column 16:9 layout. Browser checks at 320, 390, 768 and 1440px pass for column counts, horizontal bounds, search and lesson opening/closing. The optimized build passes.

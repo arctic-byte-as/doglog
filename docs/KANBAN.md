@@ -54,6 +54,7 @@ Last updated: 2026-05-31
 
 | ID | Card | Owner | Acceptance Criteria |
 | --- | --- | --- | --- |
+| DL-045 | Make skills thumbnail gallery more compact | Lead Engineer Agent | Roughly half-size thumbnails, more tiles per row, phone readability and player/search retained; development branch pushed |
 | DL-044 | Simplify customer home course/calendar headings | Lead Engineer Agent | Plain course/calendar titles on home, other shared headers retained, development build verified and feature branch pushed |
 | DL-043 | Standardize green subject headers and prioritize Skills | Lead Engineer Agent | Shared green title panels across trainer/customer pages; Skills second on desktop/mobile; development only |
 | DL-042 | Align customer palette and add searchable skills video gallery | Lead Engineer Agent | White site banner, green content hero, localized thumbnail search/player, saved content preserved and development-only verification |

@@ -55,7 +55,7 @@ text pairs pass 4.5:1. Uploaded-photo priority and broken-photo fallback pass
 using temporary records that are removed afterward. TypeScript, lint and the
 production build pass, with the two existing image warnings.
 
-Verified Preview `dpl_J27vEXnfox7FLuNHituowJkiXVuK` is Ready. Remote checks pass
+Verified Preview `dpl_2CQc6XUvxpTRUhP2ry2iiQtEBnkU` is Ready. Remote checks pass
 for both palettes, Add customer form anchor, and optimized image delivery. The
 development alias points to this version:
 https://doglog-development-tectrap-projects.vercel.app/dashboard?palette=contrast.

@@ -89,45 +89,25 @@ export async function SiteShell({ children, hideDogAvatar = false }: { children:
   return (
     <div className="min-h-screen text-brand-900">
       <header className="border-b border-brand-200 bg-white/95 backdrop-blur-sm">
-        <div className="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-4 sm:px-6 sm:py-5">
-          <div className="flex items-center justify-between gap-4">
-            <Link href="/" className="-mt-1">
-              <Logo subtitle={logoSubtitle} />
+        <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 sm:py-5">
+          <div className="flex min-w-0 items-center justify-between gap-4 lg:gap-6">
+            <Link href="/" className="-mt-1 shrink-0" aria-label="Norse Paw">
+              <Logo subtitle={logoSubtitle} className="md:[&>span]:hidden xl:[&>span]:inline-block [&>span]:max-w-[240px] [&>span>span]:truncate" />
             </Link>
             <div className="flex items-center gap-3 md:hidden">
-              {isCustomerMenu && !hideDogAvatar ? (
-                <DogAvatarStrip dogs={customerDogs} label={t.nav.customerHome} />
-              ) : null}
-              {!user ? <details className="relative"><summary className="cursor-pointer rounded-full border border-brand-200 px-4 py-2">Menu</summary><nav className="absolute right-0 z-20 mt-2 w-64 rounded-2xl border border-brand-200 bg-white p-2 shadow-soft">{visibleNav.map((item) => <Link key={item.href} href={item.href} className="block rounded-xl px-4 py-3 text-sm">{item.label}</Link>)}</nav></details> : null}
-
-            </div>
-          </div>
-          <div className="hidden items-center justify-between gap-4 md:flex">
-            <nav className="flex flex-wrap gap-3">
-              {visibleNav.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className="inline-flex h-10 items-center justify-center rounded-full border border-brand-200 bg-white px-4 text-sm font-medium leading-none text-brand-900 transition hover:border-brand-400 hover:bg-brand-50 hover:text-brand-800"
-                >
-                  {item.label}
-                </Link>
-              ))}
-              {isCustomerMenu ? (
-                <SignOutMenuButton
-                  label={t.nav.logOut}
-                  className="inline-flex h-10 items-center justify-center rounded-full border border-brand-200 bg-white px-4 text-sm font-medium leading-none text-brand-900 transition hover:border-brand-400 hover:bg-brand-50 hover:text-brand-800"
-                />
-              ) : null}
-            </nav>
-            <div className="flex flex-wrap items-center gap-3">
               {isCustomerMenu && !hideDogAvatar ? <DogAvatarStrip dogs={customerDogs} label={t.nav.customerHome} /> : null}
-              {!isCustomerMenu ? <AuthStatus /> : null}
+              {!user ? <details className="relative"><summary className="cursor-pointer rounded-full border border-brand-200 px-4 py-2">Menu</summary><nav className="absolute right-0 z-20 mt-2 w-64 rounded-2xl border border-brand-200 bg-white p-2 shadow-soft">{visibleNav.map((item) => <Link key={item.href} href={item.href} className="block rounded-xl px-4 py-3 text-sm">{item.label}</Link>)}</nav></details> : null}
+            </div>
+            <div className="hidden min-w-0 flex-1 items-center gap-4 md:flex">
+              <nav aria-label="Main navigation" className="desktop-text-nav flex min-w-0 flex-1 items-center gap-4 overflow-x-auto whitespace-nowrap lg:gap-5">
+                {visibleNav.map((item) => <Link key={item.href} href={item.href} className="inline-flex shrink-0 items-center py-2 text-sm font-medium text-brand-900 underline-offset-4 hover:underline focus-visible:rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-700">{item.label}</Link>)}
+                {isCustomerMenu ? <SignOutMenuButton label={t.nav.logOut} className="shrink-0 py-2 text-sm font-medium text-brand-900 underline-offset-4 hover:underline" /> : null}
+              </nav>
+              {isCustomerMenu && !hideDogAvatar ? <DogAvatarStrip dogs={customerDogs} label={t.nav.customerHome} /> : null}
+              {!isCustomerMenu ? <AuthStatus compact /> : null}
             </div>
           </div>
-          <div className="md:hidden">
-            {!isCustomerMenu ? <AuthStatus /> : null}
-          </div>
+          {!isCustomerMenu ? <div className="mt-3 md:hidden"><AuthStatus /></div> : null}
         </div>
       </header>
       {user ? <MobileNavigation items={visibleNav} menuLabel={isCustomerMenu ? t.nav.menu : 'Menu'} signOutLabel={isCustomerMenu ? t.nav.logOut : 'Sign out'} /> : null}

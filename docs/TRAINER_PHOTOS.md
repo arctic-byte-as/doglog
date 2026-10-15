@@ -1,0 +1,9 @@
+# Trainer photo controls (DL-053)
+
+Trainer dashboard customer cards now retain a visible photo area when no image is saved or an image fails to load. The placeholder directs the trainer to open the dog profile and select Edit. Existing trainer dog editors use the same camera/library/crop picker as the customer view, replacing the URL input. Select Save dog after preparing a photo to persist the image with the other edits. New dogs must be created before adding their photo. Trainer dog-list images use top-centre framing.
+
+Uploads use `/api/dogs/[id]/uploads`. The server requires trainer access and verifies that the dog belongs to the current trainer before processing a file. Customer-linked dogs store images in the customer's existing folder so customer photo controls remain compatible; other dogs use a trainer folder. The shared upload helper retains the existing customer endpoint's allowed image types, 4MB limit, random filenames, public bucket and storage behaviour. No schema or production data migration is required.
+
+Validation: optimized build/TypeScript/lint passes (existing DogListItem image warning). A browser test against the built local app and isolated development database verifies the dashboard placeholder, picker at 390/1440px, actual crop/upload, draft photo until Save dog, persisted URL under the customer folder, and dashboard top-centre image display. Foreign-trainer dog upload returns 404; invalid file returns 400; anonymous requests redirect to login. Temporary test records and the saved storage image were removed. Native device camera capture was not exercised. Cancelled photo drafts may leave an unused storage object, as with the existing customer new-dog workflow.
+
+The separate skills-video preparation remains pending production access and is excluded from this photo release.

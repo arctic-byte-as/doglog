@@ -59,7 +59,7 @@ export function DogListItem({ dog }: { dog: Dog }) {
       <div className="flex items-start justify-between gap-4">
         <div className="flex gap-4">
           {dog.profileImageUrl ? (
-            <img src={dog.profileImageUrl} alt={dog.name} className="h-16 w-16 rounded-2xl object-cover" />
+            <img src={dog.profileImageUrl} alt={dog.name} className="h-16 w-16 rounded-2xl object-cover object-top" />
           ) : (
             <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-brand-100 text-xl font-semibold text-brand-700">
               {dog.name.slice(0, 1).toUpperCase()}

@@ -19,8 +19,12 @@ export default function DogProfileImageField({
   uploadSuccessMessage = 'Photo uploaded. Save the dog to keep this picture.',
   labels,
   locale = 'en',
+  uploadUrl = '/api/customer/uploads',
+  onBusyChange,
 }: {
   locale?: 'en' | 'nb';
+  uploadUrl?: string;
+  onBusyChange?: (busy: boolean) => void;
   value: string;
   onChange: (value: string) => void | Promise<void>;
   disabled?: boolean;
@@ -44,13 +48,14 @@ export default function DogProfileImageField({
 
   async function handleUpload(file: File) {
     setUploading(true);
+    onBusyChange?.(true);
     setMessage('');
 
     try {
       const body = new FormData();
       body.append('file', file);
 
-      const response = await fetch('/api/customer/uploads', {
+      const response = await fetch(uploadUrl, {
         method: 'POST',
         body,
       });
@@ -60,6 +65,7 @@ export default function DogProfileImageField({
       setMessage(uploadSuccessMessage);
     } finally {
       setUploading(false);
+      onBusyChange?.(false);
     }
   }
 

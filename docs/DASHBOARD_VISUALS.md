@@ -48,3 +48,15 @@ room around ears for card crops; no people, text, logos or watermarks.
 Validation covers the Add customer destination, image loading and fallback,
 preference for uploaded photos, default/contrast navigation, card actions,
 mobile layout, TypeScript, lint and production build.
+
+All 12 generated photo assets load and decode in browser checks. A fresh mobile
+viewport has no horizontal overflow. The measured rendered header/copy/action
+text pairs pass 4.5:1. Uploaded-photo priority and broken-photo fallback pass
+using temporary records that are removed afterward. TypeScript, lint and the
+production build pass, with the two existing image warnings.
+
+Verified Preview `dpl_J27vEXnfox7FLuNHituowJkiXVuK` is Ready. Remote checks pass
+for both palettes, Add customer form anchor, and optimized image delivery. The
+development alias points to this version:
+https://doglog-development-tectrap-projects.vercel.app/dashboard?palette=contrast.
+Production and existing customer assignments are unchanged.

@@ -45,3 +45,9 @@ Validation uses Node 24:
 Development review session: `/service-sessions/development-training-picker`.
 Production at app.norsepaw.com is unchanged; deployment targets the separate
 Vercel doglog-development project.
+
+Verified Preview deployment: `dpl_HvmZwNo4MwtcgHZmfyiZp5gKPbv3`, Ready.
+Review at https://doglog-development-tectrap-projects.vercel.app/service-sessions/development-training-picker.
+Remote admin login, shared-library loading, and session detail rendering pass.
+The development alias points to this deployment. Five unit tests pass; lint has
+only the two pre-existing image warnings.

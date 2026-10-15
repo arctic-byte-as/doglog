@@ -15,7 +15,7 @@ export default function CustomerCardPhoto({ dogs }: { dogs: PhotoDog[] }) {
 
   return (
     <div className="customer-photo relative mb-5 aspect-[16/10] w-full overflow-hidden rounded-xl bg-brand-100">
-      <Image src={source} alt={`${demo ? 'Illustrative demo photo of ' : ''}${dog.name}${dog.breed ? `, ${dog.breed}` : ''}`} fill sizes="(max-width: 639px) 90vw, (max-width: 1023px) 45vw, 270px" unoptimized={!source.startsWith('/')} className="object-cover" onError={() => setFailedSource(source)} />
+      <Image src={source} alt={`${demo ? 'Illustrative demo photo of ' : ''}${dog.name}${dog.breed ? `, ${dog.breed}` : ''}`} fill sizes="(max-width: 639px) 90vw, (max-width: 1023px) 45vw, 270px" unoptimized={!source.startsWith('/')} className={`object-cover ${demo ? 'object-center' : 'object-top'}`} onError={() => setFailedSource(source)} />
       <span className="absolute bottom-3 left-3 max-w-[calc(100%-1.5rem)] truncate rounded-full bg-white/95 px-3 py-1 text-xs font-semibold text-brand-950">{demo ? 'Demo photo · ' : ''}{dog.name}</span>
     </div>
   );

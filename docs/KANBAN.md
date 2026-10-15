@@ -54,6 +54,7 @@ Last updated: 2026-05-31
 
 | ID | Card | Owner | Acceptance Criteria |
 | --- | --- | --- | --- |
+| DL-048 | Improve uploaded customer-card photo framing | Lead Engineer Agent | Top-centred uploaded photos keep headroom visible, demo crop retained; development review |
 | DL-047 | Add customer camera/photo crop picker in development | Lead Engineer Agent | Camera/library, crop/zoom/preview, resized upload, atomic photo-only save and retry/cancel; development only |
 | DL-046 | Full-width mobile skills tiles and search-only navigation | Lead Engineer Agent | One tile per phone row, topic submenu removed, search/player checked and production main deployment verified |
 | DL-045 | Make skills thumbnail gallery more compact | Lead Engineer Agent | Roughly half-size thumbnails, more tiles per row, phone readability and player/search retained; development branch pushed |

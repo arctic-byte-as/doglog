@@ -13,3 +13,5 @@ Verification: three crop-geometry tests cover portrait/landscape centering, zoom
 This work stays on `feature/photo-picker-development`, using only the dedicated development project. No production deployment, migration or production data writes are included.
 
 Ready development preview: `dpl_BdgRVVryUetKwkeTSQoub153NeES`, https://doglog-development-82tvq11rw-tectrap-projects.vercel.app/customer/dogs. Remote customer login, dogs/profile photo controls, owner-scoped endpoint and signed-out protection pass. The stable development alias points to this preview.
+
+DL-048: uploaded photos in trainer customer tiles use top-centre framing rather than a central vertical crop. The original Test Dog image is unchanged. Browser checks verify the real uploaded Test Dog photo at 390px and 1440px and retain centred demo images. The optimized build passes.

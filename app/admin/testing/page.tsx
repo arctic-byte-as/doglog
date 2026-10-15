@@ -143,13 +143,13 @@ export default async function AdminTestingPage({ searchParams }: { searchParams?
                   </div>
 
                   <div>
-                    <h2 className="text-base font-semibold text-brand-950">Assigned services</h2>
+                    <p className="assigned-services-title text-base font-semibold">Assigned services</p>
                     {serviceTiles.length ? (
                       <div className="mt-3 grid gap-3 md:grid-cols-2">
                         {serviceTiles.map((service) => (
-                          <div key={service.key} className="rounded-lg border border-brand-200 bg-white p-4">
-                            <h3 className="font-semibold text-brand-950">{service.title}</h3>
-                            <p className="mt-2 text-sm leading-6 text-brand-700">{service.description}</p>
+                          <div key={service.key} className="assigned-services-tile rounded-lg border bg-white p-4">
+                            <p className="assigned-services-name font-semibold">{service.title}</p>
+                            <p className="assigned-services-description mt-2 text-sm leading-6">{service.description}</p>
                           </div>
                         ))}
                       </div>

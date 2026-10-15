@@ -82,20 +82,21 @@ export default async function CustomerPage() {
     <SiteShell>
       <div className="space-y-8">
         {serviceTiles.length ? (
-          <SectionCard title={t.dashboard.assignedServices}>
+          <section className="assigned-services-card min-w-0 overflow-hidden rounded-2xl border bg-white p-4 shadow-soft sm:rounded-3xl sm:p-6">
+            <p className="assigned-services-title mb-4 text-xl font-semibold">{t.dashboard.assignedServices}</p>
             <div className="grid gap-4 md:grid-cols-2">
               {serviceTiles.map((service) => (
                 <Link
                   key={service.title}
                   href={service.href}
-                  className="block rounded-2xl border border-brand-200 bg-white p-5 text-brand-950 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-300 hover:shadow-soft"
+                  className="assigned-services-tile block rounded-2xl border bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-soft"
                 >
-                  <h3 className="font-semibold">{service.title}</h3>
-                  <p className="mt-2 text-sm leading-6 text-brand-700">{service.description}</p>
+                  <p className="assigned-services-name font-semibold">{service.title}</p>
+                  <p className="assigned-services-description mt-2 text-sm leading-6">{service.description}</p>
                 </Link>
               ))}
             </div>
-          </SectionCard>
+          </section>
         ) : null}
 
         <SectionCard title={t.dashboard.summaryOfTraining}>

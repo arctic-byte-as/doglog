@@ -7,3 +7,5 @@ The page queries only the signed-in customer's dogs, ordered by name. It chooses
 Validation: optimized build (TypeScript/lint) passes with the existing DogListItem image warning. Browser checks with the development customer's actual Test Dog photo pass at 320, 390, 768 and 1440px: desktop right-hand alignment/equal heights, phone stacking, top-centred crop, no duplicate header avatar, no horizontal overflow and broken-photo fallback navigation. No customer photo/data writes were needed.
 
 Development branch: feature/photo-picker-development. No production deployment or schema changes are included.
+
+Ready development preview: `dpl_EUcf9EH3ZRQcZBXvuXUkHyaLmbiD`, https://doglog-development-d1eyqufor-tectrap-projects.vercel.app/customer. Remote customer login, welcome photo markup and existing protected customer/photo routes pass. The stable development alias uses this build.

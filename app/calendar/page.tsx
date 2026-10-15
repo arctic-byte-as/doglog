@@ -10,7 +10,6 @@ export default async function CalendarPage() {
     <SiteShell>
       <div className="space-y-8">
         <BackToDashboardLink />
-        <h1 className="text-3xl font-semibold text-brand-950">Calendar</h1>
         <TrainerCalendar />
       </div>
     </SiteShell>

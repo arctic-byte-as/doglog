@@ -1,3 +1,4 @@
+import SubjectHeader from '@/components/SubjectHeader';
 import Link from 'next/link';
 import { SiteShell } from '@/components/SiteShell';
 import AdminMenuSelect from '@/components/AdminMenuSelect';
@@ -72,7 +73,7 @@ export default async function AdminTestingPage(props: { searchParams?: Promise<{
         <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <p className="text-sm font-semibold uppercase tracking-[0.16em] text-brand-600">Admin test mode</p>
-            <h1 className="mt-2 text-3xl font-semibold text-brand-950">Trainer and customer views</h1>
+            <SubjectHeader><h1 className="mt-2 text-3xl font-semibold text-brand-950">Trainer and customer views</h1></SubjectHeader>
             <p className="mt-2 max-w-3xl text-sm leading-6 text-brand-700">
               Use this screen to move between trainer tools and a customer preview without changing session or signing out.
             </p>

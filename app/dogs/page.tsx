@@ -1,3 +1,4 @@
+import SubjectHeader from '@/components/SubjectHeader';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { SiteShell } from '@/components/SiteShell';
@@ -47,7 +48,7 @@ export default async function DogsPage(props: { searchParams?: Promise<{ filter?
         {customer ? (
           <section className="rounded-2xl border border-brand-200 bg-white p-5 sm:p-6">
             <p className="text-sm font-medium text-brand-700">Customer</p>
-            <h1 className="mt-1 break-words text-2xl font-semibold text-brand-950">{customer.name}</h1>
+            <SubjectHeader><h1 className="mt-1 break-words text-2xl font-semibold text-brand-950">{customer.name}</h1></SubjectHeader>
             <p className="mt-2 break-all text-sm text-brand-700">{customer.email}</p>
             {customer.phone ? <p className="mt-1 text-sm text-brand-700">{customer.phone}</p> : null}
             <Link href="/dogs" className="mt-4 inline-block text-sm font-semibold text-brand-800 underline">View all dog profiles</Link>

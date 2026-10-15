@@ -1,3 +1,4 @@
+import SubjectHeader from '@/components/SubjectHeader';
 import { SiteShell } from '@/components/SiteShell';
 import AdminCustomerEditForm from '@/components/AdminCustomerEditForm';
 import AdminMenuSelect from '@/components/AdminMenuSelect';
@@ -35,7 +36,7 @@ export default async function AdminCustomersPage() {
         <AdminMenuSelect selectedHref="/admin/customers" />
 
         <section className="overflow-hidden rounded-2xl border border-brand-200 bg-brand-50 p-4 sm:rounded-3xl sm:p-6">
-          <h1 className="mb-4 text-xl font-semibold text-brand-950 sm:text-2xl">Customer records</h1>
+          <SubjectHeader><h1 className="mb-4 text-xl font-semibold text-brand-950 sm:text-2xl">Customer records</h1></SubjectHeader>
           {customers.length ? (
             <div className="space-y-3">
               {customers.map((customer) => (

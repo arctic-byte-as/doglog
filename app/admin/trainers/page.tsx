@@ -1,3 +1,4 @@
+import SubjectHeader from '@/components/SubjectHeader';
 import { SiteShell } from '@/components/SiteShell';
 import AdminMenuSelect from '@/components/AdminMenuSelect';
 import BackToDashboardLink from '@/components/BackToDashboardLink';
@@ -23,7 +24,7 @@ export default async function AdminTrainersPage() {
         <section className="rounded-3xl border border-brand-200 bg-white p-6 shadow-sm">
           <div className="mb-5">
             <p className="text-sm font-semibold uppercase tracking-[0.2em] text-brand-600">Admin</p>
-            <h1 className="mt-2 text-2xl font-semibold text-brand-950">Existing Trainers</h1>
+            <SubjectHeader><h1 className="mt-2 text-2xl font-semibold text-brand-950">Existing Trainers</h1></SubjectHeader>
           </div>
 
           <div className="grid gap-6 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)]">

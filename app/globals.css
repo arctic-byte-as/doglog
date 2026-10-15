@@ -222,3 +222,11 @@ summary::-webkit-details-marker {
 
 .customer-home .dashboard-intro h1 { color: #ffffff !important; }
 .customer-home .dashboard-intro .dashboard-intro-copy { color: #eef8e5 !important; }
+
+/* Shared subject treatment across trainer, admin and customer pages. */
+.subject-header {
+  background: linear-gradient(115deg, #006934, #067333);
+  border-top: 4px solid #89c620;
+}
+.subject-header.subject-header :is(h1, h2, h3, p) { color: #ffffff !important; }
+.subject-header h1 { margin-top: 0; margin-bottom: 0; }

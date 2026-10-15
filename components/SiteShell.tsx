@@ -9,10 +9,10 @@ import prisma from '@/lib/prisma';
 
 const nav = [
   { href: '/dashboard', label: 'Customers' },
+  { href: '/skills-library', label: 'Skills Library' },
   { href: '/calendar', label: 'Calendar' },
   { href: '/services', label: 'Services' },
   { href: '/training-library', label: 'Training Library' },
-  { href: '/skills-library', label: 'Skills Library' },
   { href: '/customer', label: 'Profile' },
   { href: '/customer/plan', label: 'My plan' },
   { href: '/admin/accounts', label: 'Admin' },
@@ -63,9 +63,9 @@ export async function SiteShell({ children }: { children: React.ReactNode }) {
   const isCustomerMenu = user?.role === 'CUSTOMER';
   const customerNav = [
     { href: '/customer', label: t.nav.myHome },
+    { href: '/customer/skills-library', label: t.nav.skillsLibrary },
     { href: '/customer/services', label: t.nav.myServices },
     { href: '/customer/plan', label: t.nav.myTrainingPlan },
-    { href: '/customer/skills-library', label: t.nav.skillsLibrary },
     { href: '/customer/dogs', label: t.dashboard.yourDogs },
     { href: '/customer/profile', label: t.nav.profile },
   ];

@@ -1,3 +1,4 @@
+import SubjectHeader from '@/components/SubjectHeader';
 import { SiteShell } from '@/components/SiteShell';
 import AdminMenuSelect from '@/components/AdminMenuSelect';
 import BackToDashboardLink from '@/components/BackToDashboardLink';
@@ -51,7 +52,7 @@ export default async function CustomerOverviewPage() {
 
         <section className="overflow-hidden rounded-2xl border border-brand-200 bg-brand-50 p-4 sm:rounded-3xl sm:p-6">
           <div className="mb-4">
-            <h1 className="text-xl font-semibold text-brand-950 sm:text-2xl">Customer Overview</h1>
+            <SubjectHeader><h1 className="text-xl font-semibold text-brand-950 sm:text-2xl">Customer Overview</h1></SubjectHeader>
             <p className="mt-2 max-w-3xl text-sm leading-6 text-brand-700">
               Copy-friendly customer details for marketing lists and service tracking.
             </p>

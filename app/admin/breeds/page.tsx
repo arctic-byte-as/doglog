@@ -1,3 +1,4 @@
+import SubjectHeader from '@/components/SubjectHeader';
 import { SiteShell } from '@/components/SiteShell';
 import AdminMenuSelect from '@/components/AdminMenuSelect';
 import AdminBreedListForm from '@/components/AdminBreedListForm';
@@ -30,7 +31,7 @@ export default async function AdminBreedsPage() {
 
         <section className="overflow-hidden rounded-2xl border border-brand-200 bg-brand-50 p-4 sm:rounded-3xl sm:p-6">
           <div className="mb-4">
-            <h1 className="text-xl font-semibold text-brand-950 sm:text-2xl">Dog breeds</h1>
+            <SubjectHeader><h1 className="text-xl font-semibold text-brand-950 sm:text-2xl">Dog breeds</h1></SubjectHeader>
             <p className="mt-2 max-w-2xl text-sm leading-6 text-brand-700">
               Rename a breed to fix spelling across existing dog profiles, or remove it from future dropdowns.
             </p>

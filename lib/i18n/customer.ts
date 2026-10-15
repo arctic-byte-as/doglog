@@ -306,11 +306,11 @@ export const customerDictionaries = {
 
 export type CustomerDictionary = (typeof customerDictionaries)['en'];
 
-export function getCustomerLocale(): CustomerLocale {
-  const locale = cookies().get(customerLocaleCookie)?.value;
+export async function getCustomerLocale(): Promise<CustomerLocale> {
+  const locale = (await cookies()).get(customerLocaleCookie)?.value;
   return isCustomerLocale(locale) ? locale : 'nb';
 }
 
-export function getCustomerDictionary(locale = getCustomerLocale()) {
+export function getCustomerDictionary(locale: CustomerLocale) {
   return customerDictionaries[locale];
 }

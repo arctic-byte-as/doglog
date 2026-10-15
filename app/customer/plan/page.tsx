@@ -26,7 +26,7 @@ function uniqueValues(values: string[]) {
 
 export default async function CustomerPlanPage() {
   const user = await requireCustomer();
-  const t = getCustomerDictionary(getCustomerLocale());
+  const t = getCustomerDictionary(await getCustomerLocale());
   const serviceAccess = await prisma.customerServiceAccess.findMany({
     where: { customerId: user.customer.id },
     select: { serviceKey: true },

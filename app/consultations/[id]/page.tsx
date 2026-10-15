@@ -7,7 +7,8 @@ import BackToDashboardLink from '@/components/BackToDashboardLink';
 import { requireTrainer } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 
-export default async function ConsultationDetailPage({ params }: { params: { id: string } }) {
+export default async function ConsultationDetailPage(props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const user = await requireTrainer();
   const consultation = await prisma.consultation.findFirst({
     where: {

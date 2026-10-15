@@ -6,7 +6,7 @@ import { getCustomerDictionary, getCustomerLocale } from '@/lib/i18n/customer';
 
 export default async function CustomerTrainingLibraryPage() {
   await requireCustomer();
-  const locale = getCustomerLocale();
+  const locale = await getCustomerLocale();
   const t = getCustomerDictionary(locale);
 
   return (

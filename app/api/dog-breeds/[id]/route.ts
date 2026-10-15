@@ -3,7 +3,8 @@ import { requireAdmin } from '@/lib/auth';
 import { cleanBreedName } from '@/lib/dog-breeds';
 import prisma from '@/lib/prisma';
 
-export async function PATCH(request: Request, { params }: { params: { id: string } }) {
+export async function PATCH(request: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   await requireAdmin();
 
   const body = await request.json().catch(() => ({}));
@@ -44,7 +45,8 @@ export async function PATCH(request: Request, { params }: { params: { id: string
   return NextResponse.json({ breed });
 }
 
-export async function DELETE(_request: Request, { params }: { params: { id: string } }) {
+export async function DELETE(_request: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   await requireAdmin();
 
   const existing = await prisma.dogBreed.findUnique({ where: { id: params.id } });

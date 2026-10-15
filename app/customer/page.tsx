@@ -18,7 +18,7 @@ function trainingPlanNames(plan?: string | null) {
 
 export default async function CustomerPage() {
   const user = await requireUser();
-  const locale = getCustomerLocale();
+  const locale = await getCustomerLocale();
   const t = getCustomerDictionary(locale);
   const email = user.email;
   const customer = email

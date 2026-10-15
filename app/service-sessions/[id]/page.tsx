@@ -19,7 +19,8 @@ const serviceTitle: Record<string, string> = {
   OPEN_TRAINING: 'Open training session detail',
 };
 
-export default async function ServiceSessionDetailPage({ params }: { params: { id: string } }) {
+export default async function ServiceSessionDetailPage(props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const user = await requireTrainer();
   const session = await prisma.serviceSession.findFirst({
     where: {

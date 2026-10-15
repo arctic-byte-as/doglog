@@ -24,9 +24,10 @@ function DetailRow({ label, value }: { label: string; value?: string | null }) {
   );
 }
 
-export default async function CustomerConsultationPage({ params }: { params: { id: string } }) {
+export default async function CustomerConsultationPage(props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const user = await requireCustomer();
-  const locale = getCustomerLocale();
+  const locale = await getCustomerLocale();
   const t = getCustomerDictionary(locale);
   const consultation = await prisma.consultation.findFirst({
     where: {

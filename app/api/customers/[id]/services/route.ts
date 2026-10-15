@@ -3,7 +3,8 @@ import { getCurrentUser } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { parseCustomerServices, updateCustomerServices } from '@/lib/customer-services';
 
-export async function PUT(request: Request, { params }: { params: { id: string } }) {
+export async function PUT(request: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const user = await getCurrentUser();
   if (!user) return NextResponse.json({ error: 'Please sign in again.' }, { status: 401 });
   if (!user.modes.includes('ADMIN') || !user.trainer) return NextResponse.json({ error: 'Trainer access is required.' }, { status: 403 });

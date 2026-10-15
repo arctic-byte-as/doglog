@@ -4,7 +4,8 @@ import { deleteDogById } from '@/lib/delete-dog';
 import { ensureDogBreed } from '@/lib/dog-breeds-server';
 import prisma from '@/lib/prisma';
 
-export async function PATCH(req: Request, { params }: { params: { id: string } }) {
+export async function PATCH(req: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const user = await requireCustomer();
   const body = await req.json();
 
@@ -41,7 +42,8 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
   return NextResponse.json({ dog });
 }
 
-export async function DELETE(_req: Request, { params }: { params: { id: string } }) {
+export async function DELETE(_req: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const user = await requireCustomer();
 
   const existing = await prisma.dog.findFirst({

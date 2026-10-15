@@ -8,7 +8,7 @@ import prisma from '@/lib/prisma';
 
 export default async function CustomerServicesPage() {
   const user = await requireCustomer();
-  const locale = getCustomerLocale();
+  const locale = await getCustomerLocale();
   const t = getCustomerDictionary(locale);
   const serviceAccess = await prisma.customerServiceAccess.findMany({
     where: { customerId: user.customer.id },

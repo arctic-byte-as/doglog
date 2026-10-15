@@ -57,7 +57,7 @@ function DogAvatarStrip({
 
 export async function SiteShell({ children }: { children: React.ReactNode }) {
   const user = await getCurrentUser();
-  const customerLocale = getCustomerLocale();
+  const customerLocale = await getCustomerLocale();
   const t = getCustomerDictionary(customerLocale);
   const isTrainerMenu = user?.role === 'TRAINER' || user?.role === 'ADMIN';
   const isCustomerMenu = user?.role === 'CUSTOMER';

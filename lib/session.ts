@@ -21,7 +21,7 @@ export async function createAppSession(userId: string) {
     },
   });
 
-  cookies().set(sessionCookieName, token, {
+  (await cookies()).set(sessionCookieName, token, {
     httpOnly: true,
     sameSite: 'lax',
     secure: process.env.NODE_ENV === 'production',
@@ -31,7 +31,7 @@ export async function createAppSession(userId: string) {
 }
 
 export async function getAppSession() {
-  const token = cookies().get(sessionCookieName)?.value;
+  const token = (await cookies()).get(sessionCookieName)?.value;
   if (!token) return null;
 
   const session = await prisma.session.findUnique({
@@ -47,10 +47,10 @@ export async function getAppSession() {
 }
 
 export async function clearAppSession() {
-  const token = cookies().get(sessionCookieName)?.value;
+  const token = (await cookies()).get(sessionCookieName)?.value;
   if (token) {
     await prisma.session.deleteMany({ where: { sessionToken: hashToken(token) } });
   }
 
-  cookies().delete(sessionCookieName);
+  (await cookies()).delete(sessionCookieName);
 }

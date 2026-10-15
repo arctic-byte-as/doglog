@@ -1,16 +1,18 @@
 "use client";
 
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Logo from '@/components/Logo';
 
-export default function ResetPasswordPage({ searchParams }: { searchParams?: { token?: string } }) {
+function ResetPasswordForm() {
+  const searchParams = useSearchParams();
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
-  const token = searchParams?.token || '';
+  const token = searchParams.get('token') || '';
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -102,4 +104,8 @@ export default function ResetPasswordPage({ searchParams }: { searchParams?: { t
       </main>
     </div>
   );
+}
+
+export default function ResetPasswordPage() {
+  return <Suspense fallback={<p>Loading…</p>}><ResetPasswordForm /></Suspense>;
 }

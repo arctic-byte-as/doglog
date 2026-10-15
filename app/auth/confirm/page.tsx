@@ -16,7 +16,7 @@ async function confirmSignIn(formData: FormData) {
     redirect('/login?error=missing-code');
   }
 
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const { error } = tokenHash
     ? await supabase.auth.verifyOtp({
@@ -38,17 +38,18 @@ async function confirmSignIn(formData: FormData) {
   redirect('/auth/resolve');
 }
 
-export default function AuthConfirmPage({
-  searchParams,
-}: {
-  searchParams?: {
-    token_hash?: string;
-    code?: string;
-    type?: string;
-    error?: string;
-    error_code?: string;
-  };
-}) {
+export default async function AuthConfirmPage(
+  props: {
+    searchParams?: Promise<{
+      token_hash?: string;
+      code?: string;
+      type?: string;
+      error?: string;
+      error_code?: string;
+    }>;
+  }
+) {
+  const searchParams = await props.searchParams;
   const tokenHash = searchParams?.token_hash || '';
   const code = searchParams?.code || '';
   const type = searchParams?.type || 'email';

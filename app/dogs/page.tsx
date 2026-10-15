@@ -9,7 +9,8 @@ import BackToDashboardLink from '@/components/BackToDashboardLink';
 import { requireTrainer } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 
-export default async function DogsPage({ searchParams }: { searchParams?: { filter?: string; customer?: string } }) {
+export default async function DogsPage(props: { searchParams?: Promise<{ filter?: string; customer?: string }> }) {
+  const searchParams = await props.searchParams;
   const user = await requireTrainer();
   const customerOnly = searchParams?.filter === 'customers';
   const customerId = searchParams?.customer;

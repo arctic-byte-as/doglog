@@ -6,7 +6,8 @@ function clean(value: unknown) {
   return typeof value === 'string' ? value.trim() : '';
 }
 
-export async function PATCH(request: Request, { params }: { params: { id: string } }) {
+export async function PATCH(request: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   await requireAdmin();
 
   const body = await request.json().catch(() => ({}));
@@ -59,7 +60,8 @@ export async function PATCH(request: Request, { params }: { params: { id: string
   return NextResponse.json({ customer });
 }
 
-export async function DELETE(_request: Request, { params }: { params: { id: string } }) {
+export async function DELETE(_request: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   await requireAdmin();
 
   const customer = await prisma.customer.findUnique({

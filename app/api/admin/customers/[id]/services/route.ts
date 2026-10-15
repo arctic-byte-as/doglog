@@ -5,7 +5,8 @@ import { customerServiceOptions } from '@/lib/service-options';
 
 const allowedServiceKeys = new Set(customerServiceOptions.map((service) => service.key));
 
-export async function PUT(request: Request, { params }: { params: { id: string } }) {
+export async function PUT(request: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   await requireAdmin();
   const body = await request.json();
   const services: unknown[] = Array.isArray(body.services) ? body.services : [];

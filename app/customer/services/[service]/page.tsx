@@ -21,9 +21,10 @@ function formatDate(date: Date) {
   });
 }
 
-export default async function CustomerServicePage({ params }: { params: { service: string } }) {
+export default async function CustomerServicePage(props: { params: Promise<{ service: string }> }) {
+  const params = await props.params;
   const user = await requireCustomer();
-  const locale = getCustomerLocale();
+  const locale = await getCustomerLocale();
   const t = getCustomerDictionary(locale);
   const service = customerServiceOptions.find((option) => slugFor(option.title) === params.service);
   if (!service) notFound();

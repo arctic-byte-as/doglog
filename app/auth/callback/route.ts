@@ -62,7 +62,7 @@ export async function GET(request: Request) {
   const type = requestUrl.searchParams.get('type');
   const authError = requestUrl.searchParams.get('error_code') || requestUrl.searchParams.get('error');
   const next = safeRedirectPath(requestUrl.searchParams.get('next'));
-  const supabase = createClient();
+  const supabase = await createClient();
 
   if (authError) {
     return NextResponse.redirect(new URL(`/login?error=${encodeURIComponent(authError)}`, requestUrl.origin));

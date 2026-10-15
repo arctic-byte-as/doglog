@@ -16,7 +16,8 @@ function trainingPlanNames(plan?: string | null) {
     .filter(Boolean);
 }
 
-export default async function AdminTestingPage({ searchParams }: { searchParams?: { customerId?: string } }) {
+export default async function AdminTestingPage(props: { searchParams?: Promise<{ customerId?: string }> }) {
+  const searchParams = await props.searchParams;
   const user = await requireAdmin();
   const customers = await prisma.customer.findMany({
     orderBy: { name: 'asc' },

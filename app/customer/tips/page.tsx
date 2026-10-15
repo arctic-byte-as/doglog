@@ -50,7 +50,7 @@ const tips = [
 
 export default async function CustomerTipsPage() {
   await requireUser();
-  const locale = getCustomerLocale();
+  const locale = await getCustomerLocale();
   const t = getCustomerDictionary(locale);
 
   return (

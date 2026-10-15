@@ -4,7 +4,8 @@ import prisma from '@/lib/prisma';
 import { requireTrainer } from '@/lib/auth';
 import { deleteDogById } from '@/lib/delete-dog';
 
-export async function PATCH(req: Request, { params }: { params: { id: string } }) {
+export async function PATCH(req: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const user = await requireTrainer();
   const body = await req.json();
 
@@ -41,7 +42,8 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
   return NextResponse.json({ dog });
 }
 
-export async function DELETE(_req: Request, { params }: { params: { id: string } }) {
+export async function DELETE(_req: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const user = await requireTrainer();
 
   const existing = await prisma.dog.findFirst({

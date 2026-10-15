@@ -6,7 +6,8 @@ import prisma from '@/lib/prisma';
 import DashboardCustomers from '@/components/DashboardCustomers';
 import { customerServiceOptions } from '@/lib/service-options';
 
-export default async function DashboardPage({ searchParams }: { searchParams?: { palette?: string } }) {
+export default async function DashboardPage(props: { searchParams?: Promise<{ palette?: string }> }) {
+  const searchParams = await props.searchParams;
   const user = await requireTrainer();
 
   const [dogCount, customers, consultationCount, activeCourseParticipants, activeCourseGroups] = await Promise.all([
@@ -61,7 +62,7 @@ export default async function DashboardPage({ searchParams }: { searchParams?: {
   return (
     <SiteShell>
       <div className="space-y-8">
-        <DashboardCustomers contrastPreview={searchParams?.palette === 'contrast'} customers={customers.map((customer) => ({
+        <DashboardCustomers contrastPreview={searchParams?.palette !== 'original'} customers={customers.map((customer) => ({
           id: customer.id, name: customer.name, email: customer.email, phone: customer.phone,
           dogs: customer.dogs,
           serviceKeys: customer.serviceAccess.map((access) => access.serviceKey),

@@ -10,7 +10,7 @@ import prisma from '@/lib/prisma';
 
 export default async function CustomerProfilePage() {
   const user = await requireCustomer();
-  const locale = getCustomerLocale();
+  const locale = await getCustomerLocale();
   const t = getCustomerDictionary(locale);
   const customer = await prisma.customer.findUnique({
     where: { id: user.customer.id },

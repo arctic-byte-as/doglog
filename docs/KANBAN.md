@@ -54,7 +54,6 @@ Last updated: 2026-05-31
 
 | ID | Card | Owner | Acceptance Criteria |
 | --- | --- | --- | --- |
-| DL-039 | Release approved dashboard and mobile changes to production/main | Lead Engineer Agent | Logo palette default, patched framework, regression checks, main push and isolated production deployment verified |
 | DL-038 | Match contrast preview to dog logo greens | Lead Engineer Agent | Sampled logo greens, retained contrast and responsive preview, verified development deployment |
 | DL-037 | Add floating phone navigation and compact desktop customer tiles | Lead Engineer Agent | Phone navigation, accessible More sheet, safe-area spacing, approximately 50% smaller desktop card area and responsive verification |
 | DL-036 | Add trainer Calendar menu item | Lead Engineer Agent | Dedicated trainer-protected calendar page, desktop/mobile navigation and shared dashboard calendar |
@@ -67,6 +66,7 @@ Last updated: 2026-05-31
 
 | ID | Card | Owner | Acceptance Criteria |
 | --- | --- | --- | --- |
+| DL-039 | Release approved dashboard and mobile changes to production/main | Lead Engineer Agent | Logo palette default, patched framework, regression checks, main push and isolated production deployment verified |
 | DL-000 | Existing prototype inspected | Project Manager Agent | Current auth, schema, docs, and dirty worktree noted |
 | DL-001 | Create launch plan, kanban, agent profiles, and roadmap view | Project Manager Agent | Docs exist and can guide parallel work |
 | DL-007 | Fix local `main` tracking state | Project Manager Agent | Local `main` tracks `origin/main`; prior work preserved as `feature/dogpedia-thumbnails-local` |

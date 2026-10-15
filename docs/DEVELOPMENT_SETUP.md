@@ -7,7 +7,7 @@ Updated 15 October 2026. Tracking ticket: DL-030.
 `backup/pre-development-setup-2026-10-15` preserves commit `3f62ef4`, including
 six pre-existing commits ahead of `origin/main` and the assigned-services
 styling edits. Setup work is on `chore/development-setup-2026-10-15`.
-No Git branches have been pushed.
+The approved release was merged into local `main` for publication to `origin/main`; see `docs/RELEASE_2026-10-15.md`.
 
 ## Development resources
 
@@ -53,7 +53,7 @@ The dedicated development Vercel project's Preview variables point only to
 Supabase development. They are not installed in the live Vercel project.
 Preview site origin: https://doglog-development-tectrap-projects.vercel.app.
 The Preview is Ready and verified:
-https://doglog-development-cw6v1qk0z-tectrap-projects.vercel.app.
+https://doglog-development-23aldovww-tectrap-projects.vercel.app.
 The stable development origin above aliases this Preview. Vercel deployment
 protection remains enabled; sign into Vercel to open it in a browser.
 
@@ -88,10 +88,10 @@ locally and absent in the development Vercel project until a separate valid
 key is provided. Configure a controlled recipient and verified sender before
 email testing. A successful reset-request response alone does not prove delivery.
 
-The remote build reported a security vulnerability in the existing Next.js
-14.2.5 dependency and linked https://nextjs.org/blog/security-update-2025-12-11.
-Dependency remediation is separate follow-up work before the next live release;
-no application dependency versions were changed during environment setup.
+The production release preparation upgraded Next.js to patched 15.5.28 and
+migrated async request APIs. `npm audit --omit=dev` reports zero vulnerabilities.
+The approved logo-green dashboard palette is now the default. See
+`docs/RELEASE_2026-10-15.md` for deployment and validation details.
 
 Automatic approval review rejected production secret export and credentials
 shared across all Preview branches in the live project. Neither action was

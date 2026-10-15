@@ -15,3 +15,5 @@ This work stays on `feature/photo-picker-development`, using only the dedicated 
 Ready development preview: `dpl_BdgRVVryUetKwkeTSQoub153NeES`, https://doglog-development-82tvq11rw-tectrap-projects.vercel.app/customer/dogs. Remote customer login, dogs/profile photo controls, owner-scoped endpoint and signed-out protection pass. The stable development alias points to this preview.
 
 DL-048: uploaded photos in trainer customer tiles use top-centre framing rather than a central vertical crop. The original Test Dog image is unchanged. Browser checks verify the real uploaded Test Dog photo at 390px and 1440px and retain centred demo images. The optimized build passes.
+
+DL-048 Ready development preview: `dpl_B3zrthBRtv3H7o6kYUCnSLRbqPpm`. The stable development alias now uses https://doglog-development-r6lqipc1v-tectrap-projects.vercel.app.

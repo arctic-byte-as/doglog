@@ -44,7 +44,7 @@ export default async function CustomerPage() {
     <SiteShell>
       <div className="customer-home dashboard-colour-preview space-y-8">
         <div className="dashboard-intro"><h1 className="text-2xl font-semibold sm:text-3xl">{t.dashboard.welcome}</h1><p className="dashboard-intro-copy mt-2 text-sm leading-6">{t.dashboard.welcomeHelp}</p></div>
-        <SectionCard title={t.dashboard.assignedServices}>
+        <SectionCard title={t.dashboard.assignedServices} plainHeader>
           {services.length ? <div className="grid gap-4 lg:grid-cols-2">
             {services.map((service) => {
               const course = courses.find((item) => item.id === (service.key === 'PUPPY_COURSE' ? 'puppy' : service.key === 'SKILLS_COURSE' ? 'skills' : ''));

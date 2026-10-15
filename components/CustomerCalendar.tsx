@@ -1,7 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-import SubjectHeader from './SubjectHeader';
 import { useId, useState } from 'react';
 import type { CustomerLocale } from '@/lib/i18n/customer-config';
 
@@ -32,8 +31,8 @@ export default function CustomerCalendar({ events, today, locale, labels }: { ev
   }
 
   return <section aria-labelledby={headingId} className="customer-calendar rounded-2xl border border-brand-200 bg-white p-4 shadow-soft sm:rounded-3xl sm:p-6">
-    <SubjectHeader><h2 id={headingId} className="text-xl font-semibold">{labels.calendar}</h2>
-    <p className="mt-2 text-sm leading-6">{labels.calendarHelp}</p></SubjectHeader>
+    <h2 id={headingId} className="text-xl font-semibold">{labels.calendar}</h2>
+    <p className="mt-2 text-sm leading-6">{labels.calendarHelp}</p>
     <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
       <h3 aria-live="polite" className="text-base font-semibold">{date.toLocaleDateString(language, { month: 'long', year: 'numeric' })}</h3>
       <div className="flex items-center gap-1"><button type="button" aria-label={labels.previousMonth} onClick={() => changeMonth(-1)} className="w-11 rounded-full border border-brand-200">←</button><button type="button" onClick={() => { setMonth(today.slice(0, 7)); setSelected(today); }} className="rounded-full border border-brand-200 px-3 text-sm">{labels.today}</button><button type="button" aria-label={labels.nextMonth} onClick={() => changeMonth(1)} className="w-11 rounded-full border border-brand-200">→</button></div>

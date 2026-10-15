@@ -54,6 +54,7 @@ Last updated: 2026-05-31
 
 | ID | Card | Owner | Acceptance Criteria |
 | --- | --- | --- | --- |
+| DL-044 | Simplify customer home course/calendar headings | Lead Engineer Agent | Plain course/calendar titles on home, other shared headers retained, development build verified and feature branch pushed |
 | DL-043 | Standardize green subject headers and prioritize Skills | Lead Engineer Agent | Shared green title panels across trainer/customer pages; Skills second on desktop/mobile; development only |
 | DL-042 | Align customer palette and add searchable skills video gallery | Lead Engineer Agent | White site banner, green content hero, localized thumbnail search/player, saved content preserved and development-only verification |
 | DL-041 | Simplify customer home in development | Lead Engineer Agent | Course content previews, scoped training calendar, dogs menu page, single header photo and approved green header; development only |

@@ -11,3 +11,5 @@ Existing dog photos save through an owner-scoped photo-only endpoint, preserving
 Verification: three crop-geometry tests cover portrait/landscape centering, zoom/drag bounds and direction. Isolated browser tests use temporary development customers/dogs and real development storage, cleaning up records/images afterward. Checks cover camera/library controls, cancel, invalid/oversized files, crop pixel accuracy, 768px JPEG output below 4 MB, a forced save failure followed by successful retry, ownership and URL rejection, avatar persistence, profile entry, English/Norwegian and phone/desktop layouts. Physical iPhone/Android camera capture remains a device test for the owner.
 
 This work stays on `feature/photo-picker-development`, using only the dedicated development project. No production deployment, migration or production data writes are included.
+
+Ready development preview: `dpl_BdgRVVryUetKwkeTSQoub153NeES`, https://doglog-development-82tvq11rw-tectrap-projects.vercel.app/customer/dogs. Remote customer login, dogs/profile photo controls, owner-scoped endpoint and signed-out protection pass. The stable development alias points to this preview.

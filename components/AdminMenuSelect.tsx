@@ -4,6 +4,11 @@ import { useRouter } from 'next/navigation';
 
 const adminMenuOptions = [
   {
+    href: '/calendar',
+    label: 'Calendar',
+    description: 'View the current month and today’s date.',
+  },
+  {
     href: '/admin/customer-overview',
     label: 'Customer Overview',
     description: 'Copy customer contact details, dog names, and service summaries.',

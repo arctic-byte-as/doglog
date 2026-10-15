@@ -54,3 +54,9 @@ Validation uses temporary synthetic records: add courses and services, reload,
 verify customer course access, cancel and Escape/focus restoration, save failure
 and retry, remove all assignments, duplicate/invalid payloads, and unauthorized
 or unassigned-customer writes. Existing demo customer assignments are preserved.
+
+The service/course editor build and desktop/mobile checks pass (including modal
+viewport positioning). Verified Preview `dpl_crh39RBSChaYd3qWtLrFph2VzDjh` is Ready.
+Remote dashboard actions and invalid-payload/signed-out guards pass, with no
+assignment changes during remote checks. The development alias now points here:
+https://doglog-development-kcy52megd-tectrap-projects.vercel.app.

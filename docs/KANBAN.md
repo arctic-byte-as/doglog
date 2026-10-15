@@ -54,6 +54,7 @@ Last updated: 2026-05-31
 
 | ID | Card | Owner | Acceptance Criteria |
 | --- | --- | --- | --- |
+| DL-033 | Make trainer dashboard customer-first | Lead Engineer Agent | Searchable assigned-customer tiles first; customer-specific dog navigation; secondary overview collapsed; trainer isolation and responsive layout verified |
 | DL-031 | Add category/exercise tiles and shared training library | Lead Engineer Agent | Search, multi-select, instructions, duplicate prevention and browser import verified in development; ready for trainer review |
 
 ## Done

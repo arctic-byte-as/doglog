@@ -6,6 +6,10 @@ Safe-area insets account for the phone home indicator. Main content reserves bot
 
 Desktop customer cards use four columns instead of three, shallower photos, and smaller text/spacing. At a 1440px viewport the first card changed from 400 × 564px to 299 × 390px: a 48% reduction in area. Phone card sizes and minimum 44px controls are retained.
 
-Validation uses isolated Chrome viewport emulation, not physical iOS/Android devices. Trainer layouts checked at 320, 390, 430, 768 and 1440px. Checks cover fixed positioning, content clearance, page links, active state, More dismissal, service-editor open/cancel, and role-specific customer navigation. Additional phone routes: dogs, services, private training, training library, skills library and account administration. Customer routes: home, services, plan and profile. No horizontal overflow detected on these routes.
+Validation uses isolated Chrome viewport emulation, not physical iOS/Android devices. Trainer layouts checked at 320, 390, 430, 640, 767, 768 and 1440px. Checks cover fixed positioning, content clearance, page links, active state, More dismissal, service-editor open/cancel, and role-specific customer navigation. Additional phone routes: dogs, services, private training, training library, skills library and account administration. Customer routes: home, services, plan and profile. No horizontal overflow detected on these routes.
 
 No database, API or production configuration changes.
+
+Production build, TypeScript and lint passed, with only the two existing image warnings. Keyboard checks confirmed native dialog containment and focus restoration; resizing to desktop restores background scrolling. Development preview: `dpl_5gijsmKRqFWxsebe3NmJXEAmozWZ`.
+
+The optimized build was additionally checked at 640px and 767px after increasing the reserved-content selector specificity so tablet padding cannot override navigation clearance.

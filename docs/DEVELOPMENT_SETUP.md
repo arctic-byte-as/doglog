@@ -53,7 +53,7 @@ The dedicated development Vercel project's Preview variables point only to
 Supabase development. They are not installed in the live Vercel project.
 Preview site origin: https://doglog-development-tectrap-projects.vercel.app.
 The Preview is Ready and verified:
-https://doglog-development-9ncnsz7ul-tectrap-projects.vercel.app.
+https://doglog-development-f3mnnex3w-tectrap-projects.vercel.app.
 The stable development origin above aliases this Preview. Vercel deployment
 protection remains enabled; sign into Vercel to open it in a browser.
 

@@ -47,6 +47,7 @@ Last updated: 2026-05-31
 
 | ID | Card | Owner | Acceptance Criteria |
 | --- | --- | --- | --- |
+| DL-030 | Restore development access and isolate local/Preview environments | Lead Engineer Agent | Existing work preserved; CLI access verified; separate nonproduction DB, local configuration and Preview verified before profile changes |
 | DL-024 | Harden auth mode derivation | Lead Engineer Agent | Access modes are centralized, sign-in does not auto-create trainer records, and customer guards do not mutate roles |
 
 ## Review

@@ -129,7 +129,7 @@ export async function SiteShell({ children }: { children: React.ReactNode }) {
           </div>
         </div>
       </header>
-      {user ? <MobileNavigation items={visibleNav} customer={isCustomerMenu} menuLabel={isCustomerMenu ? t.nav.menu : 'More'} signOutLabel={isCustomerMenu ? t.nav.logOut : 'Sign out'} /> : null}
+      {user ? <MobileNavigation items={visibleNav} menuLabel={isCustomerMenu ? t.nav.menu : 'Menu'} signOutLabel={isCustomerMenu ? t.nav.logOut : 'Sign out'} /> : null}
       <main className={`mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8 ${user ? 'mobile-nav-content' : ''}`}>{children}</main>
     </div>
   );

@@ -183,16 +183,14 @@ summary::-webkit-details-marker {
 
 /* Keep mobile navigation above the home indicator and reserve page space for it. */
 .mobile-floating-nav {
-  bottom: calc(0.75rem + env(safe-area-inset-bottom, 0px));
-  left: max(0.75rem, env(safe-area-inset-left, 0px));
-  right: max(0.75rem, env(safe-area-inset-right, 0px));
-  max-width: 30rem;
-  margin-inline: auto;
+  bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
+  right: max(1rem, env(safe-area-inset-right, 0px));
 }
 .mobile-menu-sheet {
-  inset: auto 0 0;
-  max-height: 85dvh;
-  padding-bottom: calc(1.25rem + env(safe-area-inset-bottom, 0px));
+  inset: auto max(0.75rem, env(safe-area-inset-right, 0px)) calc(5.75rem + env(safe-area-inset-bottom, 0px)) auto;
+  width: calc(100% - 1.5rem);
+  max-width: 24rem;
+  max-height: calc(100dvh - 7rem - env(safe-area-inset-bottom, 0px));
   overscroll-behavior: contain;
 }
 @media (max-width: 767px) {

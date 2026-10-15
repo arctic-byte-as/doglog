@@ -23,3 +23,9 @@ Validation: TypeScript, lint, production build, and headless desktop/mobile
 checks for search, card navigation, customer/trainer filtering, empty state,
 collapsible overview, signed-out protection, and horizontal overflow. Browser
 tests use temporary synthetic development records and remove them afterward.
+
+The local production build passes with the two existing image warnings.
+Preview deployment `dpl_7f4LXcqG5JApd1uqpu8nHr6fBeeL` is Ready; authenticated
+dashboard rendering and customer-specific navigation also pass remotely.
+Review at https://doglog-development-tectrap-projects.vercel.app/dashboard.
+The development alias points to this version.

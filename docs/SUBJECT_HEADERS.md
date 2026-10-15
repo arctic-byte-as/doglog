@@ -5,3 +5,5 @@ SubjectHeader provides the agreed logo-green gradient (#006934 → #067333), lim
 Skills Library is second after Customers in the trainer navigation, and second after My Home in the customer navigation. Desktop and floating mobile menus share these ordered lists.
 
 Validation: optimized build including TypeScript/lint passes (one existing DogListItem image warning). Browser checks cover 15 trainer/admin routes and six customer routes, verify white headings on the green subject headers and a white site banner, and check Skills in second position. Phone checks at 320px and 390px verify menu order and no horizontal overflow for both roles. No data/schema or production changes are included; work remains on the customer-home development branch.
+
+Ready development preview: `dpl_GBG1EdHNLGYzDwrFXaZeYeK1FvAc`, https://doglog-development-db9kpno4u-tectrap-projects.vercel.app. Remote customer login, shared headers, skills gallery rendering and protected route checks pass. The stable development alias points to this version.

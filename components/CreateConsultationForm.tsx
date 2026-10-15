@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { activationOptions, formatActivationOption } from '@/lib/activation-options';
 import { stimulusOptions, formatStimulusOption } from '@/lib/stimulus-options';
-import { categories } from '@/components/TrainingLibraryClient';
+import TrainingExercisePicker from '@/components/TrainingExercisePicker';
 
 type DogOption = {
   id: string;
@@ -33,10 +33,6 @@ export default function CreateConsultationForm({
 }) {
   const [dogs, setDogs] = useState<DogOption[]>(initialDogs);
   const [loading, setLoading] = useState(false);
-  const [trainingCategory, setTrainingCategory] = useState(categories[0].title);
-  const selectedTrainingCategory = categories.find((category) => category.title === trainingCategory) || categories[0];
-  const [trainingExercise, setTrainingExercise] = useState(selectedTrainingCategory.exercises[0].title);
-  const selectedTrainingExercise = selectedTrainingCategory.exercises.find((exercise) => exercise.title === trainingExercise) || selectedTrainingCategory.exercises[0];
   const [form, setForm] = useState<any>({
     dogId: '',
     dogName: '',
@@ -66,36 +62,6 @@ export default function CreateConsultationForm({
   const hideHealth = hiddenFields.includes('health');
   const hideHormoneAnalysis = hiddenFields.includes('hormoneAnalysis');
   const hideLearningHistory = hiddenFields.includes('learningHistory');
-
-  function formatTrainingPlan() {
-    return [
-      `${selectedTrainingCategory.title}: ${selectedTrainingExercise.title}`,
-      '',
-      `Goal: ${selectedTrainingExercise.goal}`,
-      '',
-      'Setup:',
-      ...selectedTrainingExercise.setup.map((item) => `- ${item}`),
-      '',
-      'Steps:',
-      ...selectedTrainingExercise.steps.map((step, index) => `${index + 1}. ${step}`),
-      '',
-      `Progress marker: ${selectedTrainingExercise.progress}`,
-      '',
-      `Avoid: ${selectedTrainingExercise.avoid}`,
-    ].join('\n');
-  }
-
-  function handleTrainingCategoryChange(value: string) {
-    const nextCategory = categories.find((category) => category.title === value) || categories[0];
-    setTrainingCategory(nextCategory.title);
-    setTrainingExercise(nextCategory.exercises[0].title);
-  }
-
-  function appendTrainingPlan() {
-    const currentPlan = String(form.prescribedPlan || '').trim();
-    const nextPlan = formatTrainingPlan();
-    setForm({ ...form, prescribedPlan: currentPlan ? `${currentPlan}\n\n---\n\n${nextPlan}` : nextPlan });
-  }
 
   function updateStimulus(selected: string, notes = stimulusNotes) {
     setForm({ ...form, stimulusAnalysis: [selected, notes].filter(Boolean).join('\n') });
@@ -317,25 +283,7 @@ export default function CreateConsultationForm({
 
       <div>
         <label className="block text-sm font-medium">Prescribed Training Plan</label>
-        <div className="mb-3 grid gap-2 md:grid-cols-[1fr_1fr_auto]">
-          <select value={trainingCategory} onChange={(e) => handleTrainingCategoryChange(e.target.value)} className="w-full rounded border p-2">
-            {categories.map((category) => (
-              <option key={category.title} value={category.title}>
-                {category.title}
-              </option>
-            ))}
-          </select>
-          <select value={trainingExercise} onChange={(e) => setTrainingExercise(e.target.value)} className="w-full rounded border p-2">
-            {selectedTrainingCategory.exercises.map((exercise) => (
-              <option key={exercise.title} value={exercise.title}>
-                {exercise.title}
-              </option>
-            ))}
-          </select>
-          <button type="button" onClick={appendTrainingPlan} className="rounded border border-brand-200 px-4 py-2 text-brand-800">
-            Add plan
-          </button>
-        </div>
+        <div className="my-3"><TrainingExercisePicker plan={form.prescribedPlan || ''} onChange={(plan) => setForm({ ...form, prescribedPlan: plan })} /></div>
         <textarea value={form.prescribedPlan} onChange={(e) => setForm({ ...form, prescribedPlan: e.target.value })} className="w-full rounded border p-2" />
       </div>
 

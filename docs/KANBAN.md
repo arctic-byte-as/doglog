@@ -54,7 +54,7 @@ Last updated: 2026-05-31
 
 | ID | Card | Owner | Acceptance Criteria |
 | --- | --- | --- | --- |
-| None | No cards in review | Project Manager Agent | Review requires test notes and release risk |
+| DL-031 | Add category/exercise tiles and shared training library | Lead Engineer Agent | Search, multi-select, instructions, duplicate prevention and browser import verified in development; ready for trainer review |
 
 ## Done
 

@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { activationOptions, formatActivationOption } from '@/lib/activation-options';
 import { stimulusOptions, formatStimulusOption } from '@/lib/stimulus-options';
-import { categories } from '@/components/TrainingLibraryClient';
+import TrainingExercisePicker from '@/components/TrainingExercisePicker';
 
 export default function ConsultationItem({
   consultation,
@@ -24,10 +24,6 @@ export default function ConsultationItem({
   const [data, setData] = useState({ ...consultation });
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
-  const [trainingCategory, setTrainingCategory] = useState(categories[0].title);
-  const selectedTrainingCategory = categories.find((category) => category.title === trainingCategory) || categories[0];
-  const [trainingExercise, setTrainingExercise] = useState(selectedTrainingCategory.exercises[0].title);
-  const selectedTrainingExercise = selectedTrainingCategory.exercises.find((exercise) => exercise.title === trainingExercise) || selectedTrainingCategory.exercises[0];
   const activationValues = activationOptions.map(formatActivationOption);
   const hasCustomActivation = data.activation && !activationValues.includes(data.activation);
   const stimulusValues = stimulusOptions.map(formatStimulusOption);
@@ -50,36 +46,6 @@ export default function ConsultationItem({
 
   function handleChange(field: string, value: any) {
     setData((d: any) => ({ ...d, [field]: value }));
-  }
-
-  function formatTrainingPlan() {
-    return [
-      `${selectedTrainingCategory.title}: ${selectedTrainingExercise.title}`,
-      '',
-      `Goal: ${selectedTrainingExercise.goal}`,
-      '',
-      'Setup:',
-      ...selectedTrainingExercise.setup.map((item) => `- ${item}`),
-      '',
-      'Steps:',
-      ...selectedTrainingExercise.steps.map((step, index) => `${index + 1}. ${step}`),
-      '',
-      `Progress marker: ${selectedTrainingExercise.progress}`,
-      '',
-      `Avoid: ${selectedTrainingExercise.avoid}`,
-    ].join('\n');
-  }
-
-  function handleTrainingCategoryChange(value: string) {
-    const nextCategory = categories.find((category) => category.title === value) || categories[0];
-    setTrainingCategory(nextCategory.title);
-    setTrainingExercise(nextCategory.exercises[0].title);
-  }
-
-  function appendTrainingPlan() {
-    const currentPlan = String(data.prescribedPlan || '').trim();
-    const nextPlan = formatTrainingPlan();
-    handleChange('prescribedPlan', currentPlan ? `${currentPlan}\n\n---\n\n${nextPlan}` : nextPlan);
   }
 
   async function save() {
@@ -140,32 +106,11 @@ export default function ConsultationItem({
 
       <div className="mt-6 grid gap-6 lg:grid-cols-[0.9fr_1.6fr]">
         <aside className="rounded-2xl border border-brand-200 bg-brand-50 p-5">
-          <label className="block text-sm font-semibold text-brand-950">Prescribed Training Plan</label>
+          <label htmlFor={`training-plan-${consultation.id}`} className="block text-sm font-semibold text-brand-950">Prescribed Training Plan</label>
           {editing ? (
             <div className="mt-3 space-y-3">
-              <select value={trainingCategory} onChange={(e) => handleTrainingCategoryChange(e.target.value)} className="w-full rounded border border-brand-200 p-2">
-                {categories.map((category) => (
-                  <option key={category.title} value={category.title}>
-                    {category.title}
-                  </option>
-                ))}
-              </select>
-              <select value={trainingExercise} onChange={(e) => setTrainingExercise(e.target.value)} className="w-full rounded border border-brand-200 p-2">
-                {selectedTrainingCategory.exercises.map((exercise) => (
-                  <option key={exercise.title} value={exercise.title}>
-                    {exercise.title}
-                  </option>
-                ))}
-              </select>
-              <div className="flex flex-wrap gap-2">
-                <button type="button" onClick={appendTrainingPlan} className="rounded border border-brand-200 bg-white px-4 py-2 text-brand-800">
-                  Add plan element
-                </button>
-                <button type="button" onClick={() => handleChange('prescribedPlan', formatTrainingPlan())} className="rounded border border-brand-200 bg-white px-4 py-2 text-brand-800">
-                  Replace plan
-                </button>
-              </div>
-              <textarea className="min-h-96 w-full rounded border border-brand-200 p-2" value={data.prescribedPlan || ''} onChange={(e) => handleChange('prescribedPlan', e.target.value)} />
+              <TrainingExercisePicker plan={String(data.prescribedPlan || '')} onChange={(plan) => handleChange('prescribedPlan', plan)} />
+              <textarea id={`training-plan-${consultation.id}`} className="min-h-96 w-full rounded border border-brand-200 p-2" value={data.prescribedPlan || ''} onChange={(e) => handleChange('prescribedPlan', e.target.value)} />
             </div>
           ) : (
             <p className="mt-3 whitespace-pre-line text-sm leading-6 text-brand-700">{data.prescribedPlan || 'No training plan prescribed yet.'}</p>
@@ -335,7 +280,7 @@ export default function ConsultationItem({
       </div>
 
       <div className="mt-4 flex flex-wrap gap-2">
-        <button type="button" onClick={() => setEditing((s) => !s)} className="rounded border px-3 py-1">{editing ? 'Cancel' : 'Edit'}</button>
+        <button type="button" onClick={() => { if (editing) setData({ ...consultation }); setEditing((current) => !current); }} className="rounded border px-3 py-1">{editing ? 'Cancel' : 'Edit'}</button>
         {editing && (
           <>
             <button type="button" onClick={save} disabled={saving} className="rounded bg-brand-700 px-3 py-1 text-white">{saving ? 'Saving...' : 'Save'}</button>

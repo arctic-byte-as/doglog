@@ -105,10 +105,9 @@ export async function SiteShell({ children, hideDogAvatar = false }: { children:
               {!isCustomerMenu ? <AuthStatus compact /> : null}
             </div>
           </div>
-          {!isCustomerMenu ? <div className="mt-3 md:hidden"><AuthStatus /></div> : null}
         </div>
       </header>
-      {user ? <MobileNavigation items={visibleNav} menuLabel={isCustomerMenu ? t.nav.menu : 'Menu'} signOutLabel={isCustomerMenu ? t.nav.logOut : 'Sign out'} /> : null}
+      {user ? <MobileNavigation items={visibleNav.filter((item) => item.href !== '/admin/accounts')} menuLabel={isCustomerMenu ? t.nav.menu : 'Menu'} /> : null}
       <main className={`mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8 ${user ? 'mobile-nav-content' : ''}`}>{children}</main>
     </div>
   );

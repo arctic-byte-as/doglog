@@ -90,7 +90,7 @@ export function DogForm({ dog, onDone }: { dog?: DogFormData; onDone?: () => voi
           <span className="text-sm font-medium text-brand-800">Last incident</span>
           <input type="date" value={form.lastIncident} onChange={(event) => update('lastIncident', event.target.value)} className="mt-1 w-full rounded-lg border border-brand-200 px-3 py-2" />
         </label>
-        {dog?.id ? <DogProfileImageField value={form.profileImageUrl} onChange={(value) => update('profileImageUrl', value)} uploadUrl={`/api/dogs/${encodeURIComponent(dog.id)}/uploads`} onBusyChange={setPhotoBusy} disabled={loading} uploadSuccessMessage="Photo ready. Select Save dog to keep this picture." /> : <p className="text-sm text-brand-700 md:col-span-2">Create the dog first, then use Edit to upload and crop a photo.</p>}
+        <DogProfileImageField value={form.profileImageUrl} onChange={(value) => update('profileImageUrl', value)} uploadUrl={dog?.id ? `/api/dogs/${encodeURIComponent(dog.id)}/uploads` : '/api/dogs/uploads'} onBusyChange={setPhotoBusy} disabled={loading} uploadSuccessMessage={dog?.id ? 'Photo ready. Select Save dog to keep this picture.' : 'Photo ready. Select Create dog to keep this picture.'} />
       </div>
       <div className="flex items-center gap-3">
         <button type="submit" disabled={loading || photoBusy} className="rounded-lg bg-brand-700 px-4 py-2 text-white disabled:opacity-60">

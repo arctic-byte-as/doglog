@@ -1,3 +1,5 @@
+import { randomUUID } from 'crypto';
+import { uploadDogPhoto } from '@/lib/dog-photo-upload';
 import { NextResponse } from 'next/server';
 import { ensureDogBreed } from '@/lib/dog-breeds-server';
 import prisma from '@/lib/prisma';
@@ -9,7 +11,22 @@ function clean(value: unknown) {
 }
 
 export async function POST(request: Request) {
-  const body = await request.json();
+  let body: Record<string, unknown>;
+  let photo: File | null = null;
+  try {
+    if (request.headers.get('content-type')?.includes('multipart/form-data')) {
+      const form = await request.formData();
+      body = JSON.parse(String(form.get('details') || '{}'));
+      const file = form.get('file');
+      if (file !== null && !(file instanceof File)) return NextResponse.json({ error: 'Invalid photo.' }, { status: 400 });
+      photo = file as File | null;
+    } else {
+      body = await request.json();
+    }
+    if (!body || typeof body !== 'object' || Array.isArray(body)) throw new Error('Invalid details');
+  } catch {
+    return NextResponse.json({ error: 'Invalid registration details.' }, { status: 400 });
+  }
   const ownerName = clean(body.ownerName);
   const email = clean(body.email).toLowerCase();
   const password = typeof body.password === 'string' ? body.password : '';
@@ -34,6 +51,16 @@ export async function POST(request: Request) {
 
   const dogBreed = await ensureDogBreed(body.dogBreed);
 
+  const customerId = randomUUID();
+  let dogPhotoUrl = clean(body.dogPhotoUrl);
+  if (photo) {
+    const form = new FormData();
+    form.append('file', photo);
+    const uploaded = await uploadDogPhoto(new Request(request.url, { method: 'POST', body: form }), customerId);
+    if (!uploaded.ok) return uploaded;
+    dogPhotoUrl = (await uploaded.json()).url;
+  }
+
   const result = await prisma.$transaction(async (tx) => {
     const user = await tx.user.upsert({
       where: { email },
@@ -53,6 +80,7 @@ export async function POST(request: Request) {
 
     const customer = await tx.customer.create({
       data: {
+        id: customerId,
         email,
         name: ownerName,
         phone: clean(body.phone) || null,
@@ -68,7 +96,7 @@ export async function POST(request: Request) {
         status: 'New owner registration',
         owner: ownerName,
         lastIncident: behaviourConcern,
-        profileImageUrl: clean(body.dogPhotoUrl) || null,
+        profileImageUrl: dogPhotoUrl || null,
         trainerId: trainer.id,
         customerId: customer.id,
       },

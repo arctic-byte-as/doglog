@@ -93,6 +93,7 @@ Last updated: 2026-05-31
 
 | ID | Card | Owner | Result |
 | --- | --- | --- | --- |
+| DL-077 | Unify registration and dog photo selection | Lead Engineer Agent | Shared picker on sign-up and trainer dog creation; crop tests, build, phone/desktop picker, registration upload/retry and unauthenticated endpoint check passed in development |
 | DL-076 | Compact customer mobile welcome header | Lead Engineer Agent | Place welcome title beside logo, remove duplicate mobile banner, bring dog photo up; desktop unchanged |
 | DL-075 | Improve mobile navigation responsiveness | Lead Engineer Agent | Request-scoped auth deduplication, loading feedback and menu prefetch implemented; build and mobile single-tap/auth-isolation checks passed locally |
 | DL-074 | Align Skills Library and Recommended Videos cards | Lead Engineer Agent | Shared flex layout aligns thumbnails, headings and actions; 390/768/1440px fixture checks, typecheck, lint and production build passed; local change ready for review |

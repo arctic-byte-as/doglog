@@ -41,7 +41,7 @@ function Thumbnail({ lesson }: { lesson: VideoLesson }) {
   </div>;
 }
 
-export default function SkillsVideoGallery({ skills, locale, inlinePlayback = false }: { inlinePlayback?: boolean; skills: CoreSkill[]; locale: 'en' | 'nb' }) {
+export default function SkillsVideoGallery({ skills, locale, inlinePlayback = false, showSearch = true }: { showSearch?: boolean; inlinePlayback?: boolean; skills: CoreSkill[]; locale: 'en' | 'nb' }) {
   const [query, setQuery] = useState('');
   const [selected, setSelected] = useState<VideoLesson | null>(null);
   const inlinePlayer = useRef<HTMLElement>(null);
@@ -54,9 +54,9 @@ export default function SkillsVideoGallery({ skills, locale, inlinePlayback = fa
     const title = local?.title || lesson.title;
     return { id: `${skillIndex}-${index}`, category: categories[skillIndex].title, title, goal: local?.goal || lesson.goal, steps: local?.steps || lesson.steps, coachingNotes: local?.coachingNotes || lesson.coachingNotes, videoId: youtubeId(lesson.youtubeUrl), search: [title, lesson.title, categories[skillIndex].title, skill.title, local?.goal, lesson.goal].join(' ').toLocaleLowerCase() };
   }));
-  const visible = lessons.filter((lesson) => lesson.search.includes(query.trim().toLocaleLowerCase()));
+  const visible = showSearch ? lessons.filter((lesson) => lesson.search.includes(query.trim().toLocaleLowerCase())) : lessons;
   return <div className="space-y-5">
-    <div className="rounded-2xl border border-brand-200 bg-white p-4 sm:p-5"><label htmlFor={searchId} className="text-sm font-semibold">{t.search}</label><input id={searchId} type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder={t.placeholder} className="mt-2 w-full rounded-xl border border-brand-200 bg-white px-4 py-3 text-base" /><p role="status" className="mt-4 text-sm">{visible.length} {t.count}</p></div>
+    {showSearch ? <div className="rounded-2xl border border-brand-200 bg-white p-4 sm:p-5"><label htmlFor={searchId} className="text-sm font-semibold">{t.search}</label><input id={searchId} type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder={t.placeholder} className="mt-2 w-full rounded-xl border border-brand-200 bg-white px-4 py-3 text-base" /><p role="status" className="mt-4 text-sm">{visible.length} {t.count}</p></div> : null}
     {selected && inlinePlayback ? <section ref={inlinePlayer} aria-label={selected.title} className="overflow-hidden rounded-2xl border border-brand-200 bg-white">
       <div className="flex items-start justify-between gap-3 p-4"><div><p className="text-xs font-semibold">{selected.category}</p><h3 className="mt-1 font-semibold">{selected.title}</h3></div><button type="button" onClick={() => setSelected(null)} className="rounded-full border border-brand-200 px-4 py-2 text-sm">{t.close}</button></div>
       <div className="aspect-video bg-black"><iframe src={`https://www.youtube-nocookie.com/embed/${selected.videoId}`} title={selected.title} allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen className="h-full w-full border-0" /></div>

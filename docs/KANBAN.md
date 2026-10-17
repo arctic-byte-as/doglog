@@ -56,6 +56,7 @@ Last updated: 2026-05-31
 | DL-058 | Add per-customer Recommended Videos service | Lead Engineer Agent | Trainer dashboard assignment, subject/link/library selection, saved customer collection, inline searchable video tiles on home summary, scoped access |
 | DL-059 | Allocate recommendations from Skills Library sidebar | Lead Engineer Agent | Choose trainer customer, tick subject videos, save collection and enable service while preserving other services |
 | DL-060 | Align recommended videos beside expandable courses | Lead Engineer Agent | Courses left, videos right on desktop, stacked mobile, collapsed course content and readable video tiles |
+| DL-061 | Remove home recommended-video search | Lead Engineer Agent | Home shows video tiles/player without search/count box; library/detail search retained |
 | DL-030 | Restore development access and isolate local/Preview environments | Lead Engineer Agent | Work preserved, access restored, local and dedicated Preview DB/logins/profile/uploads verified; development email delivery awaits a valid Resend key |
 | DL-024 | Harden auth mode derivation | Lead Engineer Agent | Access modes are centralized, sign-in does not auto-create trainer records, and customer guards do not mutate roles |
 

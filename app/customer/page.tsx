@@ -51,7 +51,7 @@ export default async function CustomerPage() {
               return <article key={service.key} className={`customer-course-card flex min-w-0 flex-col rounded-2xl border border-brand-200 bg-white p-5`}>
                 <div className="flex flex-wrap items-center justify-between gap-2"><h3 className="text-lg font-semibold">{t.services[service.key].title}</h3>{course ? <span className="rounded-full bg-brand-100 px-3 py-1 text-xs font-semibold">{course.weeks.length} {t.dashboard.weeks}</span> : null}</div>
                 <p className="mt-3 text-sm leading-6">{course?.summary || t.services[service.key].description}</p>
-                {service.key === 'RECOMMENDED_VIDEOS' ? <div className="mt-5"><RecommendedVideos videos={recommendedVideos} locale={locale} /></div> : null}
+                {service.key === 'RECOMMENDED_VIDEOS' ? <div className="mt-5"><RecommendedVideos videos={recommendedVideos} locale={locale} showSearch={false} /></div> : null}
                 {course ? <>
                   <details className="course-content-dropdown mt-4 rounded-xl border border-brand-200 p-3"><summary className="min-h-11 cursor-pointer py-3 text-sm font-semibold">{t.dashboard.courseContent}</summary>
                   <ol className="mt-3 grid gap-2 sm:grid-cols-2">{course.weeks.map((week) => <li key={week.title} className="rounded-xl bg-brand-50 p-3 text-sm"><span className="block text-xs font-semibold text-brand-600">{week.title}</span><span className="mt-1 block">{week.focus}</span></li>)}</ol>

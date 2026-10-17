@@ -1,0 +1,7 @@
+# Reactivity Training content (DL-065)
+
+Added the five user-approved positive-reinforcement lessons from data/reactivity-training.json to the existing live Reactivity Training core subject. Each lesson includes title, goal, training details (steps), coaching notes and a Kikopup YouTube URL. YouTube oEmbed metadata was verified for all five videos before the user approved adding them.
+
+Live content update only: no code deployment, schema change, password/account modification or customer recommendation assignment was needed. The subject existed with zero subcategories. The shared library was read through the authenticated Supabase Management API using an isolated temporary CLI workspace linked to the live project. A private backup and compare-and-swap SQL guarded against overwriting concurrent edits. Read-back exactly matched the intended library, including all unchanged subjects and the five complete new lessons. No credentials were exported; Vercel correctly withheld the sensitive DATABASE_URL, so its value was not used. Development database configuration remains unchanged.
+
+The merge helper in scripts/add-reactivity-lessons.cjs is tested for preserving existing subjects, existing subject summary/title, idempotent re-runs and refusing a missing subject by default. It also rejects conflicting lesson titles. The live import used Supabase SQL rather than Prisma because the database credential was not exported. Backup: /private/tmp/doglog-live-content/library-backup.json. The data file contains the approved content for future reference.

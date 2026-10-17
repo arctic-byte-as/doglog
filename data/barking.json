@@ -1,0 +1,41 @@
+{
+  "title": "Barking",
+  "summary": "Understand barking and build calmer responses to sounds, people and everyday situations through positive reinforcement and thoughtful management.",
+  "subcategories": [
+    {
+      "title": "Feeling Comfortable Around Everyday Noises",
+      "goal": "Help everyday sounds predict good experiences rather than alarm barking.",
+      "steps": "Begin with a very quiet version of a familiar sound, at an intensity where the dog stays relaxed. Pair the sound with small treats, then pause. Practise a few repetitions and increase volume or realism gradually, changing only one difficulty at a time.",
+      "coachingNotes": "Reward the sound appearing rather than waiting for barking. If the dog startles or becomes tense, reduce the intensity and give them a break. Avoid shouting or using startling noises to interrupt barking.",
+      "youtubeUrl": "https://www.youtube.com/watch?v=Jp_l9C1yT1g"
+    },
+    {
+      "title": "Staying Calm When Other Dogs Bark",
+      "goal": "Build a comfortable response to the sound of barking dogs.",
+      "steps": "Start with distant barking or a recording at very low volume. Offer food when the barking is heard and allow the dog to move away. Keep sessions short. Gradually practise with more realistic sounds while the dog can still eat comfortably and disengage.",
+      "coachingNotes": "Recordings may not generalise immediately to real dogs. Start again at an easier distance outdoors. Do not position the dog close to a barking dog to force them to get used to it.",
+      "youtubeUrl": "https://www.youtube.com/watch?v=qPpEpQXTQb4"
+    },
+    {
+      "title": "Confidence Around Unfamiliar People",
+      "goal": "Help the dog feel safer around unfamiliar people and changes in their appearance.",
+      "steps": "Arrange practice with a helper at a comfortable distance. Pair the helper appearing with treats. Let the dog observe without approaching. Introduce changes such as a hat or coat separately and gradually, with plenty of space and breaks.",
+      "coachingNotes": "Ask helpers to avoid staring, reaching or leaning over the dog. Food should not lure the dog into a greeting they would otherwise avoid. Move farther away if barking or tension increases.",
+      "youtubeUrl": "https://www.youtube.com/watch?v=LXCELHDT2fs"
+    },
+    {
+      "title": "Calmer Walks Around Triggers",
+      "goal": "Reduce barking on walks by rewarding comfortable observations and voluntary attention.",
+      "steps": "Choose a quiet route with space to move away. When the dog notices a person or dog at a manageable distance, reward calm observation and reconnection with you. Move away together before the situation becomes difficult. Repeat in brief, easy sessions.",
+      "coachingNotes": "Keep the lead comfortable and avoid lead corrections. Staring, stiffening or difficulty taking food can mean the dog needs more distance. Progress depends on comfort rather than getting closer on every walk.",
+      "youtubeUrl": "https://www.youtube.com/watch?v=JY7JrteQBOQ"
+    },
+    {
+      "title": "Managing Barking at Windows and Fences",
+      "goal": "Reduce repeated alarm barking at home while building calmer responses to passers-by.",
+      "steps": "Identify the windows, gates or fence lines where barking happens. Use visual barriers and supervised garden time to reduce repeated practice. During planned sessions, work far enough away that the dog remains comfortable and reward noticing a passer-by and turning back towards you.",
+      "coachingNotes": "Management is part of training: avoid leaving the dog to rehearse prolonged barking at a boundary. Meet needs for rest, exercise and enrichment. Barking is communication; persistent distress needs an individual assessment rather than punishment.",
+      "youtubeUrl": "https://www.youtube.com/watch?v=Vd4_tuSqoYM"
+    }
+  ]
+}

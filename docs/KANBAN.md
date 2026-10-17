@@ -22,6 +22,7 @@ Last updated: 2026-05-31
 
 ## Now
 
+
 | ID | Card | Owner | Acceptance Criteria |
 | --- | --- | --- | --- |
 | DL-013 | Add server-side admin and customer route guards | Lead Engineer Agent | Unauthorized mode access redirects or fails cleanly |
@@ -88,6 +89,11 @@ Last updated: 2026-05-31
 | DL-031 | Add category/exercise tiles and shared training library | Lead Engineer Agent | Search, multi-select, instructions, duplicate prevention and browser import verified in development; ready for trainer review |
 
 ## Done
+
+| ID | Card | Owner | Result |
+| --- | --- | --- | --- |
+| DL-066 | Add Barking core subject and five videos | Lead Engineer Agent | Live library updated; links, fields, idempotency and preservation verified |
+| DL-065 | Populate Reactivity Training with five videos | Lead Engineer Agent | Live library updated and read-back verified; existing subjects preserved |
 
 | ID | Card | Owner | Acceptance Criteria |
 | --- | --- | --- | --- |

@@ -1,0 +1,41 @@
+{
+  "title": "Reactivity Training",
+  "summary": "Build confidence and safer responses to everyday triggers using positive reinforcement, comfortable distances and gradual practice.",
+  "subcategories": [
+    {
+      "title": "Building Positive Associations with Triggers",
+      "goal": "Help the dog feel safer when seeing something that worries them.",
+      "steps": "Begin far enough from the trigger that the dog remains comfortable. When the trigger appears, offer small, high-value treats. Stop feeding when it disappears. Keep repetitions brief and increase distance if the dog becomes tense.",
+      "coachingNotes": "Do not require eye contact or obedience before feeding. The aim is to change the emotional association. Avoid deliberately provoking a reaction.",
+      "youtubeUrl": "https://www.youtube.com/watch?v=3PhqFdaNduo"
+    },
+    {
+      "title": "Calm Reward Delivery",
+      "goal": "Deliver food rewards in ways that support relaxed, comfortable behaviour.",
+      "steps": "Practise predictable, gentle treat delivery in a quiet location first. Observe how the dog responds to your hand movements, reward placement and pace. Use the approach that helps them remain comfortable before introducing mild distractions.",
+      "coachingNotes": "Avoid reaching over a worried dog or making sudden movements. Adjust your delivery to the individual dog; excitement around food does not necessarily indicate relaxation.",
+      "youtubeUrl": "https://www.youtube.com/watch?v=WM2xyrQ-414"
+    },
+    {
+      "title": "Let's Go — Moving Away Together",
+      "goal": "Teach a positive cue for turning and moving away from a difficult situation.",
+      "steps": "Start without distractions. Say 'Let's go', turn gently and reward the dog for following. Practise in both directions. Once familiar, use the cue early when you notice a potential trigger and reward movement away.",
+      "coachingNotes": "Keep the lead relaxed and avoid jerking the dog around. Practise frequently in easy situations so the cue predicts a rewarding activity.",
+      "youtubeUrl": "https://www.youtube.com/watch?v=Eo-L2qtD7MQ"
+    },
+    {
+      "title": "Staying Comfortable Around Dogs and People on Walks",
+      "goal": "Build calmer responses to everyday triggers during walks.",
+      "steps": "Choose quiet locations with room to create distance. Reward comfortable observations and voluntary reconnection with you. Use short sessions and gradually introduce more challenging environments as the dog becomes ready.",
+      "coachingNotes": "Watch for tension, prolonged staring or difficulty disengaging. These indicate that the situation may be too demanding. Increase distance rather than correcting barking.",
+      "youtubeUrl": "https://www.youtube.com/watch?v=JY7JrteQBOQ"
+    },
+    {
+      "title": "Confidence During Everyday Encounters",
+      "goal": "Help the dog cope when the handler pauses or interacts with other people.",
+      "steps": "Arrange brief, predictable encounters with a helper who stays at a comfortable distance. Reward the dog during the encounter and allow space to move away. Gradually increase the interaction's duration while monitoring their comfort.",
+      "coachingNotes": "Ask helpers to avoid approaching, staring at or reaching towards the dog. Let the dog choose whether to approach; greetings are optional.",
+      "youtubeUrl": "https://www.youtube.com/watch?v=cbhM4oKZjsE"
+    }
+  ]
+}

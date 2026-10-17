@@ -92,6 +92,8 @@ Last updated: 2026-05-31
 
 | ID | Card | Owner | Result |
 | --- | --- | --- | --- |
+| DL-070 | Replace Contact video with five alternatives | Lead Engineer Agent | Published five verified alternatives; old video removed, custom instructions and other subjects preserved |
+| DL-069 | Remove redundant Triggers core subject | Lead Engineer Agent | Removed live subject, summary and three placeholders; exact read-back and remaining subjects verified |
 | DL-068 | Add five Recall videos from different trainers | Lead Engineer Agent | Published five complete lessons from five channels; seven total, preservation and live read-back verified |
 | DL-067 | Add five new Play video lessons | Lead Engineer Agent | Published five verified video lessons; seven total, existing lessons and all other subjects preserved |
 | DL-066 | Add Barking core subject and five videos | Lead Engineer Agent | Live library updated; links, fields, idempotency and preservation verified |

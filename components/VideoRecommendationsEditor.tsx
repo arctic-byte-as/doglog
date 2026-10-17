@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import type { CoreSkill } from '@/lib/skills-library';
 import type { RecommendedVideo } from '@/lib/recommended-videos';
+import { defaultSkills, withDefaultVideoLinks } from '@/lib/skills-library-defaults';
 import { youtubeId } from '@/lib/youtube';
 
 type LibraryVideo = { subject: string; title: string; youtubeUrl: string; notes: string };
@@ -17,8 +18,8 @@ export default function VideoRecommendationsEditor({ videos, onChange, disabled 
       if (!response.ok) throw new Error('Could not load the Skills Library. You can still paste a YouTube link below.');
       const data = await response.json();
       if (cancelled) return;
-      const skills: CoreSkill[] = data.skills || [];
-      setLibrary(skills.flatMap((skill) => skill.subcategories.filter((lesson) => youtubeId(lesson.youtubeUrl)).map((lesson) => ({ subject: skill.title, title: lesson.title, youtubeUrl: lesson.youtubeUrl, notes: '' }))));
+      const skills: CoreSkill[] = Array.isArray(data.skills) && data.skills.length ? data.skills : defaultSkills;
+      setLibrary(withDefaultVideoLinks(skills).flatMap((skill) => skill.subcategories.filter((lesson) => youtubeId(lesson.youtubeUrl)).map((lesson) => ({ subject: skill.title, title: lesson.title, youtubeUrl: lesson.youtubeUrl, notes: '' }))));
     }).catch((error) => { if (!cancelled) setLibraryError(error.message); });
     return () => { cancelled = true; };
   }, []);

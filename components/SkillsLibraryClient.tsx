@@ -9,7 +9,7 @@ const legacyStorageKey = 'norsepaw-skills-library';
 
 type SkillsLibraryLocale = 'en' | 'nb';
 
-import { defaultSkills } from '@/lib/skills-library-defaults';
+import { defaultSkills, withDefaultVideoLinks } from '@/lib/skills-library-defaults';
 
 const emptySubcategory: SkillSubcategory = {
   title: '',
@@ -143,22 +143,22 @@ export default function SkillsLibraryClient({
         if (cancelled) return;
 
         if (Array.isArray(body.skills) && body.skills.length) {
-          setSkills(body.skills);
+          setSkills(withDefaultVideoLinks(body.skills));
           selectFirst(body.skills);
           setSharedLibraryLoaded(true);
           return;
         }
 
         if (editable && legacySkills) {
-          setSkills(legacySkills);
+          setSkills(withDefaultVideoLinks(legacySkills));
           selectFirst(legacySkills);
           setSharedLibraryLoaded(true);
-          await saveSkillsToServer(legacySkills, 'Imported your saved skills library for customers.');
+          await saveSkillsToServer(withDefaultVideoLinks(legacySkills), 'Imported your saved skills library for customers.');
           return;
         }
       } catch {
         if (!cancelled && editable && legacySkills) {
-          setSkills(legacySkills);
+          setSkills(withDefaultVideoLinks(legacySkills));
           selectFirst(legacySkills);
           setMessage('Using the saved copy from this browser. Shared save will retry when the server is available.');
         }
@@ -361,7 +361,7 @@ export default function SkillsLibraryClient({
   return (
     <div className="grid min-w-0 gap-6 xl:grid-cols-[300px_1fr]">
       <div className="min-w-0 space-y-4">
-        {editable && recommendationCustomers ? sharedLibraryLoaded ? <SkillsRecommendations skill={selectedSkill} customers={recommendationCustomers} /> : <p role="status" className="text-sm">Loading video recommendations…</p> : null}
+        {editable && recommendationCustomers ? sharedLibraryLoaded ? <SkillsRecommendations skills={skills} customers={recommendationCustomers} /> : <p role="status" className="text-sm">Loading video recommendations…</p> : null}
         <div className="rounded-2xl border border-brand-200 bg-white p-4 shadow-sm">
           <label className="block min-w-0">
             <span className="text-sm font-medium text-brand-800">{labels.coreSkillHeading}</span>

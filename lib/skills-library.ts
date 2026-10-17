@@ -1,4 +1,5 @@
 import prisma from './prisma';
+import { withDefaultVideoLinks } from './skills-library-defaults';
 
 export type SkillLocale = 'nb';
 
@@ -112,7 +113,8 @@ export async function getStoredSkillsLibrary() {
   if (!content) return null;
 
   try {
-    return normalizeSkillsLibrary(JSON.parse(content.value));
+    const skills = normalizeSkillsLibrary(JSON.parse(content.value));
+    return skills ? withDefaultVideoLinks(skills) : null;
   } catch {
     return null;
   }

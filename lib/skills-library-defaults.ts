@@ -289,3 +289,16 @@ export const defaultSkills: CoreSkill[] = [
   },
 ];
 
+
+// Older saved libraries may predate the researched video links. Keep all saved
+// content and existing links; supply a default only for an exact built-in match.
+export function withDefaultVideoLinks(skills: CoreSkill[]): CoreSkill[] {
+  return skills.map((skill) => ({
+    ...skill,
+    subcategories: skill.subcategories.map((lesson) => {
+      if (lesson.youtubeUrl.trim()) return lesson;
+      const fallback = defaultSkills.find((item) => item.title === skill.title)?.subcategories.find((item) => item.title === lesson.title)?.youtubeUrl;
+      return fallback ? { ...lesson, youtubeUrl: fallback } : lesson;
+    }),
+  }));
+}

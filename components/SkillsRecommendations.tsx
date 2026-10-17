@@ -7,8 +7,12 @@ import { youtubeId } from '@/lib/youtube';
 
 export type RecommendationCustomer = { id: string; name: string };
 
-export default function SkillsRecommendations({ skill, customers }: { skill: CoreSkill; customers: RecommendationCustomer[] }) {
+export default function SkillsRecommendations({ skills, customers }: { skills: CoreSkill[]; customers: RecommendationCustomer[] }) {
   const [customerId, setCustomerId] = useState('');
+  const [subject, setSubject] = useState('');
+  const [query, setQuery] = useState('');
+  const lessons = skills.flatMap((skill) => skill.subcategories.map((lesson) => ({ ...lesson, subject: skill.title })));
+  const visible = lessons.filter((lesson) => (!subject || lesson.subject === subject) && `${lesson.subject} ${lesson.title}`.toLowerCase().includes(query.trim().toLowerCase()));
   const [loadedId, setLoadedId] = useState('');
   const [videos, setVideos] = useState<RecommendedVideo[]>([]);
   const [saving, setSaving] = useState(false);
@@ -29,7 +33,7 @@ export default function SkillsRecommendations({ skill, customers }: { skill: Cor
     return () => { cancelled = true; };
   }, [customerId, attempt]);
   const ready = customerId !== '' && customerId === loadedId;
-  function matches(video: RecommendedVideo, title: string, url: string) { return video.subject === skill.title && video.title === title && youtubeId(video.youtubeUrl) === youtubeId(url); }
+  function matches(video: RecommendedVideo, subject: string, title: string, url: string) { return video.subject === subject && video.title === title && youtubeId(video.youtubeUrl) === youtubeId(url); }
   async function save() {
     if (!ready || saving) return;
     setSaving(true); setError(''); setMessage('');
@@ -44,13 +48,18 @@ export default function SkillsRecommendations({ skill, customers }: { skill: Cor
   return <section aria-label="Customer video recommendations" className="space-y-3 rounded-2xl border border-brand-200 bg-brand-50 p-4">
     <h3 className="font-semibold">Recommend to customer</h3>
     <label className="block text-sm font-medium">Customer<select aria-label="Recommendation customer" value={customerId} disabled={saving} onChange={(event) => { setCustomerId(event.target.value); setLoadedId(''); }} className="mt-2 block w-full rounded-xl border border-brand-200 bg-white px-3 py-3"><option value="">Choose a customer</option>{customers.map((customer) => <option key={customer.id} value={customer.id}>{customer.name}</option>)}</select></label>
-    {!customers.length ? <p className="text-sm">Assign a customer’s dog to you to recommend videos.</p> : <p className="text-sm">Choose a customer, tick videos for this subject and save. Untick a video to remove that recommendation.</p>}
+    {!customers.length ? <p className="text-sm">Assign a customer’s dog to you to recommend videos.</p> : <p className="text-sm">Choose a customer, find and tick videos from any subject and save. Untick a video to remove that recommendation.</p>}
     {customerId && !ready && !error ? <p role="status" className="text-sm">Loading recommendations…</p> : null}
-    <fieldset disabled={!ready || saving} className="space-y-2"><legend className="mb-2 text-sm font-semibold">Recommend videos from {skill.title}</legend>{skill.subcategories.map((lesson, index) => {
+    <label className="block text-sm font-medium">Video subject<select aria-label="Video subject" value={subject} onChange={(event) => setSubject(event.target.value)} className="mt-2 block w-full rounded-xl border border-brand-200 bg-white px-3 py-3"><option value="">All subjects</option>{skills.map((skill) => <option key={skill.title} value={skill.title}>{skill.title}</option>)}</select></label>
+    <label className="block text-sm font-medium">Find a video<input type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search subjects or videos" className="mt-2 block w-full rounded-xl border border-brand-200 bg-white px-3 py-3" /></label>
+    <p role="status" className="text-xs">{visible.length} of {lessons.length} lessons</p>
+    <fieldset disabled={!ready || saving} className="max-h-80 space-y-2 overflow-y-auto"><legend className="mb-2 text-sm font-semibold">Videos to recommend</legend>{visible.map((lesson, index) => {
       const available = Boolean(youtubeId(lesson.youtubeUrl));
-      const checked = videos.some((video) => matches(video, lesson.title, lesson.youtubeUrl));
-      return <label key={`${lesson.title}-${index}`} className="flex items-start gap-3 rounded-xl border border-brand-200 bg-white p-3 text-sm"><input type="checkbox" checked={checked} disabled={!available || !ready || saving || (!checked && videos.length >= 30)} onChange={(event) => { setMessage(''); setVideos((current) => event.target.checked ? [...current, { id: crypto.randomUUID(), subject: skill.title, title: lesson.title, youtubeUrl: lesson.youtubeUrl, notes: '' }] : current.filter((video) => !matches(video, lesson.title, lesson.youtubeUrl))); }} className="mt-1 h-4 w-4 shrink-0 accent-brand-700" /><span className="min-w-0 break-words">{lesson.title}{!available ? <span className="mt-1 block text-xs">Add a YouTube link to this lesson first.</span> : null}</span></label>;
+      const checked = videos.some((video) => matches(video, lesson.subject, lesson.title, lesson.youtubeUrl));
+      return <label key={`${lesson.subject}-${lesson.title}-${index}`} className="flex items-start gap-3 rounded-xl border border-brand-200 bg-white p-3 text-sm"><input type="checkbox" aria-label={`${lesson.subject}: ${lesson.title}`} checked={checked} disabled={!available || !ready || saving || (!checked && videos.length >= 30)} onChange={(event) => { const selected = event.target.checked; setMessage(''); setVideos((current) => selected ? [...current, { id: crypto.randomUUID(), subject: lesson.subject, title: lesson.title, youtubeUrl: lesson.youtubeUrl, notes: '' }] : current.filter((video) => !matches(video, lesson.subject, lesson.title, lesson.youtubeUrl))); }} className="mt-1 h-4 w-4 shrink-0 accent-brand-700" /><span className="min-w-0 break-words"><span className="block text-xs font-semibold">{lesson.subject}</span>{lesson.title}{!available ? <span className="mt-1 block text-xs">Add a valid YouTube link to this lesson first.</span> : null}</span></label>;
     })}</fieldset>
+    {!visible.length ? <p className="text-sm">No videos match. Try another subject or clear your search.</p> : null}
+    {videos.length >= 30 ? <p className="text-sm">The 30-video limit is reached. Untick an existing recommendation before adding another.</p> : null}
     {error ? <div><p role="alert" className="text-sm text-red-800">{error}</p>{!ready ? <button type="button" onClick={() => setAttempt((value) => value + 1)} className="mt-2 text-sm underline">Retry</button> : null}</div> : null}
     {message ? <p role="status" className="text-sm">{message}</p> : null}
     <button type="button" disabled={!ready || saving} onClick={save} className="w-full rounded-full bg-brand-800 px-4 py-3 text-sm font-semibold text-white disabled:opacity-50">{saving ? 'Saving…' : 'Save recommendations'}</button>

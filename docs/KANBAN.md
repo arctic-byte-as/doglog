@@ -57,6 +57,7 @@ Last updated: 2026-05-31
 | DL-059 | Allocate recommendations from Skills Library sidebar | Lead Engineer Agent | Choose trainer customer, tick subject videos, save collection and enable service while preserving other services |
 | DL-060 | Align recommended videos beside expandable courses | Lead Engineer Agent | Courses left, videos right on desktop, stacked mobile, collapsed course content and readable video tiles |
 | DL-061 | Remove home recommended-video search | Lead Engineer Agent | Home shows video tiles/player without search/count box; library/detail search retained |
+| DL-062 | Make all library videos discoverable for recommendations | Lead Engineer Agent | All-subject search/filter in sidebar, consistent empty-library fallback, supported YouTube share links and clear unavailable/limit guidance |
 | DL-030 | Restore development access and isolate local/Preview environments | Lead Engineer Agent | Work preserved, access restored, local and dedicated Preview DB/logins/profile/uploads verified; development email delivery awaits a valid Resend key |
 | DL-024 | Harden auth mode derivation | Lead Engineer Agent | Access modes are centralized, sign-in does not auto-create trainer records, and customer guards do not mutate roles |
 

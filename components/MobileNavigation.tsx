@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import SignOutMenuButton from './SignOutMenuButton';
 import { usePathname } from 'next/navigation';
 import { useEffect, useId, useRef, useState } from 'react';
 
@@ -10,7 +11,7 @@ function MenuIcon() {
   return <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" className="h-6 w-6"><path d="M4 6h16M4 12h16M4 18h16" /></svg>;
 }
 
-export default function MobileNavigation({ items, menuLabel = 'Menu' }: { items: Item[]; menuLabel?: string }) {
+export default function MobileNavigation({ items, menuLabel = 'Menu', signOutLabel = 'Log out' }: { items: Item[]; menuLabel?: string; signOutLabel?: string }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const dialog = useRef<HTMLDialogElement>(null);
@@ -37,7 +38,7 @@ export default function MobileNavigation({ items, menuLabel = 'Menu' }: { items:
       </nav>
       {open ? <dialog ref={dialog} id={titleId + '-panel'} aria-labelledby={titleId} onCancel={() => setOpen(false)} onClose={() => { if (dialog.current && !dialog.current.open) setOpen(false); }} onClick={(event) => { if (event.target === event.currentTarget) setOpen(false); }} className="mobile-menu-sheet fixed m-0 w-full max-w-none overflow-y-auto rounded-3xl border border-brand-200 bg-white p-5 text-brand-950 shadow-xl backdrop:bg-black/40">
         <div className="mb-4 flex items-center justify-between gap-4"><h2 id={titleId} className="text-lg font-semibold">{menuLabel}</h2><button type="button" autoFocus onClick={() => setOpen(false)} className="rounded-xl border border-brand-200 px-4 py-2 text-sm">Close</button></div>
-        <nav aria-label={menuLabel} className="grid gap-2">{items.map((item) => <Link key={item.href} href={item.href} onClick={() => setOpen(false)} aria-current={active(item.href) ? 'page' : undefined} className={`rounded-xl px-4 py-3 text-sm font-medium ${active(item.href) ? 'bg-brand-100 text-brand-950' : 'text-brand-800 hover:bg-brand-50'}`}>{item.label}</Link>)}</nav>
+        <nav aria-label={menuLabel} className="grid gap-2">{items.map((item) => <Link key={item.href} href={item.href} onClick={() => setOpen(false)} aria-current={active(item.href) ? 'page' : undefined} className={`rounded-xl px-4 py-3 text-sm font-medium ${active(item.href) ? 'bg-brand-100 text-brand-950' : 'text-brand-800 hover:bg-brand-50'}`}>{item.label}</Link>)}<SignOutMenuButton label={signOutLabel} className="mt-2 min-h-11 rounded-xl border border-brand-200 px-4 py-3 text-left text-sm font-semibold text-brand-800" /></nav>
       </dialog> : null}
     </>
   );

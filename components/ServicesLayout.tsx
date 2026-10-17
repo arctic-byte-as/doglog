@@ -1,6 +1,7 @@
 import Link from 'next/link';
 
 const services = [
+  { href: '/services/recommended-videos', title: 'Recommended Videos', description: 'Choose videos for each customer’s training.' },
   {
     href: '/services/courses',
     title: 'Courses',
@@ -31,6 +32,7 @@ export function ServicesLayout({ activeHref, children }: { activeHref?: string; 
           <Link
             key={service.href}
             href={service.href}
+            aria-current={activeHref === service.href ? 'page' : undefined}
             className={`block min-w-56 rounded-2xl border bg-white p-4 text-brand-950 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-300 hover:shadow-soft lg:min-w-0 ${
               activeHref === service.href ? 'border-brand-700' : 'border-brand-200'
             }`}

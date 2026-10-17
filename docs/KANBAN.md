@@ -23,6 +23,7 @@ Last updated: 2026-05-31
 ## Now
 
 
+
 | ID | Card | Owner | Acceptance Criteria |
 | --- | --- | --- | --- |
 | DL-013 | Add server-side admin and customer route guards | Lead Engineer Agent | Unauthorized mode access redirects or fails cleanly |
@@ -92,6 +93,7 @@ Last updated: 2026-05-31
 
 | ID | Card | Owner | Result |
 | --- | --- | --- | --- |
+| DL-074 | Align Skills Library and Recommended Videos cards | Lead Engineer Agent | Shared flex layout aligns thumbnails, headings and actions; 390/768/1440px fixture checks, typecheck, lint and production build passed; local change ready for review |
 | DL-073 | Add Lead Management core subject with five videos | Lead Engineer Agent | Published five new verified videos with complete fields; existing content preserved; exact live read-back passed |
 | DL-072 | Delete complete Norse Paw loose-leash lesson | Lead Engineer Agent | Deleted Walking on a loose Leash and all lesson fields live; two other lessons preserved; exact read-back verified |
 | DL-071 | Remove Norse Paw loose-leash video pending replacement | Lead Engineer Agent | Cleared confirmed RvG4MNNiP0Q link live; lesson text and other videos preserved; exact read-back verified |

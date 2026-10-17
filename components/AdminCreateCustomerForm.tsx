@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import DogProfileImageField from '@/components/DogProfileImageField';
 import BreedSelect from '@/components/BreedSelect';
 
 export default function AdminCreateCustomerForm() {
@@ -16,20 +17,26 @@ export default function AdminCreateCustomerForm() {
     dogPhotoUrl: '',
     behaviourConcern: '',
   });
+  const [photoFile, setPhotoFile] = useState<File | null>(null);
+  const [photoBusy, setPhotoBusy] = useState(false);
   const [loading, setLoading] = useState(false);
+  useEffect(() => {
+    const url = form.dogPhotoUrl;
+    return () => { if (url.startsWith('blob:')) URL.revokeObjectURL(url); };
+  }, [form.dogPhotoUrl]);
   const [message, setMessage] = useState('');
 
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
+    if (photoBusy) return;
     setLoading(true);
     setMessage('');
 
     try {
-      const response = await fetch('/api/admin/customers', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
-      });
+      const body = new FormData();
+      body.append('details', JSON.stringify({ ...form, dogPhotoUrl: photoFile ? '' : form.dogPhotoUrl }));
+      if (photoFile) body.append('file', photoFile);
+      const response = await fetch('/api/admin/customers', { method: 'POST', body });
       const data = await response.json();
       if (!response.ok) throw new Error(data?.error || 'Could not create customer.');
       setMessage('Customer created.');
@@ -73,10 +80,14 @@ export default function AdminCreateCustomerForm() {
             <BreedSelect value={form.dogBreed} onChange={(dogBreed) => setForm({ ...form, dogBreed })} />
           </div>
         </label>
-        <label className="block md:col-span-2">
-          <span className="text-sm font-medium text-brand-800">Profile picture URL</span>
-          <input type="url" value={form.dogPhotoUrl} onChange={(event) => setForm({ ...form, dogPhotoUrl: event.target.value })} className="mt-1 w-full rounded-lg border border-brand-200 px-3 py-2" />
-        </label>
+        <DogProfileImageField
+          value={form.dogPhotoUrl}
+          disabled={loading}
+          onBusyChange={setPhotoBusy}
+          prepareUpload={async (file) => { setPhotoFile(file); return URL.createObjectURL(file); }}
+          onChange={(value) => { if (!value.startsWith('blob:')) setPhotoFile(null); setForm((current) => ({ ...current, dogPhotoUrl: value })); }}
+          uploadSuccessMessage="Photo ready. Select Create customer to save it."
+        />
         <label className="block md:col-span-2">
           <span className="text-sm font-medium text-brand-800">Owner notes</span>
           <textarea value={form.ownerNotes} onChange={(event) => setForm({ ...form, ownerNotes: event.target.value })} className="mt-1 min-h-20 w-full rounded-lg border border-brand-200 px-3 py-2" />
@@ -87,7 +98,7 @@ export default function AdminCreateCustomerForm() {
         </label>
       </div>
       <div className="flex flex-wrap items-center gap-3">
-        <button type="submit" disabled={loading} className="rounded-lg bg-brand-700 px-5 py-2 font-medium text-white disabled:opacity-60">
+        <button type="submit" disabled={loading || photoBusy} className="rounded-lg bg-brand-700 px-5 py-2 font-medium text-white disabled:opacity-60">
           {loading ? 'Creating...' : 'Create customer'}
         </button>
         {message ? <p className="text-sm text-brand-700">{message}</p> : null}

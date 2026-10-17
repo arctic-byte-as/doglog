@@ -1,0 +1,9 @@
+# Admin customer password management (DL-057)
+
+Admin menu → Customer Passwords (`/admin/passwords`) lists customer names/emails with search. Choose a customer, enter and confirm a new password, then select Set new password. Existing passwords/hashes are never exposed. No password is emailed or included in success messages. Share the newly chosen password with the customer securely. Cancelling clears inputs; successful save clears inputs and selection. Errors retain the selected form for retry.
+
+The PUT `/api/admin/customers/[id]/password` endpoint checks authentication and ADMIN access on the server, enforces 10–128 characters and matching confirmation, and resolves the login through the customer record. Only ordinary CUSTOMER-role accounts are eligible. Trainer records, ADMIN/TRAINER roles and configured ADMIN_EMAILS are protected, even when they also have a customer record. Missing login accounts are not created automatically.
+
+The existing scrypt password helper is used. Updating the hash, deleting all target sessions and deleting outstanding password-reset tokens happen in one database transaction. No schema/environment changes are required. No production accounts were modified during development.
+
+Validation: optimized build (TypeScript/lint) passes with the existing DogListItem img warning. An integration/browser check with temporary development accounts verifies anonymous 401/customer 403, protected admin and trainer accounts, unknown customer 404, short/oversized/mismatched password rejection, no mutation on invalid input, search/cancel at 390/1440px, no password hash in rendered HTML, successful reset, old-password rejection/new-password login, session and reset-token revocation, and cleared form fields. Temporary accounts/sessions/tokens were removed. Unit tests cover role and admin-email/trainer protection. Included in the approved production release.

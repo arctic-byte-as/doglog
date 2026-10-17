@@ -21,9 +21,11 @@ export default function DogProfileImageField({
   locale = 'en',
   uploadUrl = '/api/customer/uploads',
   onBusyChange,
+  prepareUpload,
 }: {
   locale?: 'en' | 'nb';
   uploadUrl?: string;
+  prepareUpload?: (file: File) => Promise<string>;
   onBusyChange?: (busy: boolean) => void;
   value: string;
   onChange: (value: string) => void | Promise<void>;
@@ -52,6 +54,12 @@ export default function DogProfileImageField({
     setMessage('');
 
     try {
+      if (prepareUpload) {
+        const url = await prepareUpload(file);
+        await onChange(url);
+        setMessage(uploadSuccessMessage);
+        return;
+      }
       const body = new FormData();
       body.append('file', file);
 

@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation';
 
 const adminMenuOptions = [
+  { href: '/admin/passwords', label: 'Customer Passwords', description: 'Set new customer passwords and clear previous sign-ins.' },
   {
     href: '/calendar',
     label: 'Calendar',

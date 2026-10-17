@@ -1,3 +1,4 @@
+import { cache } from 'react';
 import { redirect } from 'next/navigation';
 import prisma from './prisma';
 import { getAppSession } from './session';
@@ -48,7 +49,8 @@ async function resolveAppUser(email: string) {
   return { user: null, trainer: trainerRecord, customer: customerRecord };
 }
 
-export async function getCurrentUser() {
+// React cache deduplicates this render/request only; never shares auth between users.
+export const getCurrentUser = cache(async () => {
   const session = await getAppSession();
   if (!session?.user.email) return null;
 
@@ -60,7 +62,7 @@ export async function getCurrentUser() {
   const role = modes.includes('ADMIN') ? 'ADMIN' : modes.includes('CUSTOMER') ? 'CUSTOMER' : user?.role || null;
 
   return { email, user, trainer: trainerRecord, customer: customerRecord, role, modes };
-}
+});
 
 export async function requireUser() {
   const user = await getCurrentUser();

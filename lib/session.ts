@@ -1,3 +1,4 @@
+import { cache } from 'react';
 import crypto from 'crypto';
 import { cookies } from 'next/headers';
 import prisma from './prisma';
@@ -30,7 +31,8 @@ export async function createAppSession(userId: string) {
   });
 }
 
-export async function getAppSession() {
+// React cache deduplicates this render/request only; never shares auth between users.
+export const getAppSession = cache(async () => {
   const token = (await cookies()).get(sessionCookieName)?.value;
   if (!token) return null;
 
@@ -44,7 +46,7 @@ export async function getAppSession() {
   }
 
   return session;
-}
+});
 
 export async function clearAppSession() {
   const token = (await cookies()).get(sessionCookieName)?.value;

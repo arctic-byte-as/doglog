@@ -55,7 +55,7 @@ function DogAvatarStrip({
   );
 }
 
-export async function SiteShell({ children, hideDogAvatar = false }: { children: React.ReactNode; hideDogAvatar?: boolean }) {
+export async function SiteShell({ children, hideDogAvatar = false, mobileHeading }: { children: React.ReactNode; hideDogAvatar?: boolean; mobileHeading?: string }) {
   const user = await getCurrentUser();
   const customerLocale = await getCustomerLocale();
   const t = getCustomerDictionary(customerLocale);
@@ -90,8 +90,9 @@ export async function SiteShell({ children, hideDogAvatar = false }: { children:
         <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 sm:py-5">
           <div className="flex min-w-0 items-center justify-between gap-4 lg:gap-6">
             <Link href="/" className="-mt-1 shrink-0" aria-label="Norse Paw">
-              <Logo subtitle={logoSubtitle} className="md:[&>span]:hidden xl:[&>span]:inline-block [&>span]:max-w-[240px] [&>span>span]:truncate" />
+              <Logo subtitle={logoSubtitle} className={`${mobileHeading ? 'max-md:[&>span]:hidden ' : ''}md:[&>span]:hidden xl:[&>span]:inline-block [&>span]:max-w-[240px] [&>span>span]:truncate`} />
             </Link>
+            {mobileHeading ? <h1 className="min-w-0 flex-1 text-lg font-semibold leading-6 text-brand-950 md:hidden">{mobileHeading}</h1> : null}
             <div className="flex items-center gap-3 md:hidden">
               {isCustomerMenu && !hideDogAvatar ? <DogAvatarStrip dogs={customerDogs} label={t.nav.customerHome} /> : null}
               {!user ? <details className="relative"><summary className="cursor-pointer rounded-full border border-brand-200 px-4 py-2">Menu</summary><nav className="absolute right-0 z-20 mt-2 w-64 rounded-2xl border border-brand-200 bg-white p-2 shadow-soft">{visibleNav.map((item) => <Link key={item.href} href={item.href} className="block rounded-xl px-4 py-3 text-sm">{item.label}</Link>)}</nav></details> : null}
@@ -108,7 +109,7 @@ export async function SiteShell({ children, hideDogAvatar = false }: { children:
         </div>
       </header>
       {user ? <MobileNavigation items={visibleNav.filter((item) => item.href !== '/admin/accounts')} menuLabel={isCustomerMenu ? t.nav.menu : 'Menu'} signOutLabel={isCustomerMenu ? t.nav.logOut : 'Log out'} /> : null}
-      <main className={`mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8 ${user ? 'mobile-nav-content' : ''}`}>{children}</main>
+      <main className={`mx-auto max-w-7xl px-4 ${mobileHeading ? 'pb-6 pt-3 md:py-8' : 'py-6 sm:py-8'} sm:px-6 ${user ? 'mobile-nav-content' : ''}`}>{children}</main>
     </div>
   );
 }

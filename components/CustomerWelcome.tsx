@@ -14,7 +14,7 @@ export default function CustomerWelcome({ name, dogs, title, description, locale
   const addPhoto = locale === 'nb' ? 'Legg til et bilde av hunden din' : 'Add a photo of your dog';
   const viewDogs = locale === 'nb' ? 'Hundene dine' : 'Your dogs';
   return <div className="customer-welcome grid items-stretch gap-4 md:grid-cols-[minmax(0,1fr)_minmax(260px,0.65fr)]">
-    <div className="dashboard-intro flex min-w-0 flex-col justify-center">
+    <div className="dashboard-intro hidden min-w-0 flex-col justify-center md:flex">
       <p className="dashboard-intro-copy mb-3 break-words text-sm font-semibold">{name}</p>
       <h1 className="break-words text-2xl font-semibold sm:text-3xl">{title}</h1>
       <p className="dashboard-intro-copy mt-3 text-sm leading-6">{description}</p>

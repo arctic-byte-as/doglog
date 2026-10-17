@@ -12,7 +12,7 @@ export const defaultSkills: CoreSkill[] = [
           'Start at an easy boundary such as a doorway. Reward the dog for pausing or choosing to remain behind the line. Add a release cue so the dog understands when crossing is available. Build duration, then add mild movement and household distractions.',
         coachingNotes:
           'Keep the dog successful with distance, barriers, and a lead where needed. Reward the choice you want instead of physically blocking or correcting mistakes.',
-        youtubeUrl: '',
+        youtubeUrl: 'https://www.youtube.com/watch?v=kJboalA4oi4',
       },
       {
         title: 'Outdoor boundary foundations',
@@ -21,7 +21,7 @@ export const defaultSkills: CoreSkill[] = [
           'Work on lead at first. Walk toward the boundary, mark and reward before the dog crosses, then move away together. Add visible markers if helpful. Practise many short repetitions before expecting off-lead reliability.',
         coachingNotes:
           'Outdoor boundaries should be trained as a management-supported skill, not relied on as the only safety system near roads or hazards.',
-        youtubeUrl: '',
+        youtubeUrl: 'https://www.youtube.com/watch?v=OuTh47i3hOY',
       },
     ],
   },
@@ -36,7 +36,7 @@ export const defaultSkills: CoreSkill[] = [
           'Begin with the dog behind you or beside you. Lure or hand-target them into the middle position, mark when their shoulders are between your legs, and reward low in front of them. Fade the lure into a hand signal and then add the verbal cue.',
         coachingNotes:
           'Use a comfortable stance and avoid trapping the dog. This should feel like a safe station, not restraint.',
-        youtubeUrl: '',
+        youtubeUrl: 'https://www.youtube.com/watch?v=UaIJocl2i10',
       },
       {
         title: 'Middle with duration',
@@ -45,7 +45,7 @@ export const defaultSkills: CoreSkill[] = [
           'Reward one second in position, then release. Add duration in tiny increments. Practise one step forward, one step back, and gentle turns before using the skill near distractions.',
         coachingNotes:
           'Useful for nervous dogs in busy places, but only if the dog has a positive history with the position.',
-        youtubeUrl: '',
+        youtubeUrl: 'https://www.youtube.com/watch?v=UaIJocl2i10',
       },
     ],
   },
@@ -60,7 +60,7 @@ export const defaultSkills: CoreSkill[] = [
           'Place a non-slip mat down. Mark and reward any look, step, or movement toward it. Toss the reward off the mat so the dog can choose to return. Build to all four paws, then a down.',
         coachingNotes:
           'Do not force the dog onto the mat. Keep early sessions short and cheerful.',
-        youtubeUrl: '',
+        youtubeUrl: 'https://www.youtube.com/watch?v=U2c5EkytNU0',
       },
       {
         title: 'Settle and release',
@@ -69,7 +69,7 @@ export const defaultSkills: CoreSkill[] = [
           'Reward relaxed postures such as hip shift, chin down, soft eyes, or slower breathing. Add duration slowly. Use a release cue every time the session ends so the dog understands the pattern.',
         coachingNotes:
           'The mat should never be used as punishment. It works best when it predicts safety, clarity, and calm rewards.',
-        youtubeUrl: '',
+        youtubeUrl: 'https://www.youtube.com/watch?v=yr1olzgidMw',
       },
     ],
   },
@@ -84,7 +84,7 @@ export const defaultSkills: CoreSkill[] = [
           'Start in a low-distraction space. Mark check-ins, slack lead moments, and movement beside the handler. Deliver rewards near the handler leg. Change direction before the lead tightens and gradually add real-world distractions.',
         coachingNotes:
           'Short training walks are often more useful than long pulling walks. Meet exercise needs separately while this skill is developing.',
-        youtubeUrl: '',
+        youtubeUrl: 'https://www.youtube.com/watch?v=EK6PZ5l-3lI',
       },
       {
         title: 'Sniff and walk balance',
@@ -93,7 +93,7 @@ export const defaultSkills: CoreSkill[] = [
           'Use a walking cue for connection and a release cue for sniffing. Reward good leash choices with both food and access to safe sniffing. Practise transitions between the two modes.',
         coachingNotes:
           'Sniffing can be a powerful reward. Avoid turning every walk into constant obedience.',
-        youtubeUrl: '',
+        youtubeUrl: 'https://www.youtube.com/watch?v=5Kt_pi1z1sA',
       },
     ],
   },
@@ -108,7 +108,7 @@ export const defaultSkills: CoreSkill[] = [
           'Stand quietly. When the dog glances toward you, mark and reward. Reset by tossing a treat away, then wait for the next offered check-in. Add movement and distractions gradually.',
         coachingNotes:
           'Avoid repeating the dog name. Let the dog discover that checking in is valuable.',
-        youtubeUrl: '',
+        youtubeUrl: 'https://www.youtube.com/watch?v=w4ASIKw-urY',
       },
       {
         title: 'Contact around distractions',
@@ -117,7 +117,7 @@ export const defaultSkills: CoreSkill[] = [
           'Work far enough from the distraction that the dog can think. Mark the moment they reorient, reward generously, and move away if needed. Reduce distance only when recovery is easy.',
         coachingNotes:
           'If the dog cannot eat, turn, or respond, increase distance and lower the difficulty.',
-        youtubeUrl: '',
+        youtubeUrl: 'https://www.youtube.com/watch?v=aTSuPk2Ccjo',
       },
     ],
   },
@@ -139,7 +139,7 @@ export const defaultSkills: CoreSkill[] = [
           'Start in a quiet, low-distraction space. Stand or walk slowly without repeating the dog name. When the dog looks at you, turns toward you, moves with you, or chooses to come closer, mark with a clear word such as "yes" and reward immediately. Reset by tossing a treat away or releasing the dog to sniff, then wait for the next offered choice. Build from one quick check-in to several seconds of relaxed connection before adding a cue.',
         coachingNotes:
           'Do not force eye contact, pull the dog into position, or nag for attention. Engagement should feel like an invitation. Use food, toys, praise, movement, sniffing, or a short play break depending on what the dog genuinely finds rewarding.',
-        youtubeUrl: '',
+        youtubeUrl: 'https://www.youtube.com/watch?v=w4ASIKw-urY',
         translations: {
           nb: {
             title: 'Frivillig engasjement',
@@ -158,7 +158,7 @@ export const defaultSkills: CoreSkill[] = [
           'Begin in a safe open area. Move a few steps away from the dog with light, inviting body language. When the dog follows or catches up, mark and reward close to your leg. Change direction gently before the dog disconnects, then reward again when they rejoin you. Keep the game short and finish while the dog still wants more.',
         coachingNotes:
           'Make yourself interesting without overwhelming the dog. If the dog does not follow, lower the difficulty: use better rewards, reduce distractions, move less, or begin indoors. The lead is only for safety, not for steering or correcting.',
-        youtubeUrl: '',
+        youtubeUrl: 'https://www.youtube.com/watch?v=HiziN7mluz8',
         translations: {
           nb: {
             title: 'Følg bevegelsen',
@@ -177,7 +177,7 @@ export const defaultSkills: CoreSkill[] = [
           'Work far enough from distractions that the dog can still eat, move, and think. Let the dog notice the distraction. The moment they look back, turn toward you, soften their body, or choose to move with you, mark and reward generously. You can reward with food, distance from the distraction, sniffing, or a simple movement game. Gradually decrease distance only when recovery is easy.',
         coachingNotes:
           'If the dog cannot respond, you are too close or the situation is too hard. Increase distance, reduce duration, and reward small choices. This exercise is about confidence and voluntary reconnection, not suppressing interest in the world.',
-        youtubeUrl: '',
+        youtubeUrl: 'https://www.youtube.com/watch?v=aTSuPk2Ccjo',
         translations: {
           nb: {
             title: 'Engasjement rundt forstyrrelser',
@@ -202,7 +202,7 @@ export const defaultSkills: CoreSkill[] = [
           'Choose a toy the dog likes. Move it away from the dog to invite chase, keep sessions short, and pause before arousal becomes too high. Restart play when the dog re-engages with the toy.',
         coachingNotes:
           'Play is not one-size-fits-all. Some dogs prefer food, chase, tug, sniffing, or social praise.',
-        youtubeUrl: '',
+        youtubeUrl: 'https://www.youtube.com/watch?v=UyVkZrlcVSA',
       },
       {
         title: 'Tug with rules',
@@ -211,7 +211,7 @@ export const defaultSkills: CoreSkill[] = [
           'Use a toy long enough to keep hands safe. Start gentle tug, then go still and trade for food or another toy. Restart play as the reward for letting go or targeting the toy cleanly.',
         coachingNotes:
           'Tug should feel cooperative. Stop before frustration or over-arousal takes over.',
-        youtubeUrl: '',
+        youtubeUrl: 'https://www.youtube.com/watch?v=Cv4seQbdVfY',
       },
     ],
   },
@@ -226,7 +226,7 @@ export const defaultSkills: CoreSkill[] = [
           'Present an open palm close to the dog. Mark the instant the nose moves toward or touches the hand, then reward from the other hand. Repeat until the dog seeks the hand, then add the cue.',
         coachingNotes:
           'Hand targeting should be easy and upbeat. Move the target only a little at first.',
-        youtubeUrl: '',
+        youtubeUrl: 'https://www.youtube.com/watch?v=RWSJVwZybwo',
       },
       {
         title: 'Target for movement',
@@ -235,7 +235,7 @@ export const defaultSkills: CoreSkill[] = [
           'Ask for a hand target, then place the target slightly to the side, onto a mat, or through a turn. Reward each touch. Build small movement chains before adding distractions.',
         coachingNotes:
           'This is useful for shy dogs, cooperative handling, positioning, and redirecting attention.',
-        youtubeUrl: '',
+        youtubeUrl: 'https://www.youtube.com/watch?v=RWSJVwZybwo',
       },
     ],
   },
@@ -250,7 +250,7 @@ export const defaultSkills: CoreSkill[] = [
           'Ask for an easy sit, down, or mat behaviour. Reward the position. Say OK and move or toss a reward away so the dog leaves the position. Repeat until the release cue is clear.',
         coachingNotes:
           'Use one consistent release word. Avoid saying it casually if it is meant to have training meaning.',
-        youtubeUrl: '',
+        youtubeUrl: 'https://www.youtube.com/watch?v=tKHTYneseaw',
       },
       {
         title: 'Permission to access',
@@ -259,7 +259,7 @@ export const defaultSkills: CoreSkill[] = [
           'Start with low-value access. Mark calm waiting, then say OK and allow access. Keep criteria easy and build duration slowly.',
         coachingNotes:
           'The release cue should create clarity, not frustration. Do not make the dog wait too long too soon.',
-        youtubeUrl: '',
+        youtubeUrl: 'https://www.youtube.com/watch?v=kJboalA4oi4',
       },
     ],
   },
@@ -274,7 +274,7 @@ export const defaultSkills: CoreSkill[] = [
           'Start indoors or in a secure area. Say the recall cue once, move away cheerfully, mark arrival, and reward with food, play, or praise. Release the dog back to safe exploration when possible.',
         coachingNotes:
           'Do not call repeatedly or call only when fun ends. A strong recall needs a long history of excellent outcomes.',
-        youtubeUrl: '',
+        youtubeUrl: 'https://www.youtube.com/watch?v=VuyjjkSPRfU',
       },
       {
         title: 'Long-line recall',
@@ -283,7 +283,7 @@ export const defaultSkills: CoreSkill[] = [
           'Use a harness and long line in an open safe area. Wait for moments when the dog can succeed. Cue once, encourage movement toward you, reward generously, and reset.',
         coachingNotes:
           'The long line is a safety tool, not a correction tool. Keep it loose and manage distance.',
-        youtubeUrl: '',
+        youtubeUrl: 'https://www.youtube.com/watch?v=X6Uuf1ykMfI',
       },
     ],
   },

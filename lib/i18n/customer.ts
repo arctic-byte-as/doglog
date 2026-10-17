@@ -19,6 +19,7 @@ export const customerDictionaries = {
       customer: 'Customer',
     },
     services: {
+      RECOMMENDED_VIDEOS: { title: 'Recommended Videos', description: 'Videos and practice tips selected for you by your trainer.' },
       PUPPY_COURSE: {
         title: 'Puppy Course',
         description: 'Your puppy course materials and training steps.',
@@ -183,6 +184,7 @@ export const customerDictionaries = {
       customer: 'Kunde',
     },
     services: {
+      RECOMMENDED_VIDEOS: { title: 'Anbefalte videoer', description: 'Videoer og treningstips valgt for deg av treneren din.' },
       PUPPY_COURSE: {
         title: 'Valpekurs',
         description: 'Dine valpekursmaterialer og treningssteg.',

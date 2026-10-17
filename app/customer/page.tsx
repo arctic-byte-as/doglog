@@ -1,3 +1,5 @@
+import RecommendedVideos from '@/components/RecommendedVideos';
+import { getRecommendedVideos } from '@/lib/recommended-videos-server';
 import Link from 'next/link';
 import { SiteShell } from '@/components/SiteShell';
 import { SectionCard } from '@/components/SectionCard';
@@ -28,6 +30,7 @@ export default async function CustomerPage() {
   const enabled = new Set(customer.serviceAccess.map((access) => access.serviceKey));
   const services = customerServiceOptions.filter((service) => enabled.has(service.key));
   const courses = getCourses(locale);
+  const recommendedVideos = enabled.has('RECOMMENDED_VIDEOS') ? await getRecommendedVideos(user.customer.id) : [];
   const dayKey = (date: Date) => date.toLocaleDateString('sv-SE', { timeZone: 'Europe/Oslo' });
   const events = customer.dogs.flatMap((dog) => [
     ...(enabled.has('CONSULTATIONS') ? dog.consultations.map((record) => ({
@@ -49,9 +52,10 @@ export default async function CustomerPage() {
           {services.length ? <div className="grid gap-4 lg:grid-cols-2">
             {services.map((service) => {
               const course = courses.find((item) => item.id === (service.key === 'PUPPY_COURSE' ? 'puppy' : service.key === 'SKILLS_COURSE' ? 'skills' : ''));
-              return <article key={service.key} className="customer-course-card flex min-w-0 flex-col rounded-2xl border border-brand-200 bg-white p-5">
+              return <article key={service.key} className={`customer-course-card ${service.key === 'RECOMMENDED_VIDEOS' ? 'lg:col-span-2' : ''} flex min-w-0 flex-col rounded-2xl border border-brand-200 bg-white p-5`}>
                 <div className="flex flex-wrap items-center justify-between gap-2"><h3 className="text-lg font-semibold">{t.services[service.key].title}</h3>{course ? <span className="rounded-full bg-brand-100 px-3 py-1 text-xs font-semibold">{course.weeks.length} {t.dashboard.weeks}</span> : null}</div>
                 <p className="mt-3 text-sm leading-6">{course?.summary || t.services[service.key].description}</p>
+                {service.key === 'RECOMMENDED_VIDEOS' ? <div className="mt-5"><RecommendedVideos videos={recommendedVideos} locale={locale} /></div> : null}
                 {course ? <>
                   <h4 className="mt-4 text-sm font-semibold">{t.dashboard.courseContent}</h4>
                   <ol className="mt-3 grid gap-2 sm:grid-cols-2">{course.weeks.map((week) => <li key={week.title} className="rounded-xl bg-brand-50 p-3 text-sm"><span className="block text-xs font-semibold text-brand-600">{week.title}</span><span className="mt-1 block">{week.focus}</span></li>)}</ol>

@@ -1,4 +1,5 @@
 export const customerServiceOptions = [
+  { key: 'RECOMMENDED_VIDEOS', title: 'Recommended Videos', description: 'Share subject-specific YouTube videos on the customer home page.', href: '/customer/services/recommended-videos' },
   {
     key: 'PUPPY_COURSE',
     title: 'Puppy Course',

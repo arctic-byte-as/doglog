@@ -1,5 +1,7 @@
 "use client";
 
+import SkillsRecommendations, { type RecommendationCustomer } from './SkillsRecommendations';
+
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { CoreSkill, SkillSubcategory } from '@/lib/skills-library';
 
@@ -89,10 +91,12 @@ function getYoutubeVideoId(value: string) {
 
 export default function SkillsLibraryClient({
   editable = true,
+  recommendationCustomers,
   labels = defaultSkillsLibraryLabels,
   locale = 'en',
 }: {
   editable?: boolean;
+  recommendationCustomers?: RecommendationCustomer[];
   labels?: typeof defaultSkillsLibraryLabels;
   locale?: SkillsLibraryLocale;
 }) {
@@ -357,6 +361,7 @@ export default function SkillsLibraryClient({
   return (
     <div className="grid min-w-0 gap-6 xl:grid-cols-[300px_1fr]">
       <div className="min-w-0 space-y-4">
+        {editable && recommendationCustomers ? sharedLibraryLoaded ? <SkillsRecommendations skill={selectedSkill} customers={recommendationCustomers} /> : <p role="status" className="text-sm">Loading video recommendations…</p> : null}
         <div className="rounded-2xl border border-brand-200 bg-white p-4 shadow-sm">
           <label className="block min-w-0">
             <span className="text-sm font-medium text-brand-800">{labels.coreSkillHeading}</span>

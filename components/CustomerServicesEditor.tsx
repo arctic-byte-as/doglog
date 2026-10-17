@@ -2,6 +2,8 @@
 
 import { useEffect, useId, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
+import VideoRecommendationsEditor from './VideoRecommendationsEditor';
+import { parseRecommendedVideos, type RecommendedVideo } from '@/lib/recommended-videos';
 import { customerServiceOptions } from '@/lib/service-options';
 
 export default function CustomerServicesEditor({ customer, onClose, onSaved }: {
@@ -14,6 +16,23 @@ export default function CustomerServicesEditor({ customer, onClose, onSaved }: {
   const [selected, setSelected] = useState(new Set(customer.serviceKeys));
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
+  const [videos, setVideos] = useState<RecommendedVideo[]>([]);
+  const [loadingVideos, setLoadingVideos] = useState(true);
+  const [loadError, setLoadError] = useState('');
+  const [loadAttempt, setLoadAttempt] = useState(0);
+
+  useEffect(() => {
+    let cancelled = false;
+    setLoadingVideos(true); setLoadError('');
+    fetch(`/api/customers/${encodeURIComponent(customer.id)}/videos`, { cache: 'no-store' }).then(async (response) => {
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || 'Could not load recommended videos.');
+      const parsed = parseRecommendedVideos(data.videos);
+      if (!parsed) throw new Error('Could not load recommended videos.');
+      if (!cancelled) setVideos(parsed);
+    }).catch((failure) => { if (!cancelled) setLoadError(failure.message || 'Could not load recommended videos.'); }).finally(() => { if (!cancelled) setLoadingVideos(false); });
+    return () => { cancelled = true; };
+  }, [customer.id, loadAttempt]);
 
   useEffect(() => {
     const element = dialog.current;
@@ -25,10 +44,12 @@ export default function CustomerServicesEditor({ customer, onClose, onSaved }: {
   }, []);
 
   async function save() {
+    if (loadingVideos || loadError) return;
+    if (selected.has('RECOMMENDED_VIDEOS') && !parseRecommendedVideos(videos)) { setError('Add a subject, title and valid YouTube link to each video.'); return; }
     setSaving(true);
     setError('');
     try {
-      const response = await fetch(`/api/customers/${customer.id}/services`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ services: Array.from(selected) }) });
+      const response = await fetch(`/api/customers/${customer.id}/services`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ services: Array.from(selected), recommendedVideos: selected.has('RECOMMENDED_VIDEOS') ? videos : undefined }) });
       const data = await response.json().catch(() => null);
       if (!response.ok) throw new Error(data?.error || 'Could not save changes. Please try again.');
       if (!Array.isArray(data?.services)) throw new Error('Could not confirm the saved services. Please try again.');
@@ -58,11 +79,12 @@ export default function CustomerServicesEditor({ customer, onClose, onSaved }: {
               ))}
             </fieldset>
           ))}
+          {loadingVideos ? <p role="status" className="text-sm">Loading customer videos…</p> : loadError ? <div><p role="alert" className="text-sm text-red-800">{loadError}</p><button type="button" onClick={() => setLoadAttempt((value) => value + 1)} className="mt-2 rounded-full border border-brand-200 px-4 py-2 text-sm">Retry loading videos</button></div> : selected.has('RECOMMENDED_VIDEOS') ? <VideoRecommendationsEditor videos={videos} onChange={setVideos} disabled={saving} /> : null}
           {error ? <p role="alert" className="rounded-xl bg-red-50 p-3 text-sm text-red-800">{error}</p> : null}
         </div>
         <footer className="flex flex-wrap justify-end gap-3 border-t border-brand-100 bg-white p-5 sm:p-6">
           <button type="button" disabled={saving} onClick={onClose} className="rounded-xl border border-brand-200 px-4 py-3 text-sm disabled:opacity-50">Cancel</button>
-          <button type="button" disabled={saving} onClick={save} className="rounded-xl bg-brand-700 px-4 py-3 text-sm font-semibold text-white disabled:opacity-50">{saving ? 'Saving…' : 'Save services & courses'}</button>
+          <button type="button" disabled={saving || loadingVideos || Boolean(loadError)} onClick={save} className="rounded-xl bg-brand-700 px-4 py-3 text-sm font-semibold text-white disabled:opacity-50">{saving ? 'Saving…' : 'Save services & courses'}</button>
         </footer>
       </div>
     </dialog>, document.body

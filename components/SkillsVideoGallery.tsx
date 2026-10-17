@@ -3,6 +3,8 @@
 import Image from 'next/image';
 import { useEffect, useId, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
+import { youtubeId } from '@/lib/youtube';
+export { youtubeId } from '@/lib/youtube';
 import type { CoreSkill } from '@/lib/skills-library';
 
 type VideoLesson = { id: string; category: string; title: string; goal: string; steps: string; coachingNotes: string; videoId: string | null; search: string };
@@ -11,13 +13,6 @@ const copy = {
   nb: { search: 'Søk i ferdighetsvideoer', placeholder: 'Søk etter ferdighet, tema eller treningsmål…', all: 'Alle temaer', count: 'leksjoner', watch: 'Se video', guidance: 'Se veiledning', missing: 'Video er ikke lagt til ennå', empty: 'Ingen leksjoner passer til søket ditt.', clear: 'Tøm søk', close: 'Lukk', goal: 'Mål', steps: 'Treningsdetaljer', notes: 'Trenertips', help: 'Finn en ferdighet, velg en video og tren i ditt eget tempo.' },
 };
 
-export function youtubeId(value: string) {
-  try {
-    const url = new URL(value);
-    const id = url.hostname === 'youtu.be' ? url.pathname.split('/')[1] : ['youtube.com', 'www.youtube.com', 'm.youtube.com', 'youtube-nocookie.com', 'www.youtube-nocookie.com'].includes(url.hostname) ? (url.pathname === '/watch' ? url.searchParams.get('v') : /^\/(shorts|embed|live)\//.test(url.pathname) ? url.pathname.split('/')[2] : null) : null;
-    return id && /^[A-Za-z0-9_-]{11}$/.test(id) && ['https:', 'http:'].includes(url.protocol) ? id : null;
-  } catch { return null; }
-}
 
 function LessonPlayer({ lesson, locale, onClose }: { lesson: VideoLesson; locale: 'en' | 'nb'; onClose: () => void }) {
   const dialog = useRef<HTMLDialogElement>(null);
@@ -46,9 +41,11 @@ function Thumbnail({ lesson }: { lesson: VideoLesson }) {
   </div>;
 }
 
-export default function SkillsVideoGallery({ skills, locale }: { skills: CoreSkill[]; locale: 'en' | 'nb' }) {
+export default function SkillsVideoGallery({ skills, locale, inlinePlayback = false }: { inlinePlayback?: boolean; skills: CoreSkill[]; locale: 'en' | 'nb' }) {
   const [query, setQuery] = useState('');
   const [selected, setSelected] = useState<VideoLesson | null>(null);
+  const inlinePlayer = useRef<HTMLElement>(null);
+  useEffect(() => { if (inlinePlayback && selected) inlinePlayer.current?.scrollIntoView({ block: 'nearest' }); }, [inlinePlayback, selected]);
   const searchId = useId();
   const t = copy[locale];
   const categories = skills.map((skill) => ({ id: skill.title, title: locale === 'nb' ? skill.translations?.nb?.title || skill.title : skill.title }));
@@ -60,8 +57,13 @@ export default function SkillsVideoGallery({ skills, locale }: { skills: CoreSki
   const visible = lessons.filter((lesson) => lesson.search.includes(query.trim().toLocaleLowerCase()));
   return <div className="space-y-5">
     <div className="rounded-2xl border border-brand-200 bg-white p-4 sm:p-5"><label htmlFor={searchId} className="text-sm font-semibold">{t.search}</label><input id={searchId} type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder={t.placeholder} className="mt-2 w-full rounded-xl border border-brand-200 bg-white px-4 py-3 text-base" /><p role="status" className="mt-4 text-sm">{visible.length} {t.count}</p></div>
+    {selected && inlinePlayback ? <section ref={inlinePlayer} aria-label={selected.title} className="overflow-hidden rounded-2xl border border-brand-200 bg-white">
+      <div className="flex items-start justify-between gap-3 p-4"><div><p className="text-xs font-semibold">{selected.category}</p><h3 className="mt-1 font-semibold">{selected.title}</h3></div><button type="button" onClick={() => setSelected(null)} className="rounded-full border border-brand-200 px-4 py-2 text-sm">{t.close}</button></div>
+      <div className="aspect-video bg-black"><iframe src={`https://www.youtube-nocookie.com/embed/${selected.videoId}`} title={selected.title} allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen className="h-full w-full border-0" /></div>
+      {selected.steps ? <p className="whitespace-pre-line p-4 text-sm leading-6">{selected.steps}</p> : null}
+    </section> : null}
     <div className="skills-video-grid grid grid-cols-1 gap-3 md:grid-cols-3 lg:grid-cols-4">{visible.map((lesson) => <button key={lesson.id} type="button" onClick={() => setSelected(lesson)} aria-haspopup="dialog" className="skill-video-tile min-w-0 overflow-hidden rounded-2xl border border-brand-200 bg-white text-left shadow-sm transition hover:border-brand-500 hover:shadow-soft"><Thumbnail lesson={lesson} /><span className="block p-3"><span className="block text-xs font-semibold text-brand-600">{lesson.category}</span><span className="mt-2 block text-sm font-semibold">{lesson.title}</span><span className="mt-3 block text-xs font-semibold">{lesson.videoId ? t.watch : t.guidance} →</span>{!lesson.videoId ? <span className="mt-1 block text-xs">{t.missing}</span> : null}</span></button>)}</div>
     {!visible.length ? <div className="rounded-2xl border border-brand-200 bg-white p-5"><p>{t.empty}</p><button type="button" onClick={() => { setQuery(''); }} className="mt-3 rounded-full border border-brand-200 px-4 py-2 text-sm">{t.clear}</button></div> : null}
-    {selected ? <LessonPlayer lesson={selected} locale={locale} onClose={() => setSelected(null)} /> : null}
+    {selected && !inlinePlayback ? <LessonPlayer lesson={selected} locale={locale} onClose={() => setSelected(null)} /> : null}
   </div>;
 }

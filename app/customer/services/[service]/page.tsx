@@ -1,3 +1,5 @@
+import RecommendedVideos from '@/components/RecommendedVideos';
+import { getRecommendedVideos } from '@/lib/recommended-videos-server';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { SiteShell } from '@/components/SiteShell';
@@ -57,6 +59,7 @@ export default async function CustomerServicePage(props: { params: Promise<{ ser
 
   const courseId = service.key === 'PUPPY_COURSE' ? 'puppy' : service.key === 'SKILLS_COURSE' ? 'skills' : null;
   const sectionTitle = t.nav.myServices;
+  const recommendedVideos = service.key === 'RECOMMENDED_VIDEOS' ? await getRecommendedVideos(user.customer.id) : [];
   const consultations =
     service.key === 'CONSULTATIONS'
       ? await prisma.consultation.findMany({
@@ -98,7 +101,7 @@ export default async function CustomerServicePage(props: { params: Promise<{ ser
           <div className="space-y-6">
             <CustomerServiceSelect label={t.nav.myServices} services={assignedServices} selectedHref={service.href} />
 
-            {courseId ? (
+            {service.key === 'RECOMMENDED_VIDEOS' ? <RecommendedVideos videos={recommendedVideos} locale={locale} /> : courseId ? (
               <CoursesClient
                 editable={false}
                 initialCourseId={courseId}

@@ -47,11 +47,14 @@ Last updated: 2026-05-31
 
 | ID | Card | Owner | Acceptance Criteria |
 | --- | --- | --- | --- |
+| DL-052 | Match missing skills lessons to researched YouTube videos | Lead Engineer Agent | Match default subjects, verify metadata/embedding, preserve existing saved links; production content access pending |
 | DL-053 | Add trainer photo picker and dashboard photo placeholders | Lead Engineer Agent | Trainer-scoped uploads, upload/crop in dog editor, visible missing-photo cards, tests and production release |
 | DL-054 | Complete trainer customer photo header | Lead Engineer Agent | Large photo beside green customer header, mobile stacking, direct dog editor link and existing trainer upload controls |
 | DL-055 | Remove mobile Admin and Sign out links | Lead Engineer Agent | Mobile header auth row removed, floating menu excludes Admin/Sign out, desktop navigation retained |
 | DL-056 | Add photo upload when creating a customer | Lead Engineer Agent | Shared crop picker, photo staged until Create customer, customer-owned storage and validated multipart creation |
 | DL-057 | Add admin customer password management | Lead Engineer Agent | Search/select customer, confirmed password replacement, admin-only API, privileged-account protection, session/reset-token revocation |
+| DL-058 | Add per-customer Recommended Videos service | Lead Engineer Agent | Trainer dashboard assignment, subject/link/library selection, saved customer collection, inline searchable video tiles on home summary, scoped access |
+| DL-059 | Allocate recommendations from Skills Library sidebar | Lead Engineer Agent | Choose trainer customer, tick subject videos, save collection and enable service while preserving other services |
 | DL-030 | Restore development access and isolate local/Preview environments | Lead Engineer Agent | Work preserved, access restored, local and dedicated Preview DB/logins/profile/uploads verified; development email delivery awaits a valid Resend key |
 | DL-024 | Harden auth mode derivation | Lead Engineer Agent | Access modes are centralized, sign-in does not auto-create trainer records, and customer guards do not mutate roles |
 

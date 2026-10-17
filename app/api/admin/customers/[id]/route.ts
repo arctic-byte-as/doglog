@@ -1,3 +1,4 @@
+import { recommendedVideosKey } from '@/lib/recommended-videos';
 import { NextResponse } from 'next/server';
 import { requireAdmin } from '@/lib/auth';
 import prisma from '@/lib/prisma';
@@ -78,6 +79,7 @@ export async function DELETE(_request: Request, props: { params: Promise<{ id: s
   const dogIds = customer.dogs.map((dog) => dog.id);
 
   await prisma.$transaction([
+    prisma.appContent.deleteMany({ where: { key: recommendedVideosKey(params.id) } }),
     prisma.consultation.deleteMany({ where: { dogId: { in: dogIds } } }),
     prisma.serviceSession.deleteMany({ where: { dogId: { in: dogIds } } }),
     prisma.observation.deleteMany({ where: { dogId: { in: dogIds } } }),

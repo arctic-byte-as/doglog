@@ -92,6 +92,7 @@ Last updated: 2026-05-31
 
 | ID | Card | Owner | Result |
 | --- | --- | --- | --- |
+| DL-067 | Add five new Play video lessons | Lead Engineer Agent | Published five verified video lessons; seven total, existing lessons and all other subjects preserved |
 | DL-066 | Add Barking core subject and five videos | Lead Engineer Agent | Live library updated; links, fields, idempotency and preservation verified |
 | DL-065 | Populate Reactivity Training with five videos | Lead Engineer Agent | Live library updated and read-back verified; existing subjects preserved |
 

@@ -92,6 +92,9 @@ Last updated: 2026-05-31
 
 | ID | Card | Owner | Result |
 | --- | --- | --- | --- |
+| DL-073 | Add Lead Management core subject with five videos | Lead Engineer Agent | Published five new verified videos with complete fields; existing content preserved; exact live read-back passed |
+| DL-072 | Delete complete Norse Paw loose-leash lesson | Lead Engineer Agent | Deleted Walking on a loose Leash and all lesson fields live; two other lessons preserved; exact read-back verified |
+| DL-071 | Remove Norse Paw loose-leash video pending replacement | Lead Engineer Agent | Cleared confirmed RvG4MNNiP0Q link live; lesson text and other videos preserved; exact read-back verified |
 | DL-070 | Replace Contact video with five alternatives | Lead Engineer Agent | Published five verified alternatives; old video removed, custom instructions and other subjects preserved |
 | DL-069 | Remove redundant Triggers core subject | Lead Engineer Agent | Removed live subject, summary and three placeholders; exact read-back and remaining subjects verified |
 | DL-068 | Add five Recall videos from different trainers | Lead Engineer Agent | Published five complete lessons from five channels; seven total, preservation and live read-back verified |

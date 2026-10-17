@@ -1,0 +1,41 @@
+{
+  "title": "Recall",
+  "summary": "Create a highly reinforced cue for returning to the handler in safe training setups.",
+  "subcategories": [
+    {
+      "title": "Recall Foundations \u2014 Dogs Trust",
+      "goal": "Build a clear recall cue that predicts a rewarding return.",
+      "steps": "Start in a quiet room with your dog nearby. Say your chosen recall cue once in a friendly voice, encourage an approach and reward promptly when they arrive. Repeat a few easy successes before adding distance. Move to a secure outdoor space only when the indoor game is familiar.",
+      "coachingNotes": "Choose rewards your dog enjoys and keep sessions short. Never scold a slow return. If the dog cannot respond, reduce the difficulty rather than repeating the cue or pulling them towards you.",
+      "youtubeUrl": "https://www.youtube.com/watch?v=tVaH30lld6k"
+    },
+    {
+      "title": "Come Back and Reconnect \u2014 Battersea",
+      "goal": "Help the dog return all the way to the handler and feel comfortable staying close.",
+      "steps": "Practise short recalls in a secure, quiet area. Reward arrival close to you. Separately build a positive association with a gentle collar or harness touch by pairing brief, comfortable contact with food. Once both are easy, combine a recall, reward and gentle touch, then release back to safe exploration.",
+      "coachingNotes": "Do not suddenly grab the collar as the dog arrives. Stop handling if the dog turns away or becomes tense and make the next repetition easier. Coming back should not always mean the walk is over.",
+      "youtubeUrl": "https://www.youtube.com/watch?v=Q0xJ96DWO30"
+    },
+    {
+      "title": "Make Coming Back Worthwhile \u2014 Zak George",
+      "goal": "Create an enthusiastic return by making recall a rewarding shared activity.",
+      "steps": "Begin close by in a low-distraction setting. Use a cheerful cue and move a step away to invite the dog towards you. Mark their response and reward generously on arrival. Practise with food or play that suits the individual, then gradually change distance, location or distractions one at a time.",
+      "coachingNotes": "Keep rewards out of sight until the response where possible. Do not chase a dog who moves away. Use a secure enclosure or a long line attached to a well-fitted harness for outdoor practice; successful easy recalls do not guarantee reliability everywhere.",
+      "youtubeUrl": "https://www.youtube.com/watch?v=rwldfBjFsdE"
+    },
+    {
+      "title": "Check In Before Distractions Grow \u2014 Training Positive",
+      "goal": "Build voluntary attention and strengthen recall around manageable distractions.",
+      "steps": "In an easy environment, mark and reward the dog for checking in with you. Practise short recalls while attention is available, reward the completed approach and add a familiar, enjoyable activity. Gradually introduce mild distractions at a distance where the dog can still respond.",
+      "coachingNotes": "Avoid waiting until the dog is completely absorbed before testing recall. Reward spontaneous check-ins as well as cued returns. Keep outdoor practice safely managed and lower the difficulty after an unsuccessful repetition.",
+      "youtubeUrl": "https://www.youtube.com/watch?v=nLo8YP4-D8Y"
+    },
+    {
+      "title": "Recall Relay \u2014 Returning Away from Play",
+      "goal": "Practise turning back to the handler during a controlled, rewarding game.",
+      "steps": "First establish an easy recall and a toy game the dog enjoys. In a secure area, ask a helper with a second toy to start with very little movement. Invite the dog towards the helper, then cue a return while the challenge is still easy. Reward returning with an enjoyable game together.",
+      "coachingNotes": "This is a progression after recall foundations. If the dog cannot turn back, reduce the helper's movement and the competing toy's excitement before trying again. Avoid repeated failed cues, restraint or lead corrections.",
+      "youtubeUrl": "https://www.youtube.com/watch?v=Ei1F1sgVz6k"
+    }
+  ]
+}

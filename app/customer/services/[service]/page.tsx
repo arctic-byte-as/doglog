@@ -1,6 +1,6 @@
 import RecommendedVideos from '@/components/RecommendedVideos';
 import { getRecommendedVideos } from '@/lib/recommended-videos-server';
-import Link from 'next/link';
+import CustomerConsultationRecord from '@/components/CustomerConsultationRecord';
 import { notFound } from 'next/navigation';
 import { SiteShell } from '@/components/SiteShell';
 import { SectionCard } from '@/components/SectionCard';
@@ -113,23 +113,7 @@ export default async function CustomerServicePage(props: { params: Promise<{ ser
               consultations.length ? (
                 <div className="space-y-4">
                   {consultations.map((consultation) => (
-                    <Link
-                      key={consultation.id}
-                      href={`/customer/consultations/${consultation.id}`}
-                      className="block rounded-2xl border border-brand-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-300 hover:shadow-soft"
-                    >
-                      <p className="text-sm text-brand-700">
-                        {consultation.dog.name} · {formatDate(consultation.date)}
-                      </p>
-                      <h3 className="mt-1 font-semibold text-brand-950">{consultation.focus || t.consultation.title}</h3>
-                      <p className="mt-2 text-sm leading-6 text-brand-700">
-                        {consultation.outcome || t.consultation.noOutcome}
-                      </p>
-                      {consultation.generalDescription ? (
-                        <p className="mt-2 text-sm leading-6 text-brand-700">{consultation.generalDescription}</p>
-                      ) : null}
-                      <p className="mt-3 text-sm font-medium text-brand-800">{t.consultation.viewFull}</p>
-                    </Link>
+                    <CustomerConsultationRecord key={consultation.id} consultation={consultation} locale={locale} showDetailLink />
                   ))}
                 </div>
               ) : (

@@ -1,8 +1,11 @@
 "use client";
 
-import { useEffect, useState } from 'react';
-import { activationOptions, formatActivationOption } from '@/lib/activation-options';
+import { useEffect, useId, useState } from 'react';
+import ActivationPlanOptions from '@/components/ActivationPlanOptions';
 import { stimulusOptions, formatStimulusOption } from '@/lib/stimulus-options';
+import ConsultationSection from '@/components/ConsultationSection';
+import InitialAssessment from '@/components/InitialAssessment';
+import ConsultationDisclosure from '@/components/ConsultationDisclosure';
 import TrainingExercisePicker from '@/components/TrainingExercisePicker';
 
 type DogOption = {
@@ -31,6 +34,7 @@ export default function CreateConsultationForm({
   submitLabel?: string;
   submittingLabel?: string;
 }) {
+  const detailsId = useId();
   const [dogs, setDogs] = useState<DogOption[]>(initialDogs);
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState<any>({
@@ -54,7 +58,6 @@ export default function CreateConsultationForm({
   const stimulusParts = String(form.stimulusAnalysis || '').split('\n');
   const selectedStimulus = stimulusParts[0] || '';
   const stimulusNotes = stimulusParts.slice(1).join('\n');
-  const hideFocus = hiddenFields.includes('focus');
   const hideOutcome = hiddenFields.includes('outcome');
   const hideActivation = hiddenFields.includes('activation');
   const hideStimulusAnalysis = hiddenFields.includes('stimulusAnalysis');
@@ -119,176 +122,127 @@ export default function CreateConsultationForm({
     }
   }
 
+  function field(key: string, title: string, multiline = false, card = false) {
+    return (
+      <ConsultationSection title={title} editing card={card}>
+        {(id) => multiline ? (
+          <textarea id={id} rows={4} value={form[key]} onChange={(e) => setForm({ ...form, [key]: e.target.value })} className="min-h-11 w-full min-w-0 max-w-full rounded-lg border border-brand-200 bg-white p-3 text-base resize-y" />
+        ) : (
+          <input id={id} value={form[key]} onChange={(e) => setForm({ ...form, [key]: e.target.value })} className="min-h-11 w-full min-w-0 max-w-full rounded-lg border border-brand-200 bg-white p-3 text-base" />
+        )}
+      </ConsultationSection>
+    );
+  }
+
   return (
-    <form onSubmit={handleSubmit} className="mb-6 space-y-3 rounded-lg border border-brand-200 bg-white p-4">
-      <div className={`grid gap-2 ${dogBreedTopLine ? 'md:grid-cols-4' : 'md:grid-cols-3'}`}>
-        <label className="block">
-          <div className="text-xs font-medium">Dog</div>
-          {dogs.length === 1 ? (
-            <div className="w-full rounded border p-2 bg-gray-50">
-              <div className="text-sm">{dogs[0].name}{dogs[0].breed ? ` — ${dogs[0].breed}` : ''}</div>
-              <input type="hidden" name="dogId" value={form.dogId} />
-            </div>
-          ) : (
-            <select
-              value={form.dogId}
-              onChange={(e) => {
-                const selectedDog = dogs.find((d) => d.id === e.target.value);
-                setForm({
-                  ...form,
-                  dogId: e.target.value,
-                  dogName: selectedDog?.name || '',
-                  client: selectedDog?.owner || form.client,
-                  dogBreed: selectedDog?.breed || '',
-                });
-              }}
-              className="w-full rounded border p-2"
-            >
-              <option value="">Select a dog</option>
-              {dogs.map((d) => (
-                <option key={d.id} value={d.id}>{d.name}</option>
-              ))}
-            </select>
-          )}
-        </label>
-
-        <label className="block">
-          <div className="text-xs font-medium">Client</div>
-          <input value={form.client} onChange={(e) => setForm({ ...form, client: e.target.value })} className="w-full rounded border p-2" />
-        </label>
-
-        <label className="block">
-          <div className="text-xs font-medium">Date</div>
-          <input type="date" value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} className="w-full rounded border p-2" />
-        </label>
-        {dogBreedTopLine ? (
-          <label className="block">
-            <div className="text-xs font-medium">Dog Breed</div>
-            <input value={form.dogBreed} onChange={(e) => setForm({ ...form, dogBreed: e.target.value })} className="w-full rounded border p-2" />
-          </label>
-        ) : null}
-      </div>
-
-      {!hideFocus ? (
-        <div>
-          <label className="block text-sm font-medium">Focus</label>
-          <input value={form.focus} onChange={(e) => setForm({ ...form, focus: e.target.value })} className="w-full rounded border p-2" />
+    <form onSubmit={handleSubmit} className="mb-6 min-w-0 space-y-4">
+      <ConsultationDisclosure title="Training plan">
+        <div className={`grid min-w-0 grid-cols-1 items-start gap-4 ${hideOutcome ? '' : 'xl:grid-cols-2'}`}>
+          {!hideOutcome ? field('outcome', 'Recommended actions', true, true) : null}
+          <ConsultationSection title="Prescribed Training Plan" editing card>
+            {(id) => (
+              <div className="space-y-3">
+                <ActivationPlanOptions plan={form.prescribedPlan || ''} onChange={(plan) => setForm({ ...form, prescribedPlan: plan })} />
+                <TrainingExercisePicker plan={form.prescribedPlan || ''} onChange={(plan) => setForm({ ...form, prescribedPlan: plan })} />
+                <textarea id={id} rows={8} value={form.prescribedPlan} onChange={(e) => setForm({ ...form, prescribedPlan: e.target.value })} className="min-h-11 w-full min-w-0 max-w-full rounded-lg border border-brand-200 bg-white p-3 text-base resize-y" />
+              </div>
+            )}
+          </ConsultationSection>
         </div>
-      ) : null}
-
-      {!hideOutcome ? (
-        <div>
-          <label className="block text-sm font-medium">Recommended outcome</label>
-          <textarea value={form.outcome} onChange={(e) => setForm({ ...form, outcome: e.target.value })} className="w-full rounded border p-2" />
-        </div>
-      ) : null}
-
-      <div>
-        <label className="block text-sm font-medium">{labels.generalDescription || 'General description of the problem'}</label>
-        <textarea value={form.generalDescription} onChange={(e) => setForm({ ...form, generalDescription: e.target.value })} className="w-full rounded border p-2" />
-      </div>
-
-      {!dogBreedTopLine || !hideLearningHistory ? (
-        <div className="grid gap-2 md:grid-cols-2">
-          {!dogBreedTopLine ? (
-            <label className="block">
-              <div className="text-xs font-medium">Dog Breed</div>
-              <input value={form.dogBreed} onChange={(e) => setForm({ ...form, dogBreed: e.target.value })} className="w-full rounded border p-2" />
-            </label>
-          ) : null}
-          {!hideLearningHistory ? (
-            <label className="block">
-              <div className="text-xs font-medium">Learning History</div>
-              <input value={form.learningHistory} onChange={(e) => setForm({ ...form, learningHistory: e.target.value })} className="w-full rounded border p-2" />
-            </label>
-          ) : null}
-        </div>
-      ) : null}
-
-      <div>
-        <label className="block text-sm font-medium">{labels.situation || 'Situation'}</label>
-        <textarea value={form.situation} onChange={(e) => setForm({ ...form, situation: e.target.value })} className="w-full rounded border p-2" />
-      </div>
-
-      {!hideNutrition || !hideHealth || !hideHormoneAnalysis ? (
-        <div className="grid gap-2 md:grid-cols-3">
-          {!hideNutrition ? (
-            <label className="block">
-              <div className="text-xs font-medium">Nutrition</div>
-              <input value={form.nutrition} onChange={(e) => setForm({ ...form, nutrition: e.target.value })} className="w-full rounded border p-2" />
-            </label>
-          ) : null}
-          {!hideHealth ? (
-            <label className="block">
-              <div className="text-xs font-medium">Health</div>
-              <input value={form.health} onChange={(e) => setForm({ ...form, health: e.target.value })} className="w-full rounded border p-2" />
-            </label>
-          ) : null}
-          {!hideHormoneAnalysis ? (
-            <label className="block">
-              <div className="text-xs font-medium">Hormone Analysis</div>
-              <input value={form.hormoneAnalysis} onChange={(e) => setForm({ ...form, hormoneAnalysis: e.target.value })} className="w-full rounded border p-2" />
-            </label>
-          ) : null}
-        </div>
-      ) : null}
-
-      {!hideActivation || !hideStimulusAnalysis ? (
-        <div className="grid gap-2 md:grid-cols-2">
+      </ConsultationDisclosure>
+      {!hideHealth || !hideNutrition || !hideHormoneAnalysis || !hideActivation || !hideStimulusAnalysis ? (
+        <InitialAssessment>
+          {!hideHealth ? field('health', 'Health', false, true) : null}
+          {!hideNutrition ? field('nutrition', 'Food', false, true) : null}
+          {!hideHormoneAnalysis ? field('hormoneAnalysis', 'Hormones', false, true) : null}
           {!hideActivation ? (
-            <label className="block">
-              <div className="text-xs font-medium">Activation</div>
-              <select value={form.activation} onChange={(e) => setForm({ ...form, activation: e.target.value })} className="w-full rounded border p-2">
-                <option value="">Select activation</option>
-                {activationOptions.map((option) => {
-                  const value = formatActivationOption(option);
-                  return (
-                    <option key={option.label} value={value}>
-                      {value}
-                    </option>
-                  );
-                })}
-              </select>
-            </label>
+            <ConsultationSection title="Activation" editing card>
+              {(id) => (
+                <div className="space-y-3">
+                  <p id={`${id}-help`} className="text-sm leading-6">Record the current activity routine, including frequency, duration and how the dog responds.</p>
+                  <textarea id={id} aria-describedby={`${id}-help`} rows={4} value={form.activation} onChange={(e) => setForm({ ...form, activation: e.target.value })} className="min-h-11 w-full min-w-0 max-w-full rounded-lg border border-brand-200 bg-white p-3 text-base resize-y" />
+                </div>
+              )}
+            </ConsultationSection>
           ) : null}
           {!hideStimulusAnalysis ? (
-            <label className="block">
-              <div className="text-xs font-medium">Stimulus Analysis</div>
-              <select value={selectedStimulus} onChange={(e) => updateStimulus(e.target.value)} className="w-full rounded border p-2">
-                <option value="">Select stimulus area</option>
-                {stimulusOptions.map((option) => {
-                  const value = formatStimulusOption(option);
-                  return (
-                    <option key={option.label} value={value}>
-                      {value}
-                    </option>
-                  );
-                })}
-              </select>
-            </label>
+            <ConsultationSection title="Stimulation analysis" editing card>
+              {(id) => (
+                <div className="space-y-3">
+                  <select id={id} value={selectedStimulus} onChange={(e) => updateStimulus(e.target.value)} className="min-h-11 w-full min-w-0 max-w-full rounded-lg border border-brand-200 bg-white p-3 text-base">
+                    <option value="">Select stimulus area</option>
+                    {stimulusOptions.map((option) => {
+                      const value = formatStimulusOption(option);
+                      return <option key={option.label} value={value}>{value}</option>;
+                    })}
+                  </select>
+                  <label htmlFor={`${id}-notes`} className="block text-sm font-medium">Stimulus notes</label>
+                  <textarea id={`${id}-notes`} rows={4} value={stimulusNotes} onChange={(e) => updateStimulus(selectedStimulus, e.target.value)} className="min-h-11 w-full min-w-0 max-w-full rounded-lg border border-brand-200 bg-white p-3 text-base resize-y" />
+                </div>
+              )}
+            </ConsultationSection>
           ) : null}
-        </div>
+        </InitialAssessment>
       ) : null}
+      <ConsultationDisclosure title="Background">
+        <div className="grid min-w-0 grid-cols-1 items-start gap-4 xl:grid-cols-2">
+          <section aria-labelledby={detailsId} className="min-w-0 rounded-2xl border border-brand-200 bg-white p-4 shadow-sm sm:p-5">
+            <h3 id={detailsId} className="mb-3 text-sm font-semibold text-brand-950">Consultation details</h3>
+          <div className="grid min-w-0 gap-4">
+            <label className="block min-w-0">
+              <div className="text-xs font-medium">Dog</div>
+              {dogs.length === 1 ? (
+                <div className="w-full rounded border p-2 bg-gray-50">
+                  <div className="text-sm">{dogs[0].name}{dogs[0].breed ? ` — ${dogs[0].breed}` : ''}</div>
+                  <input type="hidden" name="dogId" value={form.dogId} />
+                </div>
+              ) : (
+                <select
+                  value={form.dogId}
+                  onChange={(e) => {
+                    const selectedDog = dogs.find((d) => d.id === e.target.value);
+                    setForm({
+                      ...form,
+                      dogId: e.target.value,
+                      dogName: selectedDog?.name || '',
+                      client: selectedDog?.owner || form.client,
+                      dogBreed: selectedDog?.breed || '',
+                    });
+                  }}
+                  className="min-h-11 w-full min-w-0 max-w-full rounded-lg border border-brand-200 bg-white p-3 text-base"
+                >
+                  <option value="">Select a dog</option>
+                  {dogs.map((d) => (
+                    <option key={d.id} value={d.id}>{d.name}</option>
+                  ))}
+                </select>
+              )}
+            </label>
 
-      {!hideStimulusAnalysis ? (
-        <div>
-          <label className="block text-sm font-medium">Stimulus notes</label>
-          <textarea
-            value={stimulusNotes}
-            onChange={(e) => updateStimulus(selectedStimulus, e.target.value)}
-            className="w-full rounded border p-2"
-          />
+            <label className="block min-w-0">
+              <div className="text-xs font-medium">Client</div>
+              <input value={form.client} onChange={(e) => setForm({ ...form, client: e.target.value })} className="min-h-11 w-full min-w-0 max-w-full rounded-lg border border-brand-200 bg-white p-3 text-base" />
+            </label>
+
+            <label className="block min-w-0">
+              <div className="text-xs font-medium">Date</div>
+              <input type="date" value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} className="min-h-11 w-full min-w-0 max-w-full rounded-lg border border-brand-200 bg-white p-3 text-base" />
+            </label>
+            {dogBreedTopLine ? (
+              <label className="block min-w-0">
+                <div className="text-xs font-medium">Dog Breed</div>
+                <input value={form.dogBreed} onChange={(e) => setForm({ ...form, dogBreed: e.target.value })} className="min-h-11 w-full min-w-0 max-w-full rounded-lg border border-brand-200 bg-white p-3 text-base" />
+              </label>
+            ) : null}
+          </div>
+          </section>
+          {field('generalDescription', labels.generalDescription || 'Description of the situation', true, true)}
+          {!dogBreedTopLine ? field('dogBreed', 'Dog Breed', false, true) : null}
+          {!hideLearningHistory ? field('learningHistory', 'Learning History', false, true) : null}
         </div>
-      ) : null}
-
-      <div>
-        <label className="block text-sm font-medium">Prescribed Training Plan</label>
-        <div className="my-3"><TrainingExercisePicker plan={form.prescribedPlan || ''} onChange={(plan) => setForm({ ...form, prescribedPlan: plan })} /></div>
-        <textarea value={form.prescribedPlan} onChange={(e) => setForm({ ...form, prescribedPlan: e.target.value })} className="w-full rounded border p-2" />
-      </div>
-
+      </ConsultationDisclosure>
       <div className="flex justify-end">
-        <button type="submit" disabled={loading} className="rounded bg-brand-700 px-4 py-2 text-white">{loading ? submittingLabel : submitLabel}</button>
+        <button type="submit" disabled={loading} className="min-h-11 w-full rounded-lg bg-brand-700 px-4 py-3 text-white sm:w-auto">{loading ? submittingLabel : submitLabel}</button>
       </div>
     </form>
   );

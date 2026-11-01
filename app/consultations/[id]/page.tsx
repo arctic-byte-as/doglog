@@ -1,7 +1,6 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { SiteShell } from '@/components/SiteShell';
-import { SectionCard } from '@/components/SectionCard';
 import ConsultationItem from '@/components/ConsultationItem';
 import BackToDashboardLink from '@/components/BackToDashboardLink';
 import { requireTrainer } from '@/lib/auth';
@@ -50,9 +49,7 @@ export default async function ConsultationDetailPage(props: { params: Promise<{ 
             Back to consultation log
           </Link>
         </div>
-        <SectionCard title="Consultation detail">
-          <ConsultationItem consultation={item} />
-        </SectionCard>
+        <ConsultationItem consultation={item} title="Consultation detail" />
       </div>
     </SiteShell>
   );

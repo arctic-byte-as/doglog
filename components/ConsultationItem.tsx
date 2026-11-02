@@ -9,6 +9,7 @@ import { developmentText, readDevelopment } from '@/lib/dog-development';
 import MixedBreedSelect from '@/components/MixedBreedSelect';
 import ConsultationPublishing from '@/components/ConsultationPublishing';
 import ActionsList from '@/components/ActionsList';
+import TrainingAgreementSummary from '@/components/TrainingAgreementSummary';
 import TrainingAgreementEditor from '@/components/TrainingAgreementEditor';
 import BehaviourChallengePicker from '@/components/BehaviourChallengePicker';
 import TrainingPlanContent from '@/components/TrainingPlanContent';
@@ -133,8 +134,8 @@ export default function ConsultationItem({
     <article className="min-w-0 space-y-4">
       {endpointBase === '/api/consultations' ? <ConsultationPublishing consultationId={consultation.id} editing={editing} /> : null}
       <ConsultationDisclosure title="Training plan">
+        {editing ? <TrainingAgreementEditor plan={String(data.prescribedPlan || '')} onChange={(plan) => handleChange('prescribedPlan', plan)} /> : <TrainingAgreementSummary plan={String(data.prescribedPlan || '')} />}
         {editing ? <BreedGuidanceEditor key={data.dogBreed} breed={data.dogBreed || ''} plan={String(data.prescribedPlan || '')} onChange={(plan) => handleChange('prescribedPlan', plan)} /> : <BreedGuidanceContent breed={data.dogBreed || ''} plan={String(data.prescribedPlan || '')} />}
-        {editing ? <TrainingAgreementEditor plan={String(data.prescribedPlan || '')} onChange={(plan) => handleChange('prescribedPlan', plan)} /> : null}
         {editing ? <BehaviourChallengePicker plan={String(data.prescribedPlan || '')} onChange={(plan) => handleChange('prescribedPlan', plan)} /> : null}
         <div className={`grid min-w-0 grid-cols-1 items-start gap-4 ${hideOutcome ? '' : 'xl:grid-cols-2'}`}>
           {!hideOutcome ? field('outcome', 'Recommended actions', true, true) : null}
@@ -143,7 +144,7 @@ export default function ConsultationItem({
               <div className="space-y-3">
                 <TrainingPlanEditor value={String(data.prescribedPlan || '')} onChange={(plan) => handleChange('prescribedPlan', plan)} />
               </div>
-            ) : <TrainingPlanContent value={data.prescribedPlan} />}
+            ) : <TrainingPlanContent value={data.prescribedPlan} hideAgreement />}
           </ConsultationSection>
         </div>
       </ConsultationDisclosure>

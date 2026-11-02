@@ -135,8 +135,8 @@ export function createConsultationPdf(record: ConsultationPdfRecord, locale: 'en
       doc.font('Body').fontSize(10).fillColor('#59655d').text(t.note, 48, headerBottom + 30, { width });
       doc.y += 20;
       const groups = groupTrainingPlan(record.prescribedPlan || '');
-      if (groups.problem) agreement(locale === 'nb' ? 'Dette ble vi enige om å jobbe med' : 'What we agreed to work on', groups.problem);
-      if (groups.goal) agreement(locale === 'nb' ? 'Målet vårt' : 'Our goal', groups.goal);
+      agreement(locale === 'nb' ? 'Dette ble vi enige om å jobbe med' : 'What we agreed to work on', groups.problem || t.empty);
+      agreement(locale === 'nb' ? 'Målet vårt' : 'Our goal', groups.goal || t.empty);
       const actions = actionItems(record.outcome || '');
       if (actions.length) {
         ensureSpace(62);

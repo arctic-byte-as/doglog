@@ -148,8 +148,8 @@ export default function CreateConsultationForm({
   return (
     <form onSubmit={handleSubmit} className="mb-6 min-w-0 space-y-4">
       <ConsultationDisclosure title="Training plan">
-        <BreedGuidanceEditor key={`${form.dogId}-${form.dogBreed}`} breed={form.dogBreed || ''} plan={String(form.prescribedPlan || '')} onChange={(plan) => setForm({ ...form, prescribedPlan: plan })} />
         <TrainingAgreementEditor plan={String(form.prescribedPlan || '')} onChange={(plan) => setForm({ ...form, prescribedPlan: plan })} />
+        <BreedGuidanceEditor key={`${form.dogId}-${form.dogBreed}`} breed={form.dogBreed || ''} plan={String(form.prescribedPlan || '')} onChange={(plan) => setForm({ ...form, prescribedPlan: plan })} />
         <BehaviourChallengePicker plan={String(form.prescribedPlan || '')} onChange={(plan) => setForm({ ...form, prescribedPlan: plan })} />
         <div className={`grid min-w-0 grid-cols-1 items-start gap-4 ${hideOutcome ? '' : 'xl:grid-cols-2'}`}>
           {!hideOutcome ? field('outcome', 'Recommended actions', true, true) : null}

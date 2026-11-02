@@ -11,7 +11,7 @@ export default async function ConsultationsPage() {
     prisma.dog.findMany({
       where: { trainerId: user.trainer.id },
       orderBy: { name: 'asc' },
-      select: { id: true, name: true, breed: true, owner: true },
+      select: { id: true, name: true, breed: true, age: true, owner: true },
     }),
     prisma.consultation.findMany({
       where: { dog: { trainerId: user.trainer.id } },
@@ -23,6 +23,7 @@ export default async function ConsultationsPage() {
   const consultationItems = consultations.map((consultation) => ({
     id: consultation.id,
     dogName: consultation.dog.name,
+    dogAge: consultation.dog.age,
     client: consultation.dog.owner,
     date: consultation.date.toISOString().slice(0, 10),
     focus: consultation.focus,

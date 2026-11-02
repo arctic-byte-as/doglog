@@ -76,9 +76,11 @@ export async function DELETE(_request: Request, props: { params: Promise<{ id: s
 
   if (!customer) return NextResponse.json({ error: 'Customer not found.' }, { status: 404 });
 
+  if (await prisma.consultationVersion.count({ where: { consultation: { dog: { customerId: params.id } } } })) return NextResponse.json({ error: 'This customer has published consultation history and cannot be deleted.' }, { status: 409 });
+
   const dogIds = customer.dogs.map((dog) => dog.id);
 
-  await prisma.$transaction([
+  try { await prisma.$transaction([
     prisma.appContent.deleteMany({ where: { key: recommendedVideosKey(params.id) } }),
     prisma.consultation.deleteMany({ where: { dogId: { in: dogIds } } }),
     prisma.serviceSession.deleteMany({ where: { dogId: { in: dogIds } } }),
@@ -86,7 +88,10 @@ export async function DELETE(_request: Request, props: { params: Promise<{ id: s
     prisma.dog.deleteMany({ where: { id: { in: dogIds } } }),
     prisma.customerServiceAccess.deleteMany({ where: { customerId: params.id } }),
     prisma.customer.delete({ where: { id: params.id } }),
-  ]);
+  ]); } catch (error) {
+    if (error && typeof error === 'object' && 'code' in error && error.code === 'P2003') return NextResponse.json({ error: 'Published consultation history must be retained; this customer cannot be deleted.' }, { status: 409 });
+    throw error;
+  }
 
   return NextResponse.json({ ok: true });
 }

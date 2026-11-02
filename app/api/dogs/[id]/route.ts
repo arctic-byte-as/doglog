@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { ensureDogBreed } from '@/lib/dog-breeds-server';
 import prisma from '@/lib/prisma';
 import { requireTrainer } from '@/lib/auth';
-import { deleteDogById } from '@/lib/delete-dog';
+import { deleteDogById, PublishedHistoryError } from '@/lib/delete-dog';
 
 export async function PATCH(req: Request, props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
@@ -58,7 +58,10 @@ export async function DELETE(_req: Request, props: { params: Promise<{ id: strin
     return NextResponse.json({ error: 'Dog not found.' }, { status: 404 });
   }
 
-  await deleteDogById(params.id);
+  try { await deleteDogById(params.id); } catch (error) {
+    if (error instanceof PublishedHistoryError) return NextResponse.json({ error: error.message }, { status: 409 });
+    throw error;
+  }
 
   return NextResponse.json({ ok: true });
 }

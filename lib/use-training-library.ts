@@ -1,13 +1,14 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { activationLibraryCategory } from './activation-library';
 import { categories, mergeTrainingLibraries, normalizeTrainingLibrary, type Category } from './training-library';
 
 const storageKey = 'norsepaw-training-library';
 const changeEvent = 'training-library-updated';
 
 export function useTrainingLibrary() {
-  const [libraryCategories, setLibraryCategories] = useState<Category[]>(categories);
+  const [libraryCategories, setLibraryCategories] = useState<Category[]>(mergeTrainingLibraries(categories, [activationLibraryCategory]));
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
@@ -27,7 +28,7 @@ export function useTrainingLibrary() {
         let legacy: Category[] | null = null;
         try { legacy = normalizeTrainingLibrary(JSON.parse(localStorage.getItem(storageKey) || 'null')); } catch { /* Browser storage is optional. */ }
         setLegacyLibrary(legacy);
-        setLibraryCategories(!data.stored && legacy ? legacy : next);
+        setLibraryCategories(mergeTrainingLibraries(!data.stored && legacy ? legacy : next, [activationLibraryCategory]));
         setLocalOnly(Boolean(!data.stored && legacy));
         setError('');
       } catch (cause) {
@@ -49,7 +50,7 @@ export function useTrainingLibrary() {
       const response = await fetch('/api/training-library', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ categories: next }) });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || 'The library could not be saved. Please try again.');
-      setLibraryCategories(data.categories);
+      setLibraryCategories(mergeTrainingLibraries(data.categories, [activationLibraryCategory]));
       setLocalOnly(false);
       setLegacyLibrary(null);
       // Old browser data is kept until a shared save succeeds.

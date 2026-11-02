@@ -1,5 +1,7 @@
 import RecommendedVideos from '@/components/RecommendedVideos';
 import { getRecommendedVideos } from '@/lib/recommended-videos-server';
+import { getCustomerPublishedConsultations } from '@/lib/consultation-versions';
+import CustomerPreviousVersions from '@/components/CustomerPreviousVersions';
 import CustomerConsultationRecord from '@/components/CustomerConsultationRecord';
 import { notFound } from 'next/navigation';
 import { SiteShell } from '@/components/SiteShell';
@@ -60,22 +62,7 @@ export default async function CustomerServicePage(props: { params: Promise<{ ser
   const courseId = service.key === 'PUPPY_COURSE' ? 'puppy' : service.key === 'SKILLS_COURSE' ? 'skills' : null;
   const sectionTitle = t.nav.myServices;
   const recommendedVideos = service.key === 'RECOMMENDED_VIDEOS' ? await getRecommendedVideos(user.customer.id) : [];
-  const consultations =
-    service.key === 'CONSULTATIONS'
-      ? await prisma.consultation.findMany({
-          where: {
-            dog: {
-              customerId: user.customer.id,
-            },
-          },
-          include: {
-            dog: true,
-          },
-          orderBy: {
-            date: 'desc',
-          },
-        })
-      : [];
+  const consultations = service.key === 'CONSULTATIONS' ? await getCustomerPublishedConsultations(user.customer.id) : [];
   const serviceSessions =
     service.key === 'PRIVATE_TRAINING' || service.key === 'OPEN_TRAINING'
       ? await prisma.serviceSession.findMany({
@@ -112,8 +99,8 @@ export default async function CustomerServicePage(props: { params: Promise<{ ser
             ) : service.key === 'CONSULTATIONS' ? (
               consultations.length ? (
                 <div className="space-y-4">
-                  {consultations.map((consultation) => (
-                    <CustomerConsultationRecord key={consultation.id} consultation={consultation} locale={locale} showDetailLink />
+                  {consultations.map(({ consultation, version }) => (
+                    <CustomerConsultationRecord key={version.id} consultation={consultation} locale={locale} showDetailLink versionId={version.id} versionNumber={version.version} publishedAt={version.publishedAt} previousVersions={<CustomerPreviousVersions consultationId={consultation.id} customerId={user.customer.id} currentVersion={version.version} locale={locale} />} />
                   ))}
                 </div>
               ) : (

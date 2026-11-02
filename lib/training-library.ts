@@ -351,11 +351,11 @@ function validTranslation(value: unknown, strings: string[], arrays: string[] = 
 }
 
 export function formatTrainingExercise(category: string, exercise: Exercise) {
-  return [`${category}: ${exercise.title}`, '', `Goal: ${exercise.goal}`, '', 'Setup:', ...exercise.setup.map((line) => `- ${line}`), '', 'Steps:', ...exercise.steps.map((line, index) => `${index + 1}. ${line}`), '', `Progress marker: ${exercise.progress}`, '', `Avoid: ${exercise.avoid}`].join('\n');
+  return [category.trim().toLowerCase() === 'activation exercises' ? `Activity: ${exercise.title}` : `${category}: ${exercise.title}`, '', `Goal: ${exercise.goal}`, '', 'Setup:', ...exercise.setup.map((line) => `- ${line}`), '', 'Steps:', ...exercise.steps.map((line, index) => `${index + 1}. ${line}`), '', `Progress marker: ${exercise.progress}`, '', `Avoid: ${exercise.avoid}`].join('\n');
 }
 
 export function exerciseIsInPlan(plan: string, category: string, exercise: Exercise) {
-  return plan.split('\n').some((line) => line.trim() === `${category}: ${exercise.title}`);
+  return plan.split('\n').some((line) => (line.trim() === `${category}: ${exercise.title}` || (category.trim().toLowerCase() === 'activation exercises' && (line.trim() === `Activity: ${exercise.title}` || line.trim().startsWith(`Activation: ${exercise.title} - `)))));
 }
 
 export function mergeTrainingLibraries(shared: Category[], browser: Category[]): Category[] {

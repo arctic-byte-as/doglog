@@ -89,6 +89,7 @@ model Consultation {
   prescribedPlan     String?
   dog                Dog      @relation(fields: [dogId], references: [id])
   dogId              String
+  versions           ConsultationVersion[]
 }
 
 model ServiceSession {
@@ -178,4 +179,21 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+
+model ConsultationVersion {
+  id              String       @id @default(uuid())
+  consultationId  String
+  version         Int
+  publishedAt     DateTime     @default(now())
+  publishedById   String?
+  requestId       String       @unique
+  snapshot        Json
+  pdfEn           Bytes
+  pdfNb           Bytes
+  consultation    Consultation @relation(fields: [consultationId], references: [id], onDelete: Restrict)
+
+  @@unique([consultationId, version])
+  @@index([consultationId, publishedAt])
 }

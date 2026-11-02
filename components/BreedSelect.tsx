@@ -6,13 +6,19 @@ import { defaultDogBreeds } from '@/lib/dog-breeds';
 const otherValue = '__other__';
 
 export default function BreedSelect({
+  allowMixed = false,
+  id,
   value,
   onChange,
+  onSelectBreed,
   disabled = false,
   labels,
 }: {
+  allowMixed?: boolean;
+  id?: string;
   value: string;
   onChange: (value: string) => void;
+  onSelectBreed?: (value: string) => void;
   disabled?: boolean;
   labels?: {
     selectBreed?: string;
@@ -62,6 +68,8 @@ export default function BreedSelect({
   return (
     <div className="space-y-2">
       <select
+        id={id}
+        aria-label={id ? undefined : (labels?.selectBreed || 'Select a breed')}
         disabled={disabled}
         value={selectValue}
         onChange={(event) => {
@@ -73,9 +81,11 @@ export default function BreedSelect({
 
           setAddingCustom(false);
           onChange(event.target.value);
+          if (event.target.value) onSelectBreed?.(event.target.value);
         }}
-        className="w-full rounded-lg border border-brand-200 bg-white px-3 py-2 disabled:bg-brand-50"
+        className="min-h-11 w-full min-w-0 rounded-lg border border-brand-200 bg-white px-3 py-2 text-base disabled:bg-brand-50"
       >
+        {allowMixed ? <option value="Mixed breed">Mixed breed — select contributing breeds</option> : null}
         <option value="">{labels?.selectBreed || 'Select a breed'}</option>
         {options.map((breed) => (
           <option key={breed} value={breed}>
@@ -87,11 +97,12 @@ export default function BreedSelect({
 
       {addingCustom ? (
         <input
+          aria-label={labels?.newBreed || 'Enter breed name'}
           disabled={disabled}
           value={value}
           onChange={(event) => onChange(event.target.value)}
           placeholder={labels?.newBreed || 'Enter breed name'}
-          className="w-full rounded-lg border border-brand-200 px-3 py-2 disabled:bg-brand-50"
+          className="min-h-11 w-full min-w-0 rounded-lg border border-brand-200 px-3 py-2 text-base disabled:bg-brand-50"
         />
       ) : null}
     </div>

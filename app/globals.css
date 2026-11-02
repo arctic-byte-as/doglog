@@ -233,3 +233,68 @@ summary::-webkit-details-marker {
 
 /* Keep trainer customer identity and photo aligned beside one another. */
 .trainer-customer-header > .subject-header { margin-bottom: 0; }
+
+/* Customer consultation colours override legacy global heading/text rules. */
+.customer-consultation details[data-contrast] > summary h2,
+.customer-consultation details[data-contrast] > summary svg {
+  color: #12622d !important;
+}
+.customer-consultation details[data-contrast] > summary {
+  background-color: #eef6e4 !important;
+}
+.customer-consultation details[data-contrast] > summary:focus-visible {
+  outline-color: #12622d;
+}
+.customer-consultation :is(h2, h3, h4, h5, dt) {
+  text-transform: none;
+  letter-spacing: normal;
+  color: #12622d !important;
+}
+.customer-consultation :is(p, li, dd, .text-brand-950) {
+  color: #303030 !important;
+}
+
+/* Softer, consistent surfaces for customer consultation reports. */
+.customer-consultation details[data-contrast] {
+  border: 1px solid #d7dfd7;
+  background: #f8faf7;
+  box-shadow: 0 3px 12px rgba(48, 48, 48, 0.035);
+}
+.customer-consultation details[data-contrast] > summary {
+  background-color: #f0f4ed !important;
+}
+.customer-consultation details[data-contrast] > summary h2,
+.customer-consultation details[data-contrast] > summary svg,
+.customer-consultation :is(h3, h4, h5, dt) {
+  color: #3e4540 !important;
+}
+.customer-consultation :is(section, header).border-2 {
+  border: 1px solid #d7dfd7;
+}
+.customer-consultation section.bg-brand-100 {
+  background-color: #eef3e9;
+  border-left: 3px solid #a8b99c;
+}
+.customer-consultation :is(h3, h4, h5).border-b-2 {
+  border-bottom: 1px solid #e0e6dd;
+}
+.customer-consultation details[data-contrast] > summary:focus-visible {
+  outline-color: #52664c;
+}
+
+.customer-consultation .customer-report-section {
+  border: 1px solid #d7dfd7;
+  background: #ffffff;
+}
+.customer-consultation .customer-report-section > summary {
+  background: #f6f8f3;
+  color: #3e4540;
+}
+.customer-consultation .customer-report-section[open] > summary > svg {
+  transform: rotate(180deg);
+}
+.customer-consultation .customer-report-highlight {
+  border-left: 3px solid #a8b99c;
+  background: #eef3e9;
+}
+.customer-consultation .customer-report-highlight > summary { background: #eef3e9; }

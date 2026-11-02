@@ -14,7 +14,7 @@ export default async function PrivateTrainingPage() {
     prisma.dog.findMany({
       where: { trainerId: user.trainer.id },
       orderBy: { name: 'asc' },
-      select: { id: true, name: true, breed: true, owner: true },
+      select: { id: true, name: true, breed: true, age: true, owner: true },
     }),
     prisma.serviceSession.findMany({
       where: {

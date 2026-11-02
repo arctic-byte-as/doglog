@@ -44,7 +44,7 @@ export default function TrainingExercisePicker({ plan, onChange }: { plan: strin
   }
 
   return <>
-    <button ref={trigger} type="button" onClick={() => { setSelected([]); setSearch(''); setCategory(''); setOpen(true); }} className="rounded-xl bg-brand-700 px-4 py-3 text-sm font-semibold text-white hover:bg-brand-800">Add exercises from library</button>
+    <button ref={trigger} type="button" onClick={() => { setSelected([]); setSearch(''); setCategory(''); setOpen(true); }} className="min-h-12 w-full rounded-xl bg-brand-700 px-4 py-3 text-sm font-semibold text-white hover:bg-brand-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-700 sm:w-auto">Add exercises from library</button>
     <p role="status" className="text-sm text-brand-700">{notice}</p>
     {open ? <dialog ref={dialog} aria-labelledby={headingId} onClose={() => setOpen(false)} className="fixed inset-0 m-0 h-[100dvh] max-h-none w-screen max-w-none overflow-hidden bg-white p-0 text-brand-950 backdrop:bg-black/50 sm:m-auto sm:h-[90dvh] sm:max-h-[900px] sm:w-[94vw] sm:max-w-7xl sm:rounded-3xl">
       <div className="flex h-full min-h-0 flex-col">

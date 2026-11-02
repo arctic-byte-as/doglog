@@ -1,3 +1,4 @@
+import { getCustomerPublishedConsultations } from '@/lib/consultation-versions';
 import RecommendedVideos from '@/components/RecommendedVideos';
 import { getRecommendedVideos } from '@/lib/recommended-videos-server';
 import Link from 'next/link';
@@ -22,7 +23,6 @@ export default async function CustomerPage() {
       serviceAccess: { select: { serviceKey: true } },
       dogs: { orderBy: { name: 'asc' }, select: {
         id: true, name: true, profileImageUrl: true,
-        consultations: { select: { id: true, date: true, focus: true } },
         serviceSessions: { where: { serviceKey: { in: ['PRIVATE_TRAINING', 'OPEN_TRAINING'] } }, select: { id: true, date: true, focus: true, serviceKey: true } },
       } },
     },
@@ -32,17 +32,18 @@ export default async function CustomerPage() {
   const courses = getCourses(locale);
   const recommendedVideos = enabled.has('RECOMMENDED_VIDEOS') ? await getRecommendedVideos(user.customer.id) : [];
   const dayKey = (date: Date) => date.toLocaleDateString('sv-SE', { timeZone: 'Europe/Oslo' });
-  const events = customer.dogs.flatMap((dog) => [
-    ...(enabled.has('CONSULTATIONS') ? dog.consultations.map((record) => ({
-      id: `consultation-${record.id}`, day: dayKey(record.date), dogName: dog.name,
-      title: record.focus || t.services.CONSULTATIONS.title, href: `/customer/consultations/${record.id}`,
-    })) : []),
+  const publishedConsultations = enabled.has('CONSULTATIONS') ? await getCustomerPublishedConsultations(user.customer.id) : [];
+  const consultationEvents = publishedConsultations.map(({ consultation, version }) => ({
+    id: `consultation-${version.id}`, day: dayKey(consultation.date), dogName: consultation.dog.name,
+    title: consultation.focus || t.services.CONSULTATIONS.title, href: `/customer/consultations/${consultation.id}?version=${version.id}`,
+  }));
+  const events = [...consultationEvents, ...customer.dogs.flatMap((dog) => [
     ...dog.serviceSessions.filter((record) => enabled.has(record.serviceKey)).map((record) => ({
       id: `session-${record.id}`, day: dayKey(record.date), dogName: dog.name,
       title: record.focus || (record.serviceKey === 'PRIVATE_TRAINING' ? t.services.PRIVATE_TRAINING.title : t.services.OPEN_TRAINING.title),
       href: `${record.serviceKey === 'PRIVATE_TRAINING' ? '/customer/services/private-training' : '/customer/services/open-training'}#session-${record.id}`,
     })),
-  ]).sort((a, b) => a.day.localeCompare(b.day) || a.id.localeCompare(b.id));
+  ])].sort((a, b) => a.day.localeCompare(b.day) || a.id.localeCompare(b.id));
 
   const courseServices = services.filter((service) => service.key.endsWith('_COURSE'));
   const videoService = services.find((service) => service.key === 'RECOMMENDED_VIDEOS');

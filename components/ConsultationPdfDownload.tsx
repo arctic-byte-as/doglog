@@ -2,7 +2,7 @@
 
 import { useId, useState } from 'react';
 
-export default function ConsultationPdfDownload({ consultationId, locale = 'en', disabled = false, compact = false }: { consultationId: string; locale?: 'en' | 'nb'; disabled?: boolean; compact?: boolean }) {
+export default function ConsultationPdfDownload({ consultationId, locale = 'en', disabled = false, compact = false, versionId, hideDescription = false }: { consultationId: string; locale?: 'en' | 'nb'; disabled?: boolean; compact?: boolean; versionId?: string; hideDescription?: boolean }) {
   const id = useId();
   const [downloading, setDownloading] = useState(false);
   const [error, setError] = useState('');
@@ -12,7 +12,7 @@ export default function ConsultationPdfDownload({ consultationId, locale = 'en',
     setDownloading(true);
     setError('');
     try {
-      const response = await fetch(`/api/consultations/${encodeURIComponent(consultationId)}/pdf?lang=${locale}`, { cache: 'no-store' });
+      const response = await fetch(`/api/consultations/${encodeURIComponent(consultationId)}/pdf?lang=${locale}${versionId ? `&version=${encodeURIComponent(versionId)}` : ''}`, { cache: 'no-store' });
       if (!response.ok || !response.headers.get('Content-Type')?.includes('application/pdf')) {
         throw new Error('PDF download failed');
       }
@@ -38,7 +38,7 @@ export default function ConsultationPdfDownload({ consultationId, locale = 'en',
       <button type="button" onClick={download} disabled={disabled || downloading} aria-describedby={id} className={`min-h-11 rounded-lg px-4 py-3 font-medium disabled:opacity-50 ${compact ? 'border border-white bg-white text-brand-950 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white' : 'bg-brand-700 text-white'}`}>
         {downloading ? (nb ? 'Lager PDF…' : 'Preparing PDF…') : (nb ? 'Last ned PDF' : 'Download PDF')}
       </button>
-      <p id={id} className={compact && !disabled ? 'sr-only' : 'max-w-sm text-sm leading-6 text-brand-700'}>
+      <p id={id} className={(compact && !disabled) || hideDescription ? 'sr-only' : 'max-w-sm text-sm leading-6 text-brand-700'}>
         {disabled ? (nb ? 'Lagre endringene før du laster ned.' : 'Save your changes before downloading.') : (nb ? 'Last ned den lagrede konsultasjonen med treningsplan, vurdering og bakgrunn.' : 'Download the saved consultation, including the training plan, assessment and background.')}
       </p>
       <p role="status" className={compact ? 'sr-only' : 'text-sm leading-6'}>{downloading ? (nb ? 'Vennligst vent mens PDF-en lages.' : 'Please wait while the PDF is prepared.') : ''}</p>

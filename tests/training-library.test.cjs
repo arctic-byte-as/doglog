@@ -38,3 +38,13 @@ test('browser import adds custom exercises without replacing shared instructions
   assert.equal(merged[0].exercises[0].goal, 'Shared instructions');
   assert.equal(shared[0].exercises.length, 1);
 });
+
+test('activation library entries preserve instructions and detect existing activation plans', () => {
+  const exercise = { title: 'Sniff walk', goal: 'Explore calmly', setup: ['Time and frequency: 10 minutes daily'], steps: ['Allow time to sniff.'], progress: 'Comfortable exploration', avoid: 'Do not pull.' };
+  const text = formatTrainingExercise('Activation exercises', exercise);
+  assert.ok(text.startsWith('Activity: Sniff walk\n'));
+  assert.ok(text.includes(exercise.setup[0]));
+  assert.ok(text.includes(exercise.steps[0]));
+  assert.ok(exerciseIsInPlan(text, 'Activation exercises', exercise));
+  assert.ok(exerciseIsInPlan('Activation: Sniff walk - Slow exploration', 'Activation exercises', exercise));
+});

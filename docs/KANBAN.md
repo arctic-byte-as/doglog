@@ -153,3 +153,15 @@ Suggested first split:
 | RLS and privacy | Data Security Agent + Software Tester Agent | Supabase SQL policies, policy tests, docs | Start with policy draft while schema changes are reviewed |
 | CI/CD | Lead Engineer Agent + Software Tester Agent | `.github/workflows/*`, package scripts | Can run in parallel after package manager choice |
 | Roadmap view | UX Designer Agent | `public/roadmap.html`, future app route if promoted | Customer-visible language only |
+
+## Consultation behaviour guide review — 1 November 2026
+
+Owner: Lead Engineer Agent. Implemented for local review: ten behaviour choices, custom challenge entry and one editable barking guide. Existing prescribed-plan storage and permissions are retained. Remaining nine guides await owner review of the example.
+
+## Consultation plans and activity instructions — 1 November 2026
+
+Owner: Lead Engineer Agent. Local implementation: all ten reward-based starting guides, 13 activity instruction sets, individual plan sections in trainer/customer records and PDF downloads. All remain editable in the prescribed plan; no schema or permission changes. Browser verification unavailable in this session.
+
+## Consultation publication and history — 1 November 2026
+
+Owner: Lead Engineer Agent. Implemented for development: private drafts, explicit numbered final publications, immutable content/PDF snapshots, customer history navigation and published-only report/plan/calendar reads. Development migration applied after target verification; no production database changes. See docs/CONSULTATION_VERSIONS.md for validation and rollout notes.

@@ -24,6 +24,7 @@ export default async function ConsultationDetailPage(props: { params: Promise<{ 
   const item = {
     id: consultation.id,
     dogName: consultation.dog.name,
+    dogAge: consultation.dog.age,
     client: consultation.dog.owner,
     date: consultation.date.toISOString().slice(0, 10),
     focus: consultation.focus,

@@ -1,3 +1,4 @@
+import { getCustomerPublishedConsultations } from '@/lib/consultation-versions';
 import { SiteShell } from '@/components/SiteShell';
 import { SectionCard } from '@/components/SectionCard';
 import CustomerTrainingPlanClient, { type TrainingPlanOption } from '@/components/CustomerTrainingPlanClient';
@@ -35,9 +36,6 @@ export default async function CustomerPlanPage() {
   const dogs = await prisma.dog.findMany({
     where: { customerId: user.customer.id },
     include: {
-      consultations: {
-        orderBy: { date: 'desc' },
-      },
       serviceSessions: {
         where: {
           serviceKey: { in: ['PRIVATE_TRAINING', 'OPEN_TRAINING'] },
@@ -47,18 +45,19 @@ export default async function CustomerPlanPage() {
     },
     orderBy: { name: 'asc' },
   });
+  const publishedConsultations = enabledServiceKeys.has('CONSULTATIONS') ? await getCustomerPublishedConsultations(user.customer.id) : [];
   const planGroups = dogs
     .flatMap((dog) => {
       const dogMeta = `${dog.breed || t.dashboard.breedNotSet}${dog.age ? ` - ${dog.age}` : ''}`;
       const consultationPlans = enabledServiceKeys.has('CONSULTATIONS')
-        ? dog.consultations.map((consultation) => ({
-            id: `consultation-${consultation.id}`,
-            dogName: dog.name,
-            dogMeta,
+        ? publishedConsultations.filter(({ consultation }) => consultation.dog.id === dog.id).map(({ consultation, version }) => ({
+            id: `consultation-${version.id}`,
+            dogName: consultation.dog.name,
+            dogMeta: `${consultation.dog.breed || t.dashboard.breedNotSet}${consultation.dog.age ? ` - ${consultation.dog.age}` : ''}`,
             date: consultation.date,
             dateKey: consultation.date.toISOString().slice(0, 10),
             dateLabel: formatDate(consultation.date),
-            sourceLabel: consultation.focus ? `${t.plan.consultation}: ${consultation.focus}` : t.plan.consultation,
+            sourceLabel: `${consultation.focus ? `${t.plan.consultation}: ${consultation.focus}` : t.plan.consultation} · v${version.version}`,
             outcome: consultation.outcome || t.plan.notRecorded,
             prescribedPlan: consultation.prescribedPlan,
           }))

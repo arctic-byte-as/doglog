@@ -1,17 +1,24 @@
 "use client";
 
-import { useEffect, useId, useState } from 'react';
-import ActivationPlanOptions from '@/components/ActivationPlanOptions';
+import { useEffect, useId, useRef, useState } from 'react';
+import BreedGuidanceEditor from '@/components/BreedGuidanceEditor';
+import { changeGuidanceBreed, ensureBreedGuidance, defaultBreedGuidance, readBreedGuidance, writeBreedGuidance, type BreedGuidance } from '@/lib/breed-guidance';
+import DogDevelopmentEditor from '@/components/DogDevelopmentEditor';
+import MixedBreedSelect from '@/components/MixedBreedSelect';
+import TrainingAgreementEditor from '@/components/TrainingAgreementEditor';
+import BehaviourChallengePicker from '@/components/BehaviourChallengePicker';
+import TrainingPlanEditor from '@/components/TrainingPlanEditor';
+import ActivationSummary from '@/components/ActivationSummary';
 import { stimulusOptions, formatStimulusOption } from '@/lib/stimulus-options';
 import ConsultationSection from '@/components/ConsultationSection';
 import InitialAssessment from '@/components/InitialAssessment';
 import ConsultationDisclosure from '@/components/ConsultationDisclosure';
-import TrainingExercisePicker from '@/components/TrainingExercisePicker';
 
 type DogOption = {
   id: string;
   name: string;
   breed: string;
+  age?: string;
   owner: string;
 };
 
@@ -35,6 +42,8 @@ export default function CreateConsultationForm({
   submittingLabel?: string;
 }) {
   const detailsId = useId();
+  const breedGuidanceByBreed = useRef<Record<string, BreedGuidance>>({});
+  const breedGuidanceByDog = useRef<Record<string, BreedGuidance>>({});
   const [dogs, setDogs] = useState<DogOption[]>(initialDogs);
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState<any>({
@@ -111,7 +120,7 @@ export default function CreateConsultationForm({
       const res = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...form, serviceKey }),
+        body: JSON.stringify({ ...form, prescribedPlan: ensureBreedGuidance(form.prescribedPlan || '', form.dogBreed || ''), serviceKey }),
       });
       if (!res.ok) throw new Error('Create failed');
       window.location.reload();
@@ -125,7 +134,9 @@ export default function CreateConsultationForm({
   function field(key: string, title: string, multiline = false, card = false) {
     return (
       <ConsultationSection title={title} editing card={card}>
-        {(id) => multiline ? (
+        {(id) => key === 'dogBreed' ? (
+          <MixedBreedSelect id={id} value={form.dogBreed || ''} onChange={(value) => setForm((current: any) => ({ ...current, dogBreed: value, prescribedPlan: changeGuidanceBreed(current.prescribedPlan || '', value, breedGuidanceByBreed.current) }))} />
+        ) : multiline ? (
           <textarea id={id} rows={4} value={form[key]} onChange={(e) => setForm({ ...form, [key]: e.target.value })} className="min-h-11 w-full min-w-0 max-w-full rounded-lg border border-brand-200 bg-white p-3 text-base resize-y" />
         ) : (
           <input id={id} value={form[key]} onChange={(e) => setForm({ ...form, [key]: e.target.value })} className="min-h-11 w-full min-w-0 max-w-full rounded-lg border border-brand-200 bg-white p-3 text-base" />
@@ -137,14 +148,15 @@ export default function CreateConsultationForm({
   return (
     <form onSubmit={handleSubmit} className="mb-6 min-w-0 space-y-4">
       <ConsultationDisclosure title="Training plan">
+        <BreedGuidanceEditor key={`${form.dogId}-${form.dogBreed}`} breed={form.dogBreed || ''} plan={String(form.prescribedPlan || '')} onChange={(plan) => setForm({ ...form, prescribedPlan: plan })} />
+        <TrainingAgreementEditor plan={String(form.prescribedPlan || '')} onChange={(plan) => setForm({ ...form, prescribedPlan: plan })} />
+        <BehaviourChallengePicker plan={String(form.prescribedPlan || '')} onChange={(plan) => setForm({ ...form, prescribedPlan: plan })} />
         <div className={`grid min-w-0 grid-cols-1 items-start gap-4 ${hideOutcome ? '' : 'xl:grid-cols-2'}`}>
           {!hideOutcome ? field('outcome', 'Recommended actions', true, true) : null}
-          <ConsultationSection title="Prescribed Training Plan" editing card>
+          <ConsultationSection title="Prescribed Training Plan" card>
             {(id) => (
               <div className="space-y-3">
-                <ActivationPlanOptions plan={form.prescribedPlan || ''} onChange={(plan) => setForm({ ...form, prescribedPlan: plan })} />
-                <TrainingExercisePicker plan={form.prescribedPlan || ''} onChange={(plan) => setForm({ ...form, prescribedPlan: plan })} />
-                <textarea id={id} rows={8} value={form.prescribedPlan} onChange={(e) => setForm({ ...form, prescribedPlan: e.target.value })} className="min-h-11 w-full min-w-0 max-w-full rounded-lg border border-brand-200 bg-white p-3 text-base resize-y" />
+                <TrainingPlanEditor value={String(form.prescribedPlan || '')} onChange={(plan) => setForm({ ...form, prescribedPlan: plan })} />
               </div>
             )}
           </ConsultationSection>
@@ -156,12 +168,9 @@ export default function CreateConsultationForm({
           {!hideNutrition ? field('nutrition', 'Food', false, true) : null}
           {!hideHormoneAnalysis ? field('hormoneAnalysis', 'Hormones', false, true) : null}
           {!hideActivation ? (
-            <ConsultationSection title="Activation" editing card>
+            <ConsultationSection title="Activation" card>
               {(id) => (
-                <div className="space-y-3">
-                  <p id={`${id}-help`} className="text-sm leading-6">Record the current activity routine, including frequency, duration and how the dog responds.</p>
-                  <textarea id={id} aria-describedby={`${id}-help`} rows={4} value={form.activation} onChange={(e) => setForm({ ...form, activation: e.target.value })} className="min-h-11 w-full min-w-0 max-w-full rounded-lg border border-brand-200 bg-white p-3 text-base resize-y" />
-                </div>
+                <ActivationSummary value={form.activation || ''} onChange={(value) => setForm({ ...form, activation: value })} />
               )}
             </ConsultationSection>
           ) : null}
@@ -200,9 +209,16 @@ export default function CreateConsultationForm({
                 <select
                   value={form.dogId}
                   onChange={(e) => {
+                    breedGuidanceByBreed.current = {};
                     const selectedDog = dogs.find((d) => d.id === e.target.value);
+                    const currentGuidance = readBreedGuidance(form.prescribedPlan || '');
+                    if (form.dogId && currentGuidance) breedGuidanceByDog.current[form.dogId] = currentGuidance;
+                    const nextGuidance = Object.prototype.hasOwnProperty.call(breedGuidanceByDog.current, e.target.value)
+                      ? breedGuidanceByDog.current[e.target.value]
+                      : defaultBreedGuidance(selectedDog?.breed || '');
                     setForm({
                       ...form,
+                      prescribedPlan: writeBreedGuidance(form.prescribedPlan || '', nextGuidance),
                       dogId: e.target.value,
                       dogName: selectedDog?.name || '',
                       client: selectedDog?.owner || form.client,
@@ -228,16 +244,12 @@ export default function CreateConsultationForm({
               <div className="text-xs font-medium">Date</div>
               <input type="date" value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} className="min-h-11 w-full min-w-0 max-w-full rounded-lg border border-brand-200 bg-white p-3 text-base" />
             </label>
-            {dogBreedTopLine ? (
-              <label className="block min-w-0">
-                <div className="text-xs font-medium">Dog Breed</div>
-                <input value={form.dogBreed} onChange={(e) => setForm({ ...form, dogBreed: e.target.value })} className="min-h-11 w-full min-w-0 max-w-full rounded-lg border border-brand-200 bg-white p-3 text-base" />
-              </label>
-            ) : null}
+            {dogBreedTopLine ? field('dogBreed', 'Dog Breed', false, true) : null}
           </div>
           </section>
           {field('generalDescription', labels.generalDescription || 'Description of the situation', true, true)}
           {!dogBreedTopLine ? field('dogBreed', 'Dog Breed', false, true) : null}
+          <DogDevelopmentEditor profileAge={dogs.find((dog) => dog.id === form.dogId)?.age} plan={String(form.prescribedPlan || '')} onChange={(plan) => setForm({ ...form, prescribedPlan: plan })} />
           {!hideLearningHistory ? field('learningHistory', 'Learning History', false, true) : null}
         </div>
       </ConsultationDisclosure>

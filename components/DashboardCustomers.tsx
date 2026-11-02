@@ -17,8 +17,8 @@ type DashboardCustomer = {
   serviceKeys: string[];
 };
 
-export default function DashboardCustomers({ customers, contrastPreview = false }: { customers: DashboardCustomer[]; contrastPreview?: boolean }) {
-  const [search, setSearch] = useState('');
+export default function DashboardCustomers({ customers, contrastPreview = false, initialCustomerId }: { customers: DashboardCustomer[]; contrastPreview?: boolean; initialCustomerId?: string }) {
+  const [search, setSearch] = useState(customers.find((customer) => customer.id === initialCustomerId)?.email || '');
   const [editing, setEditing] = useState<DashboardCustomer | null>(null);
   const [savedServices, setSavedServices] = useState<Record<string, string[]>>({});
   const [message, setMessage] = useState('');

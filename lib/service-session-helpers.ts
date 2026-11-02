@@ -2,6 +2,7 @@ export function serviceSessionToItem(session: any) {
   return {
     id: session.id,
     dogName: session.dog.name,
+    dogAge: session.dog.age,
     client: session.dog.owner,
     date: session.date.toISOString().slice(0, 10),
     focus: session.focus,

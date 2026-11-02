@@ -61,10 +61,12 @@ export async function SiteShell({ children, hideDogAvatar = false, mobileHeading
   const t = getCustomerDictionary(customerLocale);
   const isTrainerMenu = user?.role === 'TRAINER' || user?.role === 'ADMIN';
   const isCustomerMenu = user?.role === 'CUSTOMER';
+  const consultationAccess = isCustomerMenu && user?.customer ? await prisma.customerServiceAccess.findUnique({ where: { customerId_serviceKey: { customerId: user.customer.id, serviceKey: 'CONSULTATIONS' } }, select: { id: true } }) : null;
   const customerNav = [
     { href: '/customer', label: t.nav.myHome },
     { href: '/customer/skills-library', label: t.nav.skillsLibrary },
     { href: '/customer/dogs', label: t.dashboard.yourDogs },
+    ...(consultationAccess ? [{ href: '/customer/consultation-history', label: customerLocale === 'nb' ? 'Konsultasjonshistorikk' : 'Consultation history' }] : []),
     { href: '/customer/profile', label: t.nav.profile },
   ];
   const customerDogs =

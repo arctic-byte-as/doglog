@@ -169,9 +169,9 @@ export function createConsultationPdf(record: ConsultationPdfRecord, locale: 'en
         const [heading, ...lines] = block.split('\n');
         const named = /^(Activity:|Activation:|Starting plan:|Behaviour challenge:|Exercise:)/.test(heading);
         const activity = /^(Activity:|Activation:)/.test(heading);
-        const selectedTitle = named ? heading.replace(/^[^:]+:\s*/, '') : heading;
+        const selectedTitle = named ? heading.replace(/^[^:]+:\s*/, '') : (locale === 'nb' ? 'Treningsnotater' : 'Training notes');
         section(activity ? `${locale === 'nb' ? 'Aktiviseringsøvelse' : 'Activation exercise'}: ${localText(selectedTitle)}` : localText(selectedTitle));
-        const body = lines.join('\n').trim();
+        const body = named ? lines.join('\n').trim() : block.trim();
         if (body) {
           doc.font('Body').fontSize(10.5).fillColor('#303a33').text(clean(localText(body)), 48, doc.y, { width, lineGap: 3, paragraphGap: 4 });
           doc.moveDown(0.75);

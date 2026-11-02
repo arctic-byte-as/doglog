@@ -12,7 +12,7 @@ export default async function ServiceConsultationsPage() {
     prisma.dog.findMany({
       where: { trainerId: user.trainer.id },
       orderBy: { name: 'asc' },
-      select: { id: true, name: true, breed: true, age: true, owner: true },
+      select: { id: true, name: true, breed: true, age: true, owner: true, customerId: true, customer: { select: { name: true, email: true } } },
     }),
     prisma.consultation.findMany({
       where: { dog: { trainerId: user.trainer.id } },

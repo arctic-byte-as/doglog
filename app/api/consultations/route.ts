@@ -7,11 +7,9 @@ export async function POST(req: Request) {
 
   const body = await req.json();
   try {
-    let dogId = body.dogId;
-    if (!dogId) {
-      const first = await prisma.dog.findFirst({ where: { trainerId: user.trainer.id } });
-      if (!first) return NextResponse.json({ error: 'No dog available' }, { status: 400 });
-      dogId = first.id;
+    const dogId = body.dogId;
+    if (typeof dogId !== 'string' || !dogId.trim()) {
+      return NextResponse.json({ error: 'Select a customer and dog before saving.' }, { status: 400 });
     }
 
     const dog = await prisma.dog.findFirst({

@@ -14,23 +14,20 @@ import ConsultationSection from '@/components/ConsultationSection';
 import InitialAssessment from '@/components/InitialAssessment';
 import ConsultationDisclosure from '@/components/ConsultationDisclosure';
 
-type DogOption = {
-  id: string;
-  name: string;
-  breed: string;
-  age?: string;
-  owner: string;
-};
+import { groupTrainingPlan } from '@/lib/training-agreement';
+import { consultationCustomerKey, consultationCustomerOptions, type ConsultationDogOption as DogOption } from '@/lib/consultation-customers';
+
+const emptyDogs: DogOption[] = [];
 
 export default function CreateConsultationForm({
-  initialDogs = [],
+  initialDogs = emptyDogs,
   endpoint = '/api/consultations',
   serviceKey,
   hiddenFields = [],
   labels = {},
   dogBreedTopLine = false,
-  submitLabel = 'Create Consultation',
-  submittingLabel = 'Creating...',
+  submitLabel = 'Save draft',
+  submittingLabel = 'Saving...',
 }: {
   initialDogs?: DogOption[];
   endpoint?: string;
@@ -45,6 +42,7 @@ export default function CreateConsultationForm({
   const breedGuidanceByBreed = useRef<Record<string, BreedGuidance>>({});
   const breedGuidanceByDog = useRef<Record<string, BreedGuidance>>({});
   const [dogs, setDogs] = useState<DogOption[]>(initialDogs);
+  const [customerSelection, setCustomerSelection] = useState('');
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState<any>({
     dogId: '',
@@ -113,8 +111,35 @@ export default function CreateConsultationForm({
       .catch(() => {});
   }, [initialDogs]);
 
+  const selectedDog = dogs.find((dog) => dog.id === form.dogId);
+  const customerKey = customerSelection || (selectedDog ? consultationCustomerKey(selectedDog) : '');
+  const customerOptions = consultationCustomerOptions(dogs);
+  const customerDogs = dogs.filter((dog) => consultationCustomerKey(dog) === customerKey);
+
+  function selectDog(dogId: string) {
+    const switchingDog = Boolean(form.dogId && form.dogId !== dogId);
+    const groups = groupTrainingPlan(form.prescribedPlan || '');
+    const noteFields = ['focus', 'outcome', 'generalDescription', 'learningHistory', 'situation', 'nutrition', 'health', 'hormoneAnalysis', 'activation', 'stimulusAnalysis'];
+    const hasNotes = noteFields.some((key) => String(form[key] || '').trim()) || groups.problem || groups.goal || groups.training.length || groups.activities.length;
+    if (switchingDog && hasNotes && !window.confirm('Changing the customer or dog will clear the consultation notes and training plan you have entered. Continue?')) return false;
+    breedGuidanceByBreed.current = {};
+    const nextDog = dogs.find((dog) => dog.id === dogId);
+    const currentGuidance = readBreedGuidance(form.prescribedPlan || '');
+    if (form.dogId && currentGuidance) breedGuidanceByDog.current[form.dogId] = currentGuidance;
+    const nextGuidance = Object.prototype.hasOwnProperty.call(breedGuidanceByDog.current, dogId)
+      ? breedGuidanceByDog.current[dogId]
+      : defaultBreedGuidance(nextDog?.breed || '');
+    setForm((current: any) => ({ ...current,
+      ...(switchingDog ? Object.fromEntries(noteFields.map((key) => [key, ''])) : {}),
+      prescribedPlan: writeBreedGuidance(switchingDog ? '' : (current.prescribedPlan || ''), nextGuidance),
+      dogId, dogName: nextDog?.name || '', client: nextDog?.owner || '', dogBreed: nextDog?.breed || '',
+    }));
+    return true;
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (!selectedDog || !customerKey) { alert('Select a customer and dog before saving.'); return; }
     setLoading(true);
     try {
       const res = await fetch(endpoint, {
@@ -122,10 +147,10 @@ export default function CreateConsultationForm({
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ...form, prescribedPlan: ensureBreedGuidance(form.prescribedPlan || '', form.dogBreed || ''), serviceKey }),
       });
-      if (!res.ok) throw new Error('Create failed');
+      if (!res.ok) { const result = await res.json(); throw new Error(result.error || 'Create failed'); }
       window.location.reload();
     } catch (err) {
-      alert('Create error');
+      alert(err instanceof Error ? err.message : 'Create error');
     } finally {
       setLoading(false);
     }
@@ -147,6 +172,36 @@ export default function CreateConsultationForm({
 
   return (
     <form onSubmit={handleSubmit} className="mb-6 min-w-0 space-y-4">
+      <section aria-labelledby={detailsId} className="min-w-0 space-y-4 rounded-2xl border border-brand-200 bg-brand-50 p-4 sm:p-5">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <h2 id={detailsId} className="text-lg font-semibold text-brand-950">Who is this consultation for?</h2>
+          <button type="submit" disabled={loading || !form.dogId} className="min-h-11 rounded-lg bg-brand-700 px-4 py-3 text-white disabled:opacity-60">{loading ? submittingLabel : submitLabel}</button>
+        </div>
+        <div className="grid min-w-0 gap-4 md:grid-cols-3">
+          <label className="block min-w-0 text-sm font-medium">Customer
+            <select required value={customerKey} disabled={loading} onChange={(event) => {
+              const key = event.target.value;
+              const matchingDogs = dogs.filter((dog) => consultationCustomerKey(dog) === key);
+              if (selectDog(matchingDogs.length === 1 ? matchingDogs[0].id : '')) setCustomerSelection(key);
+            }} className="mt-2 min-h-11 w-full min-w-0 rounded-lg border border-brand-200 bg-white p-3 text-base">
+              <option value="">Select a customer</option>
+              {customerOptions.map((option) => <option key={option.key} value={option.key}>{option.label}</option>)}
+            </select>
+          </label>
+          <label className="block min-w-0 text-sm font-medium">Dog
+            <select required value={form.dogId} disabled={loading || !customerKey} onChange={(event) => selectDog(event.target.value)} className="mt-2 min-h-11 w-full min-w-0 rounded-lg border border-brand-200 bg-white p-3 text-base">
+              <option value="">Select a dog</option>
+              {customerDogs.map((dog) => <option key={dog.id} value={dog.id}>{dog.name}{dog.breed ? ` — ${dog.breed}` : ''}</option>)}
+            </select>
+          </label>
+          <label className="block min-w-0 text-sm font-medium">Consultation date
+            <input required type="date" value={form.date} onChange={(event) => setForm({ ...form, date: event.target.value })} className="mt-2 min-h-11 w-full min-w-0 rounded-lg border border-brand-200 bg-white p-3 text-base" />
+          </label>
+        </div>
+        <p className="text-sm text-brand-700">Choose the customer, then their dog. You will be asked before changing a dog with entered consultation notes.</p>
+        {!dogs.length ? <p className="text-sm text-brand-700">Add a dog and its owner before creating a consultation.</p> : null}
+        {selectedDog ? <p className="break-words text-sm text-brand-700">Customer: {selectedDog.customer?.name || selectedDog.owner} · Dog: {selectedDog.name}</p> : null}
+      </section>
       <ConsultationDisclosure title="Training plan">
         <TrainingAgreementEditor plan={String(form.prescribedPlan || '')} onChange={(plan) => setForm({ ...form, prescribedPlan: plan })} />
         <BreedGuidanceEditor key={`${form.dogId}-${form.dogBreed}`} breed={form.dogBreed || ''} plan={String(form.prescribedPlan || '')} onChange={(plan) => setForm({ ...form, prescribedPlan: plan })} />
@@ -195,58 +250,7 @@ export default function CreateConsultationForm({
       ) : null}
       <ConsultationDisclosure title="Background">
         <div className="grid min-w-0 grid-cols-1 items-start gap-4 xl:grid-cols-2">
-          <section aria-labelledby={detailsId} className="min-w-0 rounded-2xl border border-brand-200 bg-white p-4 shadow-sm sm:p-5">
-            <h3 id={detailsId} className="mb-3 text-sm font-semibold text-brand-950">Consultation details</h3>
-          <div className="grid min-w-0 gap-4">
-            <label className="block min-w-0">
-              <div className="text-xs font-medium">Dog</div>
-              {dogs.length === 1 ? (
-                <div className="w-full rounded border p-2 bg-gray-50">
-                  <div className="text-sm">{dogs[0].name}{dogs[0].breed ? ` — ${dogs[0].breed}` : ''}</div>
-                  <input type="hidden" name="dogId" value={form.dogId} />
-                </div>
-              ) : (
-                <select
-                  value={form.dogId}
-                  onChange={(e) => {
-                    breedGuidanceByBreed.current = {};
-                    const selectedDog = dogs.find((d) => d.id === e.target.value);
-                    const currentGuidance = readBreedGuidance(form.prescribedPlan || '');
-                    if (form.dogId && currentGuidance) breedGuidanceByDog.current[form.dogId] = currentGuidance;
-                    const nextGuidance = Object.prototype.hasOwnProperty.call(breedGuidanceByDog.current, e.target.value)
-                      ? breedGuidanceByDog.current[e.target.value]
-                      : defaultBreedGuidance(selectedDog?.breed || '');
-                    setForm({
-                      ...form,
-                      prescribedPlan: writeBreedGuidance(form.prescribedPlan || '', nextGuidance),
-                      dogId: e.target.value,
-                      dogName: selectedDog?.name || '',
-                      client: selectedDog?.owner || form.client,
-                      dogBreed: selectedDog?.breed || '',
-                    });
-                  }}
-                  className="min-h-11 w-full min-w-0 max-w-full rounded-lg border border-brand-200 bg-white p-3 text-base"
-                >
-                  <option value="">Select a dog</option>
-                  {dogs.map((d) => (
-                    <option key={d.id} value={d.id}>{d.name}</option>
-                  ))}
-                </select>
-              )}
-            </label>
-
-            <label className="block min-w-0">
-              <div className="text-xs font-medium">Client</div>
-              <input value={form.client} onChange={(e) => setForm({ ...form, client: e.target.value })} className="min-h-11 w-full min-w-0 max-w-full rounded-lg border border-brand-200 bg-white p-3 text-base" />
-            </label>
-
-            <label className="block min-w-0">
-              <div className="text-xs font-medium">Date</div>
-              <input type="date" value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} className="min-h-11 w-full min-w-0 max-w-full rounded-lg border border-brand-200 bg-white p-3 text-base" />
-            </label>
-            {dogBreedTopLine ? field('dogBreed', 'Dog Breed', false, true) : null}
-          </div>
-          </section>
+          {dogBreedTopLine ? field('dogBreed', 'Dog Breed', false, true) : null}
           {field('generalDescription', labels.generalDescription || 'Description of the situation', true, true)}
           {!dogBreedTopLine ? field('dogBreed', 'Dog Breed', false, true) : null}
           <DogDevelopmentEditor profileAge={dogs.find((dog) => dog.id === form.dogId)?.age} plan={String(form.prescribedPlan || '')} onChange={(plan) => setForm({ ...form, prescribedPlan: plan })} />
@@ -254,7 +258,7 @@ export default function CreateConsultationForm({
         </div>
       </ConsultationDisclosure>
       <div className="flex justify-end">
-        <button type="submit" disabled={loading} className="min-h-11 w-full rounded-lg bg-brand-700 px-4 py-3 text-white sm:w-auto">{loading ? submittingLabel : submitLabel}</button>
+        <button type="submit" disabled={loading || !form.dogId} className="min-h-11 w-full rounded-lg bg-brand-700 px-4 py-3 text-white sm:w-auto">{loading ? submittingLabel : submitLabel}</button>
       </div>
     </form>
   );

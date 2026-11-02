@@ -9,6 +9,7 @@ export async function GET() {
   const dogs = await prisma.dog.findMany({
     where: { trainerId: user.trainer.id },
     orderBy: { name: 'asc' },
+    include: { customer: { select: { name: true, email: true } } },
   });
   return NextResponse.json({ dogs });
 }

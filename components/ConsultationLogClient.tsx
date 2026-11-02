@@ -3,12 +3,7 @@
 import { useState } from 'react';
 import CreateConsultationForm from '@/components/CreateConsultationForm';
 
-type DogOption = {
-  id: string;
-  name: string;
-  breed: string;
-  owner: string;
-};
+import type { ConsultationDogOption as DogOption } from '@/lib/consultation-customers';
 
 type ConsultationTile = {
   id: string;
@@ -39,8 +34,8 @@ export default function ConsultationLogClient({
   hiddenFields = [],
   labels = {},
   dogBreedTopLine = false,
-  submitLabel = 'Create Consultation',
-  submittingLabel = 'Creating...',
+  submitLabel = 'Save draft',
+  submittingLabel = 'Saving...',
   emptyMessage = 'No consultations yet. Create the first consultation above.',
   activeFallbackLabel = 'Active consultation',
 }: {

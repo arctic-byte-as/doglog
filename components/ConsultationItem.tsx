@@ -130,8 +130,24 @@ export default function ConsultationItem({
     );
   }
 
+  const recordControls = (
+      <div className="flex flex-wrap gap-3">
+        <button type="button" disabled={saving || deleting} onClick={() => { if (editing) setData({ ...consultation }); setEditing((current) => !current); }} className="min-h-11 rounded-lg border px-4 py-2">{editing ? 'Cancel' : 'Edit'}</button>
+        {editing ? <button type="button" onClick={save} disabled={saving || deleting} className="min-h-11 rounded-lg bg-brand-700 px-4 py-2 text-white">{saving ? 'Saving...' : endpointBase === '/api/consultations' ? 'Save draft' : 'Save'}</button> : null}
+        <button type="button" onClick={deleteRecord} disabled={deleting || saving} className="min-h-11 rounded-lg border border-red-200 bg-white px-4 py-2 text-red-700 disabled:opacity-60">{deleting ? 'Deleting...' : 'Delete'}</button>
+      </div>
+  );
+
   const content = (
     <article className="min-w-0 space-y-4">
+      <header className="flex min-w-0 flex-wrap items-center justify-between gap-4 rounded-2xl border border-brand-200 bg-brand-50 p-4 sm:p-5">
+        <div className="min-w-0">
+          <p className="break-words text-sm text-brand-700">Customer: {data.client || 'Not recorded'}</p>
+          <h2 className="break-words text-xl font-semibold text-brand-950">Dog: {data.dogName}</h2>
+          {editing && endpointBase === '/api/consultations' ? <label className="mt-2 block text-sm font-medium">Consultation date<input type="date" required value={data.date || ''} onChange={(event) => handleChange('date', event.target.value)} className="mt-2 min-h-11 w-full min-w-0 rounded-lg border border-brand-200 bg-white p-3 text-base" /></label> : <p className="text-sm text-brand-700">{data.date}</p>}
+        </div>
+        {recordControls}
+      </header>
       {endpointBase === '/api/consultations' ? <ConsultationPublishing consultationId={consultation.id} editing={editing} /> : null}
       <ConsultationDisclosure title="Training plan">
         {editing ? <TrainingAgreementEditor plan={String(data.prescribedPlan || '')} onChange={(plan) => handleChange('prescribedPlan', plan)} /> : <TrainingAgreementSummary plan={String(data.prescribedPlan || '')} />}
@@ -182,13 +198,6 @@ export default function ConsultationItem({
       ) : null}
       <ConsultationDisclosure title="Background">
         <div className="grid min-w-0 grid-cols-1 items-start gap-4 xl:grid-cols-2">
-          <header className="min-w-0 rounded-2xl border border-brand-200 bg-white p-4 shadow-sm sm:p-5">
-            <div className="flex flex-wrap items-center justify-between gap-2 break-words text-sm text-brand-600">
-              {editing && endpointBase === '/api/consultations' ? <label className="block min-w-0 text-sm font-medium">Consultation date<input type="date" required value={data.date || ''} onChange={(event) => handleChange('date', event.target.value)} className="mt-2 min-h-11 w-full min-w-0 rounded-lg border border-brand-200 bg-white p-3 text-base" /></label> : <p>{data.date}</p>}
-              <p className="min-w-0">{data.client}</p>
-            </div>
-            <h3 className="mt-3 break-words text-2xl font-semibold text-brand-950">{data.dogName}</h3>
-          </header>
           {dogBreedTopLine ? field('dogBreed', 'Dog Breed', false, true) : null}
           {field('generalDescription', labels.generalDescription || 'Description of the situation', true, true)}
           {!dogBreedTopLine ? field('dogBreed', 'Dog Breed', false, true) : null}
@@ -196,11 +205,7 @@ export default function ConsultationItem({
           {!hideLearningHistory ? field('learningHistory', 'Learning History', true, true) : null}
         </div>
       </ConsultationDisclosure>
-      <div className="flex flex-wrap gap-3">
-        <button type="button" onClick={() => { if (editing) setData({ ...consultation }); setEditing((current) => !current); }} className="min-h-11 rounded-lg border px-4 py-2">{editing ? 'Cancel' : 'Edit'}</button>
-        {editing ? <button type="button" onClick={save} disabled={saving} className="min-h-11 rounded-lg bg-brand-700 px-4 py-2 text-white">{saving ? 'Saving...' : endpointBase === '/api/consultations' ? 'Save draft' : 'Save'}</button> : null}
-        <button type="button" onClick={deleteRecord} disabled={deleting} className="min-h-11 rounded-lg border border-red-200 bg-white px-4 py-2 text-red-700 disabled:opacity-60">{deleting ? 'Deleting...' : 'Delete'}</button>
-      </div>
+      {recordControls}
     </article>
   );
 

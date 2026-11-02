@@ -43,3 +43,20 @@ test('restores missing Play links in old saved content without replacing custom 
   const blankTug = withDefaultVideoLinks([{ title: 'Play', subcategories: [{ title: 'Tug with rules', youtubeUrl: '' }] }]);
   assert.equal(blankTug[0].subcategories[0].youtubeUrl, 'https://www.youtube.com/watch?v=Cv4seQbdVfY');
 });
+
+test('separation category contains four distinct playable lessons with complete English and Bokmål guidance', () => {
+  const { defaultSkills } = load('skills-library-defaults');
+  const skill = defaultSkills.find(item => item.title === 'Separation anxiety');
+  const links = require('../data/skills-video-links.json').filter(item => item.skill === skill.title);
+  assert.equal(skill.subcategories.length, 4);
+  assert.equal(new Set(skill.subcategories.map(item => youtube.youtubeId(item.youtubeUrl))).size, 4);
+  assert.ok(skill.translations.nb.title && skill.translations.nb.summary);
+  for (const lesson of skill.subcategories) {
+    assert.ok(youtube.youtubeId(lesson.youtubeUrl));
+    assert.ok(links.some(link => link.lesson === lesson.title && link.youtubeUrl === lesson.youtubeUrl));
+    for (const field of ['title', 'goal', 'steps', 'coachingNotes']) {
+      assert.ok(lesson[field]?.trim());
+      assert.ok(lesson.translations.nb[field]?.trim());
+    }
+  }
+});

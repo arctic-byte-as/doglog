@@ -287,6 +287,78 @@ export const defaultSkills: CoreSkill[] = [
       },
     ],
   },
+  {
+    "title": "Separation anxiety",
+    "summary": "Reward-based support for feeling safe apart: recognising distress, calm settling and gradual alone-time practice. Adapt each step with your trainer.",
+    "translations": {
+      "nb": {
+        "title": "Separasjonsangst",
+        "summary": "Belønningsbasert støtte for trygg atskillelse: gjenkjenne stress, finne ro og gradvis alenetrening. Tilpass hvert steg sammen med treneren."
+      }
+    },
+    "subcategories": [
+      {
+        "title": "Recognising separation distress",
+        "goal": "Notice early signs of worry and choose a starting point where your dog feels safe.",
+        "steps": "1. Watch the video and note your dog’s usual relaxed behaviour.\n2. Set up a camera and comfortable resting area. Observe an everyday, easy separation; do not deliberately leave until your dog panics.\n3. Look for pacing, panting, repeated checking of the door or vocalising. Return at early signs of worry and make the next attempt easier.\n4. Keep a short diary of the situation, duration and response. Review this with your trainer before increasing time.\n5. For repeated distress, arrange company during necessary absences and ask your vet and trainer for an individual plan.",
+        "coachingNotes": "Video in English by Battersea Dogs and Cats Home. Begin with a short observation rather than a test of endurance. Arrange company for absences your dog cannot manage. Discuss persistent distress with your vet and a qualified reward-based behaviour professional.",
+        "youtubeUrl": "https://www.youtube.com/watch?v=n7h0DyQ-Pu4",
+        "translations": {
+          "nb": {
+            "title": "Gjenkjenne separasjonsrelatert stress",
+            "goal": "Oppdage tidlige tegn på uro og finne et startpunkt der hunden føler seg trygg.",
+            "steps": "1. Se videoen og legg merke til hvordan hunden oppfører seg når den er avslappet.\n2. Sett opp et kamera og en behagelig hvileplass. Observer en enkel atskillelse i hverdagen; ikke bli borte til hunden får panikk.\n3. Se etter vandring, pesing, gjentatt sjekking av døren eller lyd. Kom tilbake ved tidlige tegn på uro og gjør neste forsøk enklere.\n4. Noter situasjon, varighet og reaksjon. Gå gjennom notatene med treneren før tiden økes.\n5. Ved gjentatt stress, ordne selskap ved nødvendig fravær og be veterinær og trener om en individuell plan.",
+            "coachingNotes": "Video på engelsk fra Battersea Dogs and Cats Home. Begynn med en kort observasjon, ikke en utholdenhetstest. Ordne selskap ved fravær hunden ikke mestrer. Snakk med veterinær og en kvalifisert atferdsfaglig rådgiver som bruker belønningsbaserte metoder ved vedvarende stress."
+          }
+        }
+      },
+      {
+        "title": "Calm settling before separation",
+        "goal": "Help your dog relax near you as a foundation for later separation work.",
+        "steps": "1. Begin in a quiet room while you remain nearby. Let your dog choose a comfortable resting place.\n2. Quietly reward relaxed moments, placing a small treat between the paws without asking for a formal stay.\n3. Pause between rewards while your dog remains loose and comfortable. Stop if food makes them excited.\n4. Practise for 1–3 minutes once or twice a day. Keep your presence reassuring; this exercise does not require leaving the dog alone.\nThis is a supporting relaxation skill, not a treatment for separation anxiety on its own.",
+        "coachingNotes": "Video in English by Emily Larlham (Kikopup). This is a supporting relaxation skill, not a treatment for separation anxiety on its own. Reward a soft body and natural resting rather than holding a down while worried.",
+        "youtubeUrl": "https://www.youtube.com/watch?v=yr1olzgidMw",
+        "translations": {
+          "nb": {
+            "title": "Rolig hvile før alenetrening",
+            "goal": "Hjelpe hunden å slappe av i nærheten av deg som grunnlag for senere alenetrening.",
+            "steps": "1. Begynn i et stille rom mens du er i nærheten. La hunden velge en behagelig hvileplass.\n2. Belønn avslappede øyeblikk rolig med en liten godbit mellom potene, uten å be om en formell bli-øvelse.\n3. Ta pauser mellom belønningene så lenge hunden er myk og rolig i kroppen. Stopp hvis maten gjør hunden oppspilt.\n4. Tren i 1–3 minutter én eller to ganger om dagen. Vær en trygg støtte; denne øvelsen krever ikke at hunden blir alene.\nDette er en støttende avslapningsøvelse, ikke en behandling for separasjonsangst alene.",
+            "coachingNotes": "Video på engelsk av Emily Larlham (Kikopup). Dette er en støttende avslapningsøvelse, ikke en behandling for separasjonsangst alene. Belønn myk kropp og naturlig hvile fremfor å holde hunden i dekk mens den er urolig."
+          }
+        }
+      },
+      {
+        "title": "First comfortable moments apart",
+        "goal": "Build confidence with very small movements away while your dog stays comfortable.",
+        "steps": "1. Start with your dog relaxed and you close by. Watch the demonstration before trying it.\n2. Make one small movement away and return before your dog becomes worried. Start with less distance if necessary.\n3. Reward calm, voluntary choices. Let your dog move freely; do not restrain them or insist they stay on a mat.\n4. Try a few easy repetitions, then finish. If your dog follows anxiously, vocalises or cannot settle, return and reduce the difficulty. Never wait for distress to stop before helping.",
+        "coachingNotes": "Video in English by Emily Larlham (Kikopup). Use the reward-based demonstration as a starting point with your trainer. A dog eating or staying still is not necessarily relaxed. Do not use cry-it-out, corrections or forced confinement.",
+        "youtubeUrl": "https://www.youtube.com/watch?v=LGxhcb-itO4",
+        "translations": {
+          "nb": {
+            "title": "De første trygge øyeblikkene fra hverandre",
+            "goal": "Bygge trygghet med svært små bevegelser bort fra hunden mens den fortsatt er avslappet.",
+            "steps": "1. Begynn med en avslappet hund og deg like ved. Se demonstrasjonen før du prøver.\n2. Beveg deg litt bort og kom tilbake før hunden blir urolig. Start med mindre avstand om nødvendig.\n3. Belønn rolige, frivillige valg. La hunden bevege seg fritt; ikke hold den fast eller krev at den blir på en matte.\n4. Prøv noen få enkle repetisjoner og avslutt. Hvis hunden følger engstelig etter, lager lyd eller ikke finner ro, kom tilbake og gjør øvelsen enklere. Ikke vent på at stresset skal gå over før du hjelper.",
+            "coachingNotes": "Video på engelsk av Emily Larlham (Kikopup). Bruk demonstrasjonen med belønning som et utgangspunkt sammen med treneren. En hund som spiser eller ligger stille, er ikke nødvendigvis avslappet. Ikke la hunden gråte seg ferdig. Ikke bruk straff eller tving den til å være innestengt."
+          }
+        }
+      },
+      {
+        "title": "Gradually building alone time",
+        "goal": "Build comfortable time apart in small, individual steps without rehearsing panic.",
+        "steps": "1. Follow the video with your trainer and choose a starting step your dog already finds easy. This may be only a small movement or a moment out of sight.\n2. Watch on camera and return while your dog is still relaxed. Do not wait outside through barking or distress.\n3. Repeat easy steps with breaks. Increase only one thing at a time, such as distance or duration, and mix in easier repetitions.\n4. Keep a session log. Stop and shorten the next step at any sign of worry. Progress at your dog’s pace rather than to a fixed weekly deadline.\n5. Arrange company for longer necessary absences. If distress continues, review the plan with your trainer and vet.",
+        "coachingNotes": "Video in English by Emily Larlham (Kikopup). Rewards support learning, but food alone does not resolve panic. Arrange help for necessary absences beyond your dog’s current comfort. Work with your trainer and vet if distress continues; there is no fixed time to recovery.",
+        "youtubeUrl": "https://www.youtube.com/watch?v=HWT9DI7hMfo",
+        "translations": {
+          "nb": {
+            "title": "Gradvis lengre alenetid",
+            "goal": "Bygge trygg alenetid i små, individuelle steg uten at hunden får panikk.",
+            "steps": "1. Gå gjennom videoen med treneren og velg et startpunkt hunden allerede mestrer. Det kan være en liten bevegelse eller et øyeblikk ute av syne.\n2. Følg med på kamera og kom tilbake mens hunden fortsatt er avslappet. Ikke bli stående ute mens hunden bjeffer eller viser stress.\n3. Gjenta enkle steg med pauser. Øk bare én ting om gangen, som avstand eller varighet, og legg inn lettere repetisjoner.\n4. Før en enkel treningslogg. Stopp og gjør neste steg kortere ved tegn på uro. Følg hundens tempo fremfor en fast ukentlig tidsfrist.\n5. Ordne selskap ved lengre, nødvendig fravær. Ved vedvarende stress, gå gjennom planen med trener og veterinær.",
+            "coachingNotes": "Video på engelsk av Emily Larlham (Kikopup). Belønning støtter læring, men mat alene løser ikke panikk. Ordne hjelp ved nødvendig fravær utover det hunden mestrer nå. Samarbeid med trener og veterinær ved vedvarende stress; det finnes ingen fast tid for bedring."
+          }
+        }
+      }
+    ]
+  },
 ];
 
 

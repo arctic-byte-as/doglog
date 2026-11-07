@@ -25,14 +25,6 @@ export default async function TailoredTrainingPlanPage({ searchParams }: { searc
   return <SiteShell><SectionCard title="Tailored Training Plan admin"><ServicesLayout activeHref="/services/tailored-training-plan"><div className="space-y-5">
     <h1 className="text-2xl font-semibold">Manage tailored training plans</h1>
     <p className="text-sm leading-6">Choose a customer to schedule exercises, review their calendar, and follow their training progress. Saved changes appear in their training diary.</p>
-    <section aria-labelledby="existing-training-plans" className="space-y-3">
-      <h2 id="existing-training-plans" className="text-xl font-semibold">Existing training plans</h2>
-      <p className="text-sm text-brand-700">Owners and dogs with saved exercises. Open a plan to review or edit its schedule.</p>
-      {existingPlans.length ? <ul className="max-h-[32rem] space-y-3 overflow-y-auto pr-1">{existingPlans.map((plan) => <li key={plan.dog.id} className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-brand-200 bg-white p-4">
-        <div className="min-w-0"><h3 className="break-words font-semibold">{plan.dog.name} <span className="font-normal">· {plan.owner.name}</span></h3><p className="mt-1 text-sm text-brand-700">{plan.total} scheduled · {plan.completed} completed · {plan.total - plan.completed} remaining</p><p className="mt-1 text-xs text-brand-700">{plan.firstDay} → {plan.lastDay}</p>{!plan.owner.serviceAccess.some((access) => access.serviceKey === 'TAILORED_TRAINING_PLAN') ? <p className="mt-1 text-xs font-semibold">Customer service access is disabled</p> : null}</div>
-        <Link href={`/services/tailored-training-plan?${new URLSearchParams({ customerId: plan.owner.id, dogId: plan.dog.id, day: plan.openDay })}#plan-editor`} className="inline-flex min-h-11 items-center rounded-full bg-brand-900 px-5 py-2 text-sm font-semibold text-white">Open / edit plan →</Link>
-      </li>)}</ul> : <p className="rounded-xl border border-dashed border-brand-200 p-4 text-sm">No saved training plans yet. Select an owner below and add their first exercise.</p>}
-    </section>
     <div id="plan-editor" className="scroll-mt-6 space-y-5">
     <TrainingPlanCustomerSelect customers={customers.map(({ id, name }) => ({ id, name }))} selectedCustomerId={customer?.id || ''} />
     {customer ? <>
@@ -41,5 +33,13 @@ export default async function TailoredTrainingPlanPage({ searchParams }: { searc
       {dogs.length ? <TrainingDiaryClient key={selectedDog ? `${customer.id}:${selectedDog.id}:${initialDay || ''}` : customer.id} initialDogId={selectedDog?.id} initialDay={initialDay} dogs={dogs} entries={entries.map(({ id, dogId, day, exerciseName, category, minutes, repetitions, result, completed }) => ({ id, dogId, day, exerciseName, category, minutes, repetitions, result, completed }))} locale="en" apiBase="/api/trainer/diary" /> : <p>No linked dogs found.</p>}
     </> : <p className="rounded-xl border border-dashed border-brand-200 p-5">{!customers.length ? 'No customers are linked to your dogs yet. Link a dog to its customer account before creating a plan.' : params.customerId ? 'That customer is not available to you. Select a customer from the list to open their plan.' : 'Select a customer above to create a tailored training plan or continue editing their existing schedule.'}</p>}
     </div>
+    <section aria-labelledby="existing-training-plans" className="space-y-3">
+      <h2 id="existing-training-plans" className="text-xl font-semibold">Existing training plans</h2>
+      <p className="text-sm text-brand-700">Owners and dogs with saved exercises. Open a plan to review or edit its schedule.</p>
+      {existingPlans.length ? <ul className="max-h-[32rem] space-y-3 overflow-y-auto pr-1">{existingPlans.map((plan) => <li key={plan.dog.id} className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-brand-200 bg-white p-4">
+        <div className="min-w-0"><h3 className="break-words font-semibold">{plan.dog.name} <span className="font-normal">· {plan.owner.name}</span></h3><p className="mt-1 text-sm text-brand-700">{plan.total} scheduled · {plan.completed} completed · {plan.total - plan.completed} remaining</p><p className="mt-1 text-xs text-brand-700">{plan.firstDay} → {plan.lastDay}</p>{!plan.owner.serviceAccess.some((access) => access.serviceKey === 'TAILORED_TRAINING_PLAN') ? <p className="mt-1 text-xs font-semibold">Customer service access is disabled</p> : null}</div>
+        <Link href={`/services/tailored-training-plan?${new URLSearchParams({ customerId: plan.owner.id, dogId: plan.dog.id, day: plan.openDay })}#plan-editor`} className="inline-flex min-h-11 items-center rounded-full bg-brand-900 px-5 py-2 text-sm font-semibold text-white">Open / edit plan →</Link>
+      </li>)}</ul> : <p className="rounded-xl border border-dashed border-brand-200 p-4 text-sm">No saved training plans yet. Select an owner above and add their first exercise.</p>}
+    </section>
   </div></ServicesLayout></SectionCard></SiteShell>;
 }

@@ -6,10 +6,11 @@ function load(file, prisma, denied = false) {
   const compiled = ts.transpileModule(fs.readFileSync(require.resolve(file), 'utf8'), { compilerOptions: { module: ts.ModuleKind.CommonJS } }).outputText;
   const exports = {};
   new Function('require', 'exports', compiled)((id) => {
+    if (id === 'node:crypto') return require('node:crypto');
     if (id === 'next/server') return require('next/server');
     if (id === '@/lib/prisma') return { default: prisma };
     if (id === '@/lib/training-diary') return require('../lib/training-diary.ts');
-    if (id === '@/lib/auth') return { requireTrainer: async () => { if (denied) throw new Error('trainer access required'); return { trainer: { id: 'trainer-one' } }; } };
+    if (id === '@/lib/auth') return { requireCustomer: async () => ({ customer: { id: 'customer-one' } }), requireTrainer: async () => { if (denied) throw new Error('trainer access required'); return { trainer: { id: 'trainer-one' } }; } };
     throw new Error(id);
   }, exports);
   return exports;
@@ -34,10 +35,11 @@ test('trainer cannot create or move training onto a foreign or unlinked dog', as
 });
 test('trainer schedules daily entries against the assigned dog', async () => {
   const writes = [];
-  const prisma = { dog: { findFirst: async () => ({ id: 'dog-one' }) }, trainingEntry: { create: async ({ data }) => { writes.push(data); return data; } }, $transaction: async (operations) => Promise.all(operations) };
+  const prisma = { dog: { findFirst: async () => ({ id: 'dog-one' }) }, trainingEntry: { createMany: async ({ data }) => { writes.push(...data); return { count: data.length }; } } };
   const result = await load(collection, prisma).POST(request({ ...body, repeatDays: 7 }));
   assert.equal(result.status, 201);
   assert.equal((await result.json()).count, 7);
+  assert.equal(new Set(writes.map(e => e.id)).size, 7);
   assert.deepEqual(writes.map(e => e.day), ['2026-11-07','2026-11-08','2026-11-09','2026-11-10','2026-11-11','2026-11-12','2026-11-13']);
 });
 test('update and delete retain trainer ownership filters and return 404 for foreign entries', async () => {
@@ -48,4 +50,25 @@ test('update and delete retain trainer ownership filters and return 404 for fore
   const route = load(individual, prisma);
   assert.equal((await route.PUT(request(), context)).status, 404);
   assert.equal((await route.DELETE(request(), context)).status, 404);
+});
+
+test('maximum-length schedules use one bulk write instead of ninety individual writes', async () => {
+  let batches = 0;
+  const prisma = { dog: { findFirst: async () => ({ id: 'dog-one' }) }, trainingEntry: { createMany: async ({ data }) => { batches++; assert.equal(data.length, 90); assert.equal(new Set(data.map(entry => entry.id)).size, 90); assert.ok(data.every(entry => entry.dogId === 'dog-one' && !entry.completed)); return { count: 90 }; } } };
+  const response = await load(collection, prisma).POST(request({ ...body, repeatDays: 90 }));
+  assert.equal(response.status, 201);
+  assert.equal(batches, 1);
+  assert.equal((await response.json()).count, 90);
+});
+test('customer batch scheduling retains owner authorization and rejects foreign dogs before writing', async () => {
+  const route = '../app/api/customer/diary/route.ts';
+  let allow = false, batches = 0;
+  const prisma = { dog: { findFirst: async ({ where }) => { assert.deepEqual(where, { id: 'dog-one', customerId: 'customer-one' }); return allow ? { id: 'dog-one' } : null; } }, trainingEntry: { createMany: async ({ data }) => { batches++; assert.equal(data.length, 7); return { count: 7 }; } } };
+  assert.equal((await load(route, prisma).POST(request({ ...body, repeatDays: 7 }))).status, 404);
+  assert.equal(batches, 0);
+  allow = true;
+  const response = await load(route, prisma).POST(request({ ...body, repeatDays: 7 }));
+  assert.equal(response.status, 201);
+  assert.equal((await response.json()).count, 7);
+  assert.equal(batches, 1);
 });

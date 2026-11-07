@@ -1,3 +1,4 @@
+import { randomUUID } from 'node:crypto';
 import { NextResponse } from 'next/server';
 import { requireCustomer } from '@/lib/auth';
 import prisma from '@/lib/prisma';
@@ -13,6 +14,7 @@ export async function POST(request: Request) {
   if (days.length > 1 && data.completed) return NextResponse.json({ error: 'Repeated exercises must start as scheduled, not completed.' }, { status: 400 });
   const dog = await prisma.dog.findFirst({ where: { id: data.dogId, customerId: user.customer.id }, select: { id: true } });
   if (!dog) return NextResponse.json({ error: 'Dog not found.' }, { status: 404 });
-  const entries = await prisma.$transaction(days.map((day, index) => prisma.trainingEntry.create({ data: { ...data, day, result: index === 0 ? data.result : '', completed: days.length === 1 && data.completed } })));
+  const entries = days.map((day, index) => ({ ...data, id: randomUUID(), day, result: index === 0 ? data.result : '', completed: days.length === 1 && data.completed }));
+  await prisma.trainingEntry.createMany({ data: entries });
   return NextResponse.json({ entry: entries[0], count: entries.length }, { status: 201 });
 }

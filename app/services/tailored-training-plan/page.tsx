@@ -13,8 +13,10 @@ export default async function TailoredTrainingPlanPage({ searchParams }: { searc
   const params = await searchParams;
   const customers = await prisma.customer.findMany({ where: { dogs: { some: { trainerId: user.trainer.id } } }, include: { serviceAccess: true, dogs: { where: { trainerId: user.trainer.id, trainingEntries: { some: {} } }, select: { id: true, name: true, trainingEntries: { select: { day: true, completed: true }, orderBy: { day: 'asc' } } }, orderBy: { name: 'asc' } } }, orderBy: { name: 'asc' } });
   const customer = customers.find((item) => item.id === params.customerId);
-  const dogs = customer ? await prisma.dog.findMany({ where: { customerId: customer.id, trainerId: user.trainer.id }, select: { id: true, name: true }, orderBy: { name: 'asc' } }) : [];
-  const entries = customer ? await prisma.trainingEntry.findMany({ where: { dog: { customerId: customer.id, trainerId: user.trainer.id } }, orderBy: [{ day: 'desc' }, { createdAt: 'desc' }] }) : [];
+  const [dogs, entries] = customer ? await Promise.all([
+    prisma.dog.findMany({ where: { customerId: customer.id, trainerId: user.trainer.id }, select: { id: true, name: true }, orderBy: { name: 'asc' } }),
+    prisma.trainingEntry.findMany({ where: { dog: { customerId: customer.id, trainerId: user.trainer.id } }, orderBy: [{ day: 'desc' }, { createdAt: 'desc' }] }),
+  ]) : [[], []];
   const today = new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/Oslo' });
   const existingPlans = customers.flatMap((owner) => owner.dogs.map((dog) => {
     const dates = dog.trainingEntries.map((entry) => entry.day);
@@ -38,7 +40,7 @@ export default async function TailoredTrainingPlanPage({ searchParams }: { searc
       <p className="text-sm text-brand-700">Owners and dogs with saved exercises. Open a plan to review or edit its schedule.</p>
       {existingPlans.length ? <ul className="max-h-[32rem] space-y-3 overflow-y-auto pr-1">{existingPlans.map((plan) => <li key={plan.dog.id} className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-brand-200 bg-white p-4">
         <div className="min-w-0"><h3 className="break-words font-semibold">{plan.dog.name} <span className="font-normal">· {plan.owner.name}</span></h3><p className="mt-1 text-sm text-brand-700">{plan.total} scheduled · {plan.completed} completed · {plan.total - plan.completed} remaining</p><p className="mt-1 text-xs text-brand-700">{plan.firstDay} → {plan.lastDay}</p>{!plan.owner.serviceAccess.some((access) => access.serviceKey === 'TAILORED_TRAINING_PLAN') ? <p className="mt-1 text-xs font-semibold">Customer service access is disabled</p> : null}</div>
-        <Link href={`/services/tailored-training-plan?${new URLSearchParams({ customerId: plan.owner.id, dogId: plan.dog.id, day: plan.openDay })}#plan-editor`} className="inline-flex min-h-11 items-center rounded-full bg-brand-900 px-5 py-2 text-sm font-semibold text-white">Open / edit plan →</Link>
+        <Link prefetch={false} href={`/services/tailored-training-plan?${new URLSearchParams({ customerId: plan.owner.id, dogId: plan.dog.id, day: plan.openDay })}#plan-editor`} className="inline-flex min-h-11 items-center rounded-full bg-brand-900 px-5 py-2 text-sm font-semibold text-white">Open / edit plan →</Link>
       </li>)}</ul> : <p className="rounded-xl border border-dashed border-brand-200 p-4 text-sm">No saved training plans yet. Select an owner above and add their first exercise.</p>}
     </section>
   </div></ServicesLayout></SectionCard></SiteShell>;

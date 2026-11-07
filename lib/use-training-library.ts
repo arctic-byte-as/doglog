@@ -17,7 +17,13 @@ export function useTrainingLibrary() {
 
   useEffect(() => {
     const controller = new AbortController();
-    async function load() {
+    let inFlight = false;
+    let reloadQueued = false;
+    let loadedAt = 0;
+    async function load(force = false) {
+      if (inFlight) { if (force) reloadQueued = true; return; }
+      if (!force && Date.now() - loadedAt < 60_000) return;
+      inFlight = true;
       setLoading(true);
       try {
         const response = await fetch('/api/training-library', { cache: 'no-store', signal: controller.signal });
@@ -31,15 +37,23 @@ export function useTrainingLibrary() {
         setLibraryCategories(mergeTrainingLibraries(!data.stored && legacy ? legacy : next, [activationLibraryCategory]));
         setLocalOnly(Boolean(!data.stored && legacy));
         setError('');
+        loadedAt = Date.now();
       } catch (cause) {
         if (!controller.signal.aborted) setError(cause instanceof Error ? cause.message : 'Could not load the training library.');
-      } finally { if (!controller.signal.aborted) setLoading(false); }
+      } finally {
+        inFlight = false;
+        if (!controller.signal.aborted) {
+          setLoading(false);
+          if (reloadQueued) { reloadQueued = false; void load(true); }
+        }
+      }
     }
     void load();
     const refresh = () => { void load(); };
-    window.addEventListener(changeEvent, refresh);
+    const reloadChangedLibrary = () => { void load(true); };
+    window.addEventListener(changeEvent, reloadChangedLibrary);
     window.addEventListener('focus', refresh);
-    return () => { controller.abort(); window.removeEventListener(changeEvent, refresh); window.removeEventListener('focus', refresh); };
+    return () => { controller.abort(); window.removeEventListener(changeEvent, reloadChangedLibrary); window.removeEventListener('focus', refresh); };
   }, []);
 
   async function saveLibrary(next: Category[]) {

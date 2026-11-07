@@ -11,15 +11,15 @@ import Link from 'next/link';
 import { useTrainingLibrary } from '@/lib/use-training-library';
 
 type Entry = { summary?: string; id: string; dogId: string; day: string; exerciseName: string; category: string | null; minutes: number; repetitions: number | null; result: string; completed: boolean };
-export default function TrainingDiaryClient({ dogs, entries: initialEntries, locale, preview = false, apiBase = '/api/customer/diary' }: { dogs: { id: string; name: string }[]; entries: Entry[]; locale: 'en' | 'nb'; preview?: boolean; apiBase?: string }) {
+export default function TrainingDiaryClient({ dogs, entries: initialEntries, locale, preview = false, apiBase = '/api/customer/diary', initialDogId, initialDay }: { dogs: { id: string; name: string }[]; entries: Entry[]; locale: 'en' | 'nb'; preview?: boolean; apiBase?: string; initialDogId?: string; initialDay?: string }) {
   const [previewEntries, setPreviewEntries] = useState(initialEntries);
   const entries = preview ? previewEntries : initialEntries;
   const nb = locale === 'nb';
   const router = useRouter();
   const { libraryCategories, loading, error: libraryError } = useTrainingLibrary();
   const today = () => new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/Oslo' });
-  const [dogId, setDogId] = useState(dogs[0].id);
-  const [day, setDay] = useState(today);
+  const [dogId, setDogId] = useState(dogs.find((dog) => dog.id === initialDogId)?.id || dogs[0].id);
+  const [day, setDay] = useState(() => initialDay || today());
   const blank = (): Entry => ({ id: '', dogId, day, exerciseName: '', category: null, minutes: 5, repetitions: null, result: '', completed: false });
   const [repeatDays, setRepeatDays] = useState(1);
   const [draft, setDraft] = useState<Entry | null>(null);

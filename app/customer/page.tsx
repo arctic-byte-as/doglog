@@ -1,3 +1,5 @@
+import { Suspense } from 'react';
+import CustomerTrainingDiary from '@/components/CustomerTrainingDiary';
 import TrainingHomeCard from '@/components/TrainingHomeCard';
 import { getCustomerPublishedConsultations } from '@/lib/consultation-versions';
 import RecommendedVideos from '@/components/RecommendedVideos';
@@ -86,7 +88,9 @@ export default async function CustomerPage() {
             <div className="grid gap-4 lg:grid-cols-2">{services.filter((service) => !service.key.endsWith('_COURSE') && service.key !== 'RECOMMENDED_VIDEOS' && service.key !== 'TAILORED_TRAINING_PLAN').map(renderService)}</div>
           </div> : <div className="grid items-start gap-4 lg:grid-cols-2">{services.map(renderService)}</div> : <p className="text-sm leading-6">{t.services.noAssigned}</p>}
         </SectionCard>
-        <CustomerCalendar events={events} today={today} locale={locale} labels={t.dashboard} />
+        {enabled.has('TAILORED_TRAINING_PLAN') ? <SectionCard title={locale === 'nb' ? 'Treningsdagbok' : 'Training diary'}>
+          {customer.dogs.length ? <Suspense fallback={<p role="status" className="py-4 text-sm text-brand-700">{locale === 'nb' ? 'Laster treningsdagboken…' : 'Loading your training diary…'}</p>}><CustomerTrainingDiary customerId={user.customer.id} dogs={customer.dogs.map(({ id, name }) => ({ id, name }))} locale={locale} /></Suspense> : <Link href="/customer/dogs" className="underline">{locale === 'nb' ? 'Legg til en hund for å starte dagboken.' : 'Add a dog to start your training diary.'}</Link>}
+        </SectionCard> : <CustomerCalendar events={events} today={today} locale={locale} labels={t.dashboard} />}
       </div>
     </SiteShell>
   );

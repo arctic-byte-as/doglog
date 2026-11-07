@@ -6,6 +6,7 @@ function loadPage(prisma, videos, publications) {
   const compiled = ts.transpileModule(fs.readFileSync(require.resolve('../app/customer/page.tsx'), 'utf8'), { compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.ReactJSX } }).outputText;
   const exports = {};
   new Function('require', 'exports', compiled)((id) => {
+    if (id === 'react') return { Suspense: 'Suspense' };
     if (id === 'react/jsx-runtime') return require(id);
     if (id === 'next/link') return { default: 'Link' };
     if (id === '@/lib/prisma') return { default: prisma };
@@ -36,4 +37,22 @@ test('Home starts independent service loads together and fetches only its seven-
   assert.deepEqual(started, ['videos','training','publications']);
   releases.forEach(release => release());
   await pending;
+});
+
+function nodes(tree) { return Array.isArray(tree) ? tree.flatMap(nodes) : tree && typeof tree === 'object' ? [tree, ...nodes(tree.props?.children)] : []; }
+test('Home replaces the appointment calendar with the owner-scoped diary when tailored training is enabled', async () => {
+  const customer = { name: 'Owner', dogs: [{ id: 'dog-one', name: 'Luna', profileImageUrl: null, serviceSessions: [] }], serviceAccess: [{ serviceKey: 'TAILORED_TRAINING_PLAN' }] };
+  const page = loadPage({ customer: { findUniqueOrThrow: async () => customer }, trainingEntry: { findMany: async () => [] } }, async () => [], async () => []);
+  const tree = nodes(await page());
+  assert.equal(tree.some(node => node.type === 'CustomerCalendar'), false);
+  const diary = tree.find(node => node.type === 'CustomerTrainingDiary');
+  assert.equal(diary.props.customerId, 'owner-one');
+  assert.deepEqual(diary.props.dogs, [{ id: 'dog-one', name: 'Luna' }]);
+  assert.ok(tree.some(node => node.type === 'Suspense'));
+});
+test('Home retains the existing calendar when tailored training is unavailable', async () => {
+  const page = loadPage({ customer: { findUniqueOrThrow: async () => ({ name: 'Owner', dogs: [], serviceAccess: [] }) } }, async () => [], async () => []);
+  const tree = nodes(await page());
+  assert.equal(tree.some(node => node.type === 'CustomerCalendar'), true);
+  assert.equal(tree.some(node => node.type === 'CustomerTrainingDiary'), false);
 });

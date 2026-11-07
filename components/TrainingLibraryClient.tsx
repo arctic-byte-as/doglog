@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { categories, type Category, type Exercise } from '@/lib/training-library';
 import { useTrainingLibrary } from '@/lib/use-training-library';
@@ -77,6 +77,18 @@ export default function TrainingLibraryClient({
   const { libraryCategories, loading, saving, error, legacyAvailable, importLegacy, saveLibrary } = useTrainingLibrary();
   const [selectedCategoryTitle, setSelectedCategoryTitle] = useState(categories[0].title);
   const [selectedExerciseTitle, setSelectedExerciseTitle] = useState(categories[0].exercises[0].title);
+  const openedLinkedExercise = useRef(false);
+  useEffect(() => {
+    if (loading || openedLinkedExercise.current) return;
+    openedLinkedExercise.current = true;
+    const query = new URLSearchParams(window.location.search);
+    const category = libraryCategories.find((item) => item.title === query.get('category'));
+    const exercise = category?.exercises.find((item) => item.title === query.get('exercise'));
+    if (category && exercise) {
+      setSelectedCategoryTitle(category.title);
+      setSelectedExerciseTitle(exercise.title);
+    }
+  }, [loading, libraryCategories]);
   const [categoryForm, setCategoryForm] = useState(emptyCategory);
   const [exerciseForm, setExerciseForm] = useState(emptyExercise);
 

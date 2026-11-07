@@ -1,5 +1,7 @@
 'use client';
 
+import DiaryExerciseInstructions from '@/components/DiaryExerciseInstructions';
+import { findDiaryExercise } from '@/lib/diary-exercise';
 import { trainingScheduleDays } from '@/lib/training-diary';
 import TrainingStatsClient from '@/components/TrainingStatsClient';
 import TrainingDiaryCalendar from '@/components/TrainingDiaryCalendar';
@@ -38,13 +40,11 @@ export default function TrainingDiaryClient({ dogs, entries: initialEntries, loc
   const visible = entries.filter((e) => e.dogId === dogId && (history || e.day === day));
   const completed = visible.filter((e) => e.completed);
   function exerciseSummary(entry: Entry) {
-    const matchesName = (name: string) => name.trim().toLocaleLowerCase() === entry.exerciseName.trim().toLocaleLowerCase();
-    const matches = libraryCategories
-      .filter((category) => !entry.category || category.title === entry.category)
-      .flatMap((category) => category.exercises)
-      .filter((exercise) => matchesName(exercise.title) || Boolean(exercise.translations?.nb?.title && matchesName(exercise.translations.nb.title)));
-    const exercise = matches.length === 1 ? matches[0] : null;
+    const exercise = findDiaryExercise(libraryCategories, entry)?.exercise;
     return (exercise ? (nb ? exercise.translations?.nb?.goal || exercise.goal : exercise.goal) : entry.summary) || (nb ? 'Ingen beskrivelse tilgjengelig for denne øvelsen ennå.' : 'No summary available for this exercise yet.');
+  }
+  function instructions(entry: Entry) {
+    return <DiaryExerciseInstructions categories={libraryCategories} entry={entry} locale={locale} loading={loading} libraryHref={apiBase === '/api/trainer/diary' ? '/training-library' : '/customer/training-library'} />;
   }
   async function save(entry: Entry) {
     const days = trainingScheduleDays(entry.day, entry.id ? 1 : repeatDays);
@@ -89,7 +89,7 @@ export default function TrainingDiaryClient({ dogs, entries: initialEntries, loc
     <dialog ref={dialogRef} onCancel={() => setOpenDay(null)} onClose={() => setOpenDay(null)} onClick={(event) => { if (event.target === event.currentTarget) { const rect = event.currentTarget.getBoundingClientRect(); if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) setOpenDay(null); } }} aria-labelledby="diary-day-title" className="m-auto max-h-[85dvh] w-[calc(100%-2rem)] max-w-lg overflow-y-auto rounded-2xl border border-brand-200 bg-white p-5 text-brand-900 shadow-xl backdrop:bg-black/40">
       <div className="flex items-start justify-between gap-3"><div><h2 id="diary-day-title" className="text-xl font-semibold">{openDay ? new Date(`${openDay}T12:00:00`).toLocaleDateString(nb ? 'nb-NO' : 'en-GB', { weekday: 'long', day: 'numeric', month: 'long' }) : ''}</h2><p className="mt-1 text-sm text-brand-700">{dogs.find((dog) => dog.id === dogId)?.name} · {nb ? 'Planlagte øvelser' : 'Scheduled exercises'}</p></div><button type="button" className={button} onClick={() => setOpenDay(null)} aria-label={nb ? 'Lukk' : 'Close'}>✕</button></div>
       <p className="mt-4 text-sm">{nb ? 'Kryss av øvelsene når du har fullført dem.' : 'Tick each exercise when you have completed it.'}</p>
-      {entries.some((entry) => entry.dogId === dogId && entry.day === openDay) ? <ul className="mt-4 space-y-3">{entries.filter((entry) => entry.dogId === dogId && entry.day === openDay).map((entry) => <li key={entry.id}><label className={`flex min-h-16 cursor-pointer items-start gap-3 rounded-xl border p-4 ${entry.completed ? 'border-emerald-200 bg-emerald-50' : 'border-brand-200'}`}><input type="checkbox" className="training-completion-checkbox mt-1 shrink-0" checked={entry.completed} disabled={busy} onChange={() => { void save({ ...entry, completed: !entry.completed }); }} /><span className="min-w-0"><span className="block break-words font-semibold">{entry.exerciseName}</span><span className="mt-1 block text-sm leading-6">{exerciseSummary(entry)}</span><span className="mt-1 block text-xs text-brand-700">{entry.minutes} min</span><span className="mt-1 block text-xs">{entry.completed ? (nb ? 'Fullført' : 'Completed') : (nb ? 'Planlagt' : 'Scheduled')}</span></span></label></li>)}</ul> : <p className="mt-4 rounded-xl bg-brand-50 p-4 text-sm">{nb ? 'Ingen øvelser planlagt denne dagen.' : 'No exercises scheduled for this day.'}</p>}
+      {entries.some((entry) => entry.dogId === dogId && entry.day === openDay) ? <ul className="mt-4 space-y-3">{entries.filter((entry) => entry.dogId === dogId && entry.day === openDay).map((entry) => <li key={entry.id}><label className={`flex min-h-16 cursor-pointer items-start gap-3 rounded-xl border p-4 ${entry.completed ? 'border-emerald-200 bg-emerald-50' : 'border-brand-200'}`}><input type="checkbox" className="training-completion-checkbox mt-1 shrink-0" checked={entry.completed} disabled={busy} onChange={() => { void save({ ...entry, completed: !entry.completed }); }} /><span className="min-w-0"><span className="block break-words font-semibold">{entry.exerciseName}</span><span className="mt-1 block text-sm leading-6">{exerciseSummary(entry)}</span><span className="mt-1 block text-xs text-brand-700">{entry.minutes} min</span><span className="mt-1 block text-xs">{entry.completed ? (nb ? 'Fullført' : 'Completed') : (nb ? 'Planlagt' : 'Scheduled')}</span></span></label>{instructions(entry)}</li>)}</ul> : <p className="mt-4 rounded-xl bg-brand-50 p-4 text-sm">{nb ? 'Ingen øvelser planlagt denne dagen.' : 'No exercises scheduled for this day.'}</p>}
       {error ? <p className="mt-3 text-sm text-red-700" role="alert">{error}</p> : null}
       {notice ? <p className="mt-3 text-sm" role="status">{notice}</p> : null}
       <div className="mt-5 flex flex-wrap gap-3"><button type="button" className={`${button} bg-brand-900 text-white`} disabled={busy} onClick={() => { setOpenDay(null); setRepeatDays(1); setDraft(blank()); setError(''); setNotice(''); }}>{nb ? 'Legg til øvelse' : 'Add exercise'}</button><button type="button" className={button} onClick={() => setOpenDay(null)}>{nb ? 'Loggfør aktivitet' : 'Log Activity'}</button></div>
@@ -120,6 +120,7 @@ export default function TrainingDiaryClient({ dogs, entries: initialEntries, loc
     <p className="text-sm text-brand-700">{completed.length} / {visible.length} {nb ? 'fullført' : 'completed'} · {completed.reduce((sum, e) => sum + e.minutes, 0)} {nb ? 'minutter trent' : 'minutes trained'}</p>
     {!visible.length ? <p className="rounded-2xl border border-dashed border-brand-200 p-6">{nb ? 'Ingen øvelser ennå. Legg til en øvelse for å komme i gang.' : 'No exercises yet. Add an exercise to get started.'}</p> : <ul className="space-y-3">{visible.map((entry) => <li key={entry.id} className="rounded-2xl border border-brand-200 bg-white p-5">
       <div className="flex items-start gap-3"><input type="checkbox" className="training-completion-checkbox mt-1" checked={entry.completed} disabled={busy} aria-label={`${nb ? 'Fullført' : 'Completed'}: ${entry.exerciseName}`} onChange={() => { void save({ ...entry, completed: !entry.completed }); }} /><div className="min-w-0 flex-1"><h3 className="break-words font-semibold">{entry.exerciseName}</h3><p className="mt-1 text-sm text-brand-700">{entry.day} · {entry.minutes} min{entry.repetitions ? ` · ${entry.repetitions} ${nb ? 'repetisjoner' : 'repetitions'}` : ''} · {entry.completed ? (nb ? 'Fullført' : 'Completed') : (nb ? 'Planlagt' : 'Scheduled')}</p></div></div>
+      {instructions(entry)}
       <div className="mt-3 flex gap-3"><button className={button} disabled={busy} onClick={() => { setDraft(entry); setError(''); }}>{nb ? 'Rediger denne dagen' : 'Edit this day'}</button><button className={button} disabled={busy} onClick={() => void remove(entry)}>{nb ? 'Slett denne dagen' : 'Delete this day'}</button></div>
     </li>)}</ul>}
     </>}

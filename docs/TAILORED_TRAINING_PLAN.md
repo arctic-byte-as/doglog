@@ -13,3 +13,7 @@ Validation: hosted production build, TypeScript and lint pass (existing DogListI
 ## Home service card suggestion
 
 The assigned customer home service now renders a seven-day completion ring, daily completion markers, dog-themed encouragement, today's remaining exercise count, and a next-exercise panel with duration. A prominent action opens the service. Completed-day and empty-plan states adjust the invitation. The Dev test view includes a fictional filled-in example linked to the interactive diary. No training records are invented for the real home card. TypeScript, lint and seven existing stats/diary tests pass; a temporary development customer session confirmed the home renders the ring and service link, then was removed.
+
+## Production release
+
+Released on 7 November 2026 in application commit `9ff5b78`, deployment `dpl_AXy4GgNxu4GQSH9yz7LyerxeBVu8`, serving https://app.norsepaw.com. Both additive migrations are applied and verified on production; existing records/service assignments are preserved and no Dev fixtures were copied. See RELEASE_2026-11-07.md for validation and rollback details.

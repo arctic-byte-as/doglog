@@ -1,0 +1,51 @@
+const test = require('node:test');
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const ts = require('typescript');
+function load(prisma) {
+  const source = fs.readFileSync(require.resolve('../app/services/tailored-training-plan/page.tsx'), 'utf8');
+  const compiled = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.ReactJSX } }).outputText;
+  const exports = {};
+  new Function('require', 'exports', compiled)((id) => {
+    if (id === 'react/jsx-runtime') return require(id);
+    if (id === '@/lib/prisma') return { default: prisma };
+    if (id === '@/lib/auth') return { requireTrainer: async () => ({ trainer: { id: 'trainer-one' } }) };
+    if (id.startsWith('@/components/')) { const name = id.split('/').at(-1); return { default: name, [name]: name }; }
+    throw Error(id);
+  }, exports);
+  return exports.default;
+}
+function elements(tree) {
+  if (Array.isArray(tree)) return tree.flatMap(elements);
+  if (!tree || typeof tree !== 'object') return [];
+  return [tree, ...elements(tree.props?.children)];
+}
+const customers = [{ id: 'customer-a', name: 'First owner', serviceAccess: [] }, { id: 'customer-b', name: 'Second owner', serviceAccess: [] }];
+function fixture() {
+  const reads = [];
+  const prisma = { customer: { findMany: async ({ where }) => { assert.deepEqual(where, { dogs: { some: { trainerId: 'trainer-one' } } }); return customers; } }, dog: { findMany: async ({ where }) => { reads.push(['dogs', where]); return [{ id: 'dog-b', name: 'Dog B' }]; } }, trainingEntry: { findMany: async ({ where }) => { reads.push(['entries', where]); return []; } } };
+  return { page: load(prisma), reads };
+}
+test('opening service without a customer does not silently load the first owner', async () => {
+  const { page, reads } = fixture();
+  const tree = await page({ searchParams: Promise.resolve({}) });
+  assert.deepEqual(reads, []);
+  const selector = elements(tree).find(e => e.type === 'TrainingPlanCustomerSelect');
+  assert.equal(selector.props.selectedCustomerId, '');
+  assert.equal(elements(tree).some(e => e.type === 'TrainingDiaryClient'), false);
+});
+test('selecting the second owner loads only their assigned dogs and diary, not the first owner', async () => {
+  const { page, reads } = fixture();
+  const tree = await page({ searchParams: Promise.resolve({ customerId: 'customer-b' }) });
+  assert.deepEqual(reads, [['dogs', { customerId: 'customer-b', trainerId: 'trainer-one' }], ['entries', { dog: { customerId: 'customer-b', trainerId: 'trainer-one' } }]]);
+  const nodes = elements(tree);
+  assert.equal(nodes.find(e => e.type === 'TrainingPlanCustomerSelect').props.selectedCustomerId, 'customer-b');
+  assert.equal(nodes.find(e => e.type === 'TrainingDiaryClient').key, 'customer-b');
+  assert.equal(nodes.find(e => e.type === 'CustomerServiceAccessForm').props.customerId, 'customer-b');
+});
+test('unknown customer IDs never fall back to another customer’s plan', async () => {
+  const { page, reads } = fixture();
+  const tree = await page({ searchParams: Promise.resolve({ customerId: 'foreign-customer' }) });
+  assert.deepEqual(reads, []);
+  assert.equal(elements(tree).some(e => e.type === 'TrainingDiaryClient'), false);
+});

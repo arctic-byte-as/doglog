@@ -1,4 +1,5 @@
 export const customerServiceOptions = [
+  { key: 'TAILORED_TRAINING_PLAN', title: 'Tailored Training Plan', description: 'Plan daily exercises, log completed training, and follow your progress.', href: '/customer/services/tailored-training-plan' },
   { key: 'RECOMMENDED_VIDEOS', title: 'Recommended Videos', description: 'Share subject-specific YouTube videos on the customer home page.', href: '/customer/services/recommended-videos' },
   {
     key: 'PUPPY_COURSE',

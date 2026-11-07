@@ -19,6 +19,7 @@ export const customerDictionaries = {
       customer: 'Customer',
     },
     services: {
+      TAILORED_TRAINING_PLAN: { title: 'Tailored Training Plan', description: 'Your exercise calendar, daily training diary, and progress in one place.' },
       RECOMMENDED_VIDEOS: { title: 'Recommended Videos', description: 'Videos and practice tips selected for you by your trainer.' },
       PUPPY_COURSE: {
         title: 'Puppy Course',
@@ -198,6 +199,7 @@ export const customerDictionaries = {
       customer: 'Kunde',
     },
     services: {
+      TAILORED_TRAINING_PLAN: { title: 'Tilpasset treningsplan', description: 'Øvelseskalender, daglig treningsdagbok og fremgang på ett sted.' },
       RECOMMENDED_VIDEOS: { title: 'Anbefalte videoer', description: 'Videoer og treningstips valgt for deg av treneren din.' },
       PUPPY_COURSE: {
         title: 'Valpekurs',

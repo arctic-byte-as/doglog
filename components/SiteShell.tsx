@@ -65,6 +65,7 @@ export async function SiteShell({ children, hideDogAvatar = false, mobileHeading
   const customerNav = [
     { href: '/customer', label: t.nav.myHome },
     { href: '/customer/skills-library', label: t.nav.skillsLibrary },
+    { href: '/customer/diary', label: customerLocale === 'nb' ? 'Treningsdagbok' : 'Training diary' },
     { href: '/customer/dogs', label: t.dashboard.yourDogs },
     ...(consultationAccess ? [{ href: '/customer/consultation-history', label: customerLocale === 'nb' ? 'Konsultasjonshistorikk' : 'Consultation history' }] : []),
     { href: '/customer/profile', label: t.nav.profile },

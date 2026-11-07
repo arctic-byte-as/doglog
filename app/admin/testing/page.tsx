@@ -1,3 +1,6 @@
+import TrainingHomeCard from '@/components/TrainingHomeCard';
+import TrainingDiaryPreview from '@/components/TrainingDiaryPreview';
+import TrainingDiaryProposal from '@/components/TrainingDiaryProposal';
 import SubjectHeader from '@/components/SubjectHeader';
 import Link from 'next/link';
 import { SiteShell } from '@/components/SiteShell';
@@ -87,6 +90,11 @@ export default async function AdminTestingPage(props: { searchParams?: Promise<{
         </div>
 
         <AdminMenuSelect selectedHref="/admin/testing" />
+
+        <SectionCard title="Home page suggestion: Your next small win"><p className="text-sm text-brand-700">Example of the Tailored Training Plan service card on the customer home page. Fictional data illustrates a week of practice and the next exercise. The real home card uses saved diary records.</p><div className="max-w-xl"><TrainingHomeCard today={new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/Oslo' })} href="#diary-preview" entries={Array.from({ length: 7 }, (_, index) => { const date = new Date(); date.setUTCDate(date.getUTCDate() - index); return { dogId: 'demo', day: date.toLocaleDateString('sv-SE', { timeZone: 'Europe/Oslo' }), exerciseName: 'Look at me', minutes: 3, completed: index > 0 && index !== 4 }; })} /></div></SectionCard>
+        <div id="diary-preview" className="scroll-mt-6"><TrainingDiaryPreview /></div>
+
+        <details className="rounded-2xl border border-brand-200 p-4"><summary className="cursor-pointer py-2 font-semibold">Training diary proposal and discussion</summary><div className="mt-4"><TrainingDiaryProposal /></div></details>
 
         <div className="grid gap-5 lg:grid-cols-[18rem_1fr]">
           <aside className="space-y-5">

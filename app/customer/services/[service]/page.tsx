@@ -1,3 +1,5 @@
+import TrainingDiaryClient from '@/components/TrainingDiaryClient';
+import Link from 'next/link';
 import RecommendedVideos from '@/components/RecommendedVideos';
 import { getRecommendedVideos } from '@/lib/recommended-videos-server';
 import { getCustomerPublishedConsultations } from '@/lib/consultation-versions';
@@ -59,6 +61,8 @@ export default async function CustomerServicePage(props: { params: Promise<{ ser
       description: t.services[option.key]?.description || t.services.fallbackDescription,
     }));
 
+  const trainingDogs = service.key === 'TAILORED_TRAINING_PLAN' ? await prisma.dog.findMany({ where: { customerId: user.customer.id }, select: { id: true, name: true }, orderBy: { name: 'asc' } }) : [];
+  const trainingEntries = service.key === 'TAILORED_TRAINING_PLAN' ? await prisma.trainingEntry.findMany({ where: { dog: { customerId: user.customer.id } }, orderBy: [{ day: 'desc' }, { createdAt: 'desc' }] }) : [];
   const courseId = service.key === 'PUPPY_COURSE' ? 'puppy' : service.key === 'SKILLS_COURSE' ? 'skills' : null;
   const sectionTitle = t.nav.myServices;
   const recommendedVideos = service.key === 'RECOMMENDED_VIDEOS' ? await getRecommendedVideos(user.customer.id) : [];
@@ -88,7 +92,7 @@ export default async function CustomerServicePage(props: { params: Promise<{ ser
           <div className="space-y-6">
             <CustomerServiceSelect label={t.nav.myServices} services={assignedServices} selectedHref={service.href} />
 
-            {service.key === 'RECOMMENDED_VIDEOS' ? <RecommendedVideos videos={recommendedVideos} locale={locale} /> : courseId ? (
+            {service.key === 'TAILORED_TRAINING_PLAN' ? <div className="space-y-5"><h2 className="text-2xl font-semibold">{serviceTitle}</h2>{trainingDogs.length ? <TrainingDiaryClient dogs={trainingDogs} entries={trainingEntries.map(({ id, dogId, day, exerciseName, category, minutes, repetitions, result, completed }) => ({ id, dogId, day, exerciseName, category, minutes, repetitions, result, completed }))} locale={locale} /> : <Link href="/customer/dogs" className="underline">{locale === 'nb' ? 'Legg til en hund for å starte.' : 'Add a dog to get started.'}</Link>}</div> : service.key === 'RECOMMENDED_VIDEOS'  ? <RecommendedVideos videos={recommendedVideos} locale={locale} /> : courseId ? (
               <CoursesClient
                 editable={false}
                 initialCourseId={courseId}

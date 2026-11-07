@@ -1,6 +1,7 @@
 import Link from 'next/link';
 
 const services = [
+  { href: '/services/tailored-training-plan', title: 'Tailored Training Plan', description: 'Exercise calendars, training diaries, and progress.' },
   { href: '/services/recommended-videos', title: 'Recommended Videos', description: 'Choose videos for each customer’s training.' },
   {
     href: '/services/courses',

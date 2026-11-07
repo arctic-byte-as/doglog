@@ -49,6 +49,7 @@ model Dog {
   trainerId       String
   customer        Customer?        @relation(fields: [customerId], references: [id])
   customerId      String?
+  trainingEntries TrainingEntry[]
   observations    Observation[]
   consultations   Consultation[]
   serviceSessions ServiceSession[]
@@ -176,4 +177,21 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+model TrainingEntry {
+  id           String   @id @default(uuid())
+  dogId        String
+  dog          Dog      @relation(fields: [dogId], references: [id], onDelete: Cascade)
+  day          String
+  exerciseName String
+  category     String?
+  repetitions  Int?
+  minutes      Int
+  result       String   @default("")
+  completed    Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([dogId, day])
 }

@@ -16,6 +16,7 @@
     "prisma:validate:prod": "prisma validate --schema prisma/schema.prisma",
     "lint": "next lint",
     "test:training-library": "node --test tests/training-library.test.cjs",
+    "test:training-diary": "node --test tests/training-diary.test.cjs",
     "test:photo-crop": "node --test tests/photo-crop.test.cjs"
   },
   "dependencies": {

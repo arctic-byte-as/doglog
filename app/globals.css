@@ -298,3 +298,42 @@ summary::-webkit-details-marker {
   background: #eef3e9;
 }
 .customer-consultation .customer-report-highlight > summary { background: #eef3e9; }
+
+/* Keep diary completion visible, including while a save disables the input. */
+.training-completion-checkbox {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  border: 2px solid #64748b;
+  border-radius: 5px;
+  background-color: #ffffff;
+  background-position: center;
+  background-repeat: no-repeat;
+  cursor: pointer;
+}
+
+.training-completion-checkbox:checked {
+  border-color: #047857;
+  background-color: #047857;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='m4 10 4 4 8-8' fill='none' stroke='%23ffffff' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+
+.training-completion-checkbox:focus-visible {
+  outline: 3px solid #047857;
+  outline-offset: 3px;
+}
+
+.training-completion-checkbox:disabled {
+  opacity: 1;
+  cursor: wait;
+}
+
+@media (forced-colors: active) {
+  .training-completion-checkbox {
+    appearance: auto;
+    -webkit-appearance: auto;
+    background-image: none;
+  }
+}

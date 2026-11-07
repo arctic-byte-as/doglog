@@ -14,3 +14,11 @@ Changes:
 Validation: 71 Node tests pass; TypeScript and lint pass with the existing DogListItem image warning. A real development request persisted all 90 entries in a maximum-length batch; its temporary entries and session were removed. No production training data, accounts, service assignments, or schema were changed. The crash cause remains unconfirmed without a reproduction or browser error.
 
 Configuration guidance: https://vercel.com/docs/functions/configuring-functions/region and https://vercel.com/docs/regions.
+
+## Diary → Home through phone navigation
+
+The owner narrowed the report to returning from Training Diary to Home through the phone menu. No new production error/5xx logs were found in the checked 30-minute window. Browser interaction was unavailable, so the user's exact device freeze was not reproduced.
+
+The mobile menu previously called router.prefetch for every other destination whenever opened. It now avoids automatic menu-route prefetch, and its links explicitly close the native modal before navigation, releasing modal blocking immediately. The menu lifecycle no longer restarts when a server render supplies a new items array. Existing cleanup restores document scrolling and focus.
+
+Home now loads recommendations, diary summary records and published consultations concurrently. Its diary summary query is restricted to the seven calendar days displayed, instead of loading the full diary history and future schedule. Four regression checks cover pre-navigation modal closure, disabled all-route prefetch, scrolling/focus cleanup, and concurrent owner-scoped Home loads with the bounded date window. These tests cover logic; they do not establish that the device-specific freeze is resolved without the owner's retry.

@@ -31,10 +31,16 @@ export default async function CustomerPage() {
   const enabled = new Set(customer.serviceAccess.map((access) => access.serviceKey));
   const services = customerServiceOptions.filter((service) => enabled.has(service.key));
   const courses = getCourses(locale);
-  const recommendedVideos = enabled.has('RECOMMENDED_VIDEOS') ? await getRecommendedVideos(user.customer.id) : [];
   const dayKey = (date: Date) => date.toLocaleDateString('sv-SE', { timeZone: 'Europe/Oslo' });
-  const trainingEntries = enabled.has('TAILORED_TRAINING_PLAN') ? await prisma.trainingEntry.findMany({ where: { dog: { customerId: user.customer.id } }, select: { dogId: true, day: true, exerciseName: true, minutes: true, completed: true }, orderBy: { createdAt: 'asc' } }) : [];
-  const publishedConsultations = enabled.has('CONSULTATIONS') ? await getCustomerPublishedConsultations(user.customer.id) : [];
+  const today = dayKey(new Date());
+  const weekStartDate = new Date(`${today}T12:00:00Z`);
+  weekStartDate.setUTCDate(weekStartDate.getUTCDate() - 6);
+  const weekStart = weekStartDate.toISOString().slice(0, 10);
+  const [recommendedVideos, trainingEntries, publishedConsultations] = await Promise.all([
+    enabled.has('RECOMMENDED_VIDEOS') ? getRecommendedVideos(user.customer.id) : Promise.resolve([]),
+    enabled.has('TAILORED_TRAINING_PLAN') ? prisma.trainingEntry.findMany({ where: { dog: { customerId: user.customer.id }, day: { gte: weekStart, lte: today } }, select: { dogId: true, day: true, exerciseName: true, minutes: true, completed: true }, orderBy: { createdAt: 'asc' } }) : Promise.resolve([]),
+    enabled.has('CONSULTATIONS') ? getCustomerPublishedConsultations(user.customer.id) : Promise.resolve([]),
+  ]);
   const consultationEvents = publishedConsultations.map(({ consultation, version }) => ({
     id: `consultation-${version.id}`, day: dayKey(consultation.date), dogName: consultation.dog.name,
     title: consultation.focus || t.services.CONSULTATIONS.title, href: `/customer/consultations/${consultation.id}?version=${version.id}`,
@@ -51,7 +57,7 @@ export default async function CustomerPage() {
   const courseServices = services.filter((service) => service.key.endsWith('_COURSE'));
   const videoService = services.find((service) => service.key === 'RECOMMENDED_VIDEOS');
   const renderService = (service: (typeof customerServiceOptions)[number]) => {
-              if (service.key === 'TAILORED_TRAINING_PLAN') return <TrainingHomeCard key={service.key} entries={trainingEntries} today={dayKey(new Date())} locale={locale} />;
+              if (service.key === 'TAILORED_TRAINING_PLAN') return <TrainingHomeCard key={service.key} entries={trainingEntries} today={today} locale={locale} />;
               const course = courses.find((item) => item.id === (service.key === 'PUPPY_COURSE' ? 'puppy' : service.key === 'SKILLS_COURSE' ? 'skills' : ''));
               return <article key={service.key} className={`customer-course-card flex min-w-0 flex-col rounded-2xl border border-brand-200 bg-white p-5`}>
                 <div className="flex flex-wrap items-center justify-between gap-2"><h3 className="text-lg font-semibold">{t.services[service.key].title}</h3>{course ? <span className="rounded-full bg-brand-100 px-3 py-1 text-xs font-semibold">{course.weeks.length} {t.dashboard.weeks}</span> : null}</div>
@@ -80,7 +86,7 @@ export default async function CustomerPage() {
             <div className="grid gap-4 lg:grid-cols-2">{services.filter((service) => !service.key.endsWith('_COURSE') && service.key !== 'RECOMMENDED_VIDEOS' && service.key !== 'TAILORED_TRAINING_PLAN').map(renderService)}</div>
           </div> : <div className="grid items-start gap-4 lg:grid-cols-2">{services.map(renderService)}</div> : <p className="text-sm leading-6">{t.services.noAssigned}</p>}
         </SectionCard>
-        <CustomerCalendar events={events} today={dayKey(new Date())} locale={locale} labels={t.dashboard} />
+        <CustomerCalendar events={events} today={today} locale={locale} labels={t.dashboard} />
       </div>
     </SiteShell>
   );

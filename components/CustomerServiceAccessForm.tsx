@@ -6,9 +6,11 @@ import { customerServiceOptions } from '@/lib/service-options';
 export default function CustomerServiceAccessForm({
   customerId,
   enabledServices,
+  onlyService,
 }: {
   customerId: string;
   enabledServices: string[];
+  onlyService?: string;
 }) {
   const [selected, setSelected] = useState(new Set(enabledServices));
   const [message, setMessage] = useState('');
@@ -45,7 +47,7 @@ export default function CustomerServiceAccessForm({
     <div className="space-y-2">
       <p className="text-xs font-semibold uppercase text-brand-600">Customer services</p>
       <div className="flex flex-wrap gap-2">
-        {customerServiceOptions.map((service) => (
+        {customerServiceOptions.filter((service) => !onlyService || service.key === onlyService).map((service) => (
           <label key={service.key} className="flex items-center gap-2 rounded-full border border-brand-200 bg-brand-50 px-3 py-2 text-sm text-brand-800">
             <input
               type="checkbox"

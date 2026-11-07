@@ -9,7 +9,7 @@ import Link from 'next/link';
 import { useTrainingLibrary } from '@/lib/use-training-library';
 
 type Entry = { summary?: string; id: string; dogId: string; day: string; exerciseName: string; category: string | null; minutes: number; repetitions: number | null; result: string; completed: boolean };
-export default function TrainingDiaryClient({ dogs, entries: initialEntries, locale, preview = false }: { dogs: { id: string; name: string }[]; entries: Entry[]; locale: 'en' | 'nb'; preview?: boolean }) {
+export default function TrainingDiaryClient({ dogs, entries: initialEntries, locale, preview = false, apiBase = '/api/customer/diary' }: { dogs: { id: string; name: string }[]; entries: Entry[]; locale: 'en' | 'nb'; preview?: boolean; apiBase?: string }) {
   const [previewEntries, setPreviewEntries] = useState(initialEntries);
   const entries = preview ? previewEntries : initialEntries;
   const nb = locale === 'nb';
@@ -55,7 +55,7 @@ export default function TrainingDiaryClient({ dogs, entries: initialEntries, loc
     }
     setBusy(true); setError(''); setNotice('');
     try {
-      const response = await fetch(`/api/customer/diary${entry.id ? `/${entry.id}` : ''}`, { method: entry.id ? 'PUT' : 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...entry, repeatDays: entry.id ? 1 : repeatDays }) });
+      const response = await fetch(`${apiBase}${entry.id ? `/${entry.id}` : ''}`, { method: entry.id ? 'PUT' : 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...entry, repeatDays: entry.id ? 1 : repeatDays }) });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || 'Could not save entry.');
       setDraft(null); setNotice(nb ? `${data.count || 1} oppføring(er) lagret.` : `${data.count || 1} entry/entries saved.`); router.refresh();
@@ -67,7 +67,7 @@ export default function TrainingDiaryClient({ dogs, entries: initialEntries, loc
     if (preview) { setPreviewEntries((current) => current.filter((item) => item.id !== entry.id)); setDraft(null); setNotice('Exercise removed from this day in the calendar. Other scheduled days are unchanged.'); return; }
     setBusy(true); setError(''); setNotice('');
     try {
-      const response = await fetch(`/api/customer/diary/${entry.id}`, { method: 'DELETE' });
+      const response = await fetch(`${apiBase}/${entry.id}`, { method: 'DELETE' });
       if (!response.ok) throw new Error(nb ? 'Kunne ikke slette oppføringen.' : 'Could not delete entry.');
       setDraft(null); router.refresh();
     } catch (cause) { setError(cause instanceof Error ? cause.message : 'Could not delete entry.'); }

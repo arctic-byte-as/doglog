@@ -17,3 +17,7 @@ The assigned customer home service now renders a seven-day completion ring, dail
 ## Production release
 
 Released on 7 November 2026 in application commit `9ff5b78`, deployment `dpl_AXy4GgNxu4GQSH9yz7LyerxeBVu8`, serving https://app.norsepaw.com. Both additive migrations are applied and verified on production; existing records/service assignments are preserved and no Dev fixtures were copied. See RELEASE_2026-11-07.md for validation and rollback details.
+
+## Dedicated trainer workspace correction
+
+The original service admin page displayed general service checkboxes rather than a focused training workspace. It now selects one assigned customer, shows only the Tailored Training Plan access toggle, and embeds the live diary/calendar/stats using trainer-specific write endpoints. Trainer create/update/delete endpoints require trainer access and restrict every mutation to that trainer's linked dogs. Updating an entry cannot move it between dogs. Four route tests cover denied callers, foreign/unlinked dogs, daily schedule creation, and ownership filters. A disposable development integration check verifies admin rendering, seven-day planning, shared diary persistence, update and deletion; its entries/session were removed. No schema change is needed.

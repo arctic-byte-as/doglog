@@ -47,6 +47,7 @@ export default async function CustomerPage() {
     })),
   ])].sort((a, b) => a.day.localeCompare(b.day) || a.id.localeCompare(b.id));
 
+  const tailoredService = services.find((service) => service.key === 'TAILORED_TRAINING_PLAN');
   const courseServices = services.filter((service) => service.key.endsWith('_COURSE'));
   const videoService = services.find((service) => service.key === 'RECOMMENDED_VIDEOS');
   const renderService = (service: (typeof customerServiceOptions)[number]) => {
@@ -71,11 +72,12 @@ export default async function CustomerPage() {
         <CustomerWelcome name={customer.name} dogs={customer.dogs.map((dog) => ({ id: dog.id, name: dog.name, profileImageUrl: dog.profileImageUrl }))} title={t.dashboard.welcome} description={t.dashboard.welcomeHelp} locale={locale} />
         <SectionCard title={t.dashboard.assignedServices} plainHeader>
           {services.length ? courseServices.length && videoService ? <div className="space-y-4">
+            {tailoredService ? renderService(tailoredService) : null}
             <div className="course-video-columns grid items-start gap-4 lg:grid-cols-2">
               <div className="space-y-4">{courseServices.map(renderService)}</div>
               {renderService(videoService)}
             </div>
-            <div className="grid gap-4 lg:grid-cols-2">{services.filter((service) => !service.key.endsWith('_COURSE') && service.key !== 'RECOMMENDED_VIDEOS').map(renderService)}</div>
+            <div className="grid gap-4 lg:grid-cols-2">{services.filter((service) => !service.key.endsWith('_COURSE') && service.key !== 'RECOMMENDED_VIDEOS' && service.key !== 'TAILORED_TRAINING_PLAN').map(renderService)}</div>
           </div> : <div className="grid items-start gap-4 lg:grid-cols-2">{services.map(renderService)}</div> : <p className="text-sm leading-6">{t.services.noAssigned}</p>}
         </SectionCard>
         <CustomerCalendar events={events} today={dayKey(new Date())} locale={locale} labels={t.dashboard} />

@@ -4,7 +4,7 @@ function load(file, imports = {}) {
   const source = ts.transpileModule(fs.readFileSync(require.resolve(file), 'utf8'), { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 } }).outputText;
   const exports = {}; new Function('require', 'exports', source)(id => { if (id in imports) return imports[id]; throw Error(id); }, exports); return exports;
 }
-const validation = load('../lib/course-templates.ts');
+const validation = load('../lib/course-templates.ts', { './training-library': require('../lib/training-library.ts') });
 const template = () => ({ id: `custom-${randomUUID()}`, title: 'Small group', summary: 'Four weeks together', serviceKey: 'OPEN_TRAINING', capacity: 3, durationMinutes: 90, weeks: [{ title: 'Week 1', focus: 'Settling', details: 'Reward calm behaviour.', activities: ['Mat work'] }] });
 test('course builder validates service, capacity, duration and bounded content', () => {
   const value = template(); assert.deepEqual(validation.parseCourseTemplate(value), value);
@@ -34,4 +34,15 @@ test('scheduled courses and stale library edits cannot overwrite saved definitio
   assert.equal((await api.PUT(request({ template: value, updatedAt: updatedAt.toISOString() }))).status, 409);
   assert.equal((await api.PUT(request({ template: value, updatedAt: null }))).status, 409);
   assert.equal((await api.PUT(request(null))).status, 400); assert.equal(writes, 0);
+});
+
+test('library exercises retain exact names, categories, instructions and translations through a saved course', () => {
+  const category = require('../lib/training-library.ts').categories[0];
+  const linked = { category: category.title, exercise: { ...category.exercises[0], translations: { nb: { title: 'Testøvelse', steps: ['Belønn hunden.'] } } } };
+  const value = template(); value.weeks[0].libraryExercises = [linked];
+  const parsed = validation.parseCourseTemplate(JSON.parse(JSON.stringify(value)));
+  assert.deepEqual(parsed.weeks[0].libraryExercises, [linked]);
+  assert.equal(validation.parseCourseTemplate({ ...value, weeks: [{ ...value.weeks[0], libraryExercises: [linked, linked] }] }), null);
+  for (const libraryExercises of [[{ ...linked, exercise: { title: 'Missing instructions' } }], Array(21).fill(linked), [{ ...linked, category: '' }]]) assert.equal(validation.parseCourseTemplate({ ...value, weeks: [{ ...value.weeks[0], libraryExercises }] }), null);
+  assert.equal(validation.parseCourseTemplate(template()).weeks[0].libraryExercises, undefined);
 });

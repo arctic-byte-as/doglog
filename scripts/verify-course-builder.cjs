@@ -26,10 +26,13 @@ function request(route, token, method = 'GET', body) {
   }
   for (const id of ids.dogs) await db.dog.create({ data: { id, name: `Builder dog ${id.slice(0, 4)}`, owner: 'Builder owner check', age: '', breed: '', status: 'Test', trainerId: ids.trainer, customerId: ids.owner } });
   const trainerToken = await session(createdUsers[0]), ownerToken = await session(createdUsers[1]);
-  const template = { id: ids.template, title: `Open Training ${tag}`, summary: 'Four weeks, three dogs', serviceKey: 'OPEN_TRAINING', capacity: 3, durationMinutes: 90, weeks: Array.from({ length: 4 }, (_, i) => ({ title: `Week ${i + 1}`, focus: 'Calm around dogs', details: `Builder instructions ${tag} week ${i + 1}`, activities: ['Mat work', 'Reward attention'] })) };
+  const { categories } = require('../lib/training-library.ts');
+  const libraryExercise = { category: categories[0].title, exercise: categories[0].exercises[0] };
+  const template = { id: ids.template, title: `Open Training ${tag}`, summary: 'Four weeks, three dogs', serviceKey: 'OPEN_TRAINING', capacity: 3, durationMinutes: 90, weeks: Array.from({ length: 4 }, (_, i) => ({ title: `Week ${i + 1}`, focus: 'Calm around dogs', details: `Builder instructions ${tag} week ${i + 1}`, activities: ['Mat work', 'Reward attention'], libraryExercises: [libraryExercise] })) };
   assert(request('/api/course-templates', ownerToken, 'PUT', { template, updatedAt: null }).status === 307, 'Owner cannot build trainer courses');
   const saved = request('/api/course-templates', trainerToken, 'PUT', { template, updatedAt: null }); assert(saved.status === 200, `Template save failed: ${saved.status}`);
   assert(saved.data.templates.some(item => item.id === ids.template), 'Template persisted');
+  assert(saved.data.templates[0].weeks[0].libraryExercises[0].exercise.steps[0] === libraryExercise.exercise.steps[0], 'Library instructions persist with the course');
   assert(request('/course-builder', trainerToken).text.includes(template.title), 'Builder reload displays saved course');
   const page = request(`/services/courses?courseId=${ids.template}&service=OPEN_TRAINING`, trainerToken);
   assert(page.status === 200 && page.text.includes(template.title) && page.text.includes('19:30'), 'Services receives template and default duration');
@@ -41,11 +44,12 @@ function request(route, token, method = 'GET', body) {
   assert(request('/customer/diary', ownerToken).text.includes(body.name), 'Custom course on shared calendar');
   const customerService = request('/customer/services/open-training', ownerToken);
   assert(customerService.status === 200 && customerService.text.includes(template.weeks[0].details), 'Owner sees correct custom course instructions in selected service');
+  assert(customerService.text.includes(libraryExercise.exercise.title) && customerService.text.includes(libraryExercise.exercise.steps[0]), 'Owner sees the linked library exercise and its full instructions');
   assert(request('/api/course-templates', trainerToken, 'PUT', { template: { ...template, title: 'Changed' }, updatedAt: saved.data.updatedAt }).status === 409, 'Used template edit prevented');
   assert(request('/api/course-templates', trainerToken, 'PUT', { template: { ...template, id: ids.copy }, updatedAt: saved.data.updatedAt }).status === 200, 'New version can be saved');
   assert(request('/api/course-templates', trainerToken, 'PUT', { template: { ...template, id: ids.copy }, updatedAt: saved.data.updatedAt }).status === 409, 'Stale library update prevented');
   assert(request('/api/course-runs', trainerToken).data.runs.some(run => run.id === ids.run && run.sessions.length === 4), 'Group persists across reload');
-  console.log('PASS: course builder save/reload, service allocation, 90-minute default, three-dog capacity, four scheduled weeks, service grant, customer calendar/content, definition protection, new versions and stale-edit protection.');
+  console.log('PASS: course builder save/reload, service allocation, 90-minute default, three-dog capacity, four scheduled weeks, service grant, customer calendar/content and library exercise instructions, definition protection, new versions and stale-edit protection.');
 })().catch(error => { console.error(error.message); process.exitCode = 1; }).finally(async () => {
   await db.courseRun.deleteMany({ where: { trainerId: ids.trainer } });
   await db.appContent.deleteMany({ where: { key: `course-templates:${ids.trainer}` } });

@@ -31,3 +31,9 @@ Definitions used by a scheduled group cannot be overwritten. Save a new copy to 
 The hosted check uses disposable trainer/owner/dog/course records and removes them afterward. It refuses production database references and non-development deployment URLs. It checks save/reload, service allocation, duration defaults, capacity, customer instructions/calendar, protected definitions, new versions and stale writes.
 
 This feature is reviewed on the development deployment before a production release.
+
+## Training library exercises
+
+Each week now has an **Add from training library** picker, using the same shared/default/custom/activation library loader as training diaries. Search by name or goal, filter by category, and add up to 20 distinct exercises per week. Remove selected exercises independently of additional free-text activities.
+
+The course stores each selected exercise's exact name, category and full instruction snapshot, including available Norwegian translations. This preserves the identity used by training plans without changing the shared library. Library updates do not silently rewrite course content. Exercise instructions are available on demand in the builder, scheduler content previews/day popups and customer scheduled sessions. Existing definitions without library exercises remain valid.

@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { SiteShell } from '@/components/SiteShell';
 import { SectionCard } from '@/components/SectionCard';
 import { ServicesLayout } from '@/components/ServicesLayout';
@@ -39,6 +40,7 @@ export default async function PrivateTrainingPage() {
                   Create private training sessions, add follow-up guidance, and share updates with owners.
                 </p>
               </div>
+              <Link href="/services/courses?service=PRIVATE_TRAINING" className="inline-flex min-h-11 items-center rounded-full bg-brand-900 px-5 py-2 font-semibold text-white">Schedule Private Training courses →</Link>
               <ConsultationLogClient
                 dogs={dogs}
                 consultations={sessions.map(serviceSessionToItem)}

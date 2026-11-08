@@ -37,3 +37,9 @@ This feature is reviewed on the development deployment before a production relea
 Each week now has an **Add from training library** picker, using the same shared/default/custom/activation library loader as training diaries. Search by name or goal, filter by category, and add up to 20 distinct exercises per week. Remove selected exercises independently of additional free-text activities.
 
 The course stores each selected exercise's exact name, category and full instruction snapshot, including available Norwegian translations. This preserves the identity used by training plans without changing the shared library. Library updates do not silently rewrite course content. Exercise instructions are available on demand in the builder, scheduler content previews/day popups and customer scheduled sessions. Existing definitions without library exercises remain valid.
+
+## Saving and availability
+
+A sticky Save course toolbar stays visible while building long courses. Top and bottom save actions use the same form validation. Saving a scheduled definition creates a new version rather than overwriting the existing group content. Duplicate submissions are blocked while a save is in flight.
+
+Only a confirmed successful response closes the editor, moves the course to the top of Available courses, and highlights it with a ready-to-schedule confirmation. Failed saves retain the draft and show the error in the toolbar. Service navigation is refreshed after success, and allocation links fetch the current service catalogue.

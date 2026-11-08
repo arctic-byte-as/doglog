@@ -9,6 +9,7 @@ datasource db {
 }
 
 model Trainer {
+  courseRuns CourseRun[]
   id        String   @id @default(uuid())
   email     String   @unique
   name      String
@@ -17,6 +18,7 @@ model Trainer {
 }
 
 model Customer {
+  courseEnrollments CourseEnrollment[]
   id        String   @id @default(uuid())
   email     String   @unique
   name      String
@@ -38,6 +40,7 @@ model CustomerServiceAccess {
 }
 
 model Dog {
+  courseEnrollments CourseEnrollment[]
   id            String         @id @default(uuid())
   name          String
   age           String
@@ -214,4 +217,41 @@ model TrainingEntry {
   updatedAt    DateTime @updatedAt
 
   @@index([dogId, day])
+}
+
+model CourseRun {
+  id           String @id @default(uuid())
+  trainerId    String
+  trainer      Trainer @relation(fields: [trainerId], references: [id], onDelete: Cascade)
+  courseId     String
+  name         String
+  location     String @default("")
+  timezone     String @default("Europe/Oslo")
+  cadenceWeeks Int @default(1)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  sessions     CourseSession[]
+  enrollments  CourseEnrollment[]
+  @@index([trainerId, courseId])
+}
+model CourseSession {
+  id        String @id @default(uuid())
+  runId     String
+  run       CourseRun @relation(fields: [runId], references: [id], onDelete: Cascade)
+  weekIndex Int
+  day       String
+  startTime String
+  endTime   String
+  @@index([runId, day])
+}
+model CourseEnrollment {
+  id         String @id @default(uuid())
+  runId      String
+  run        CourseRun @relation(fields: [runId], references: [id], onDelete: Cascade)
+  dogId      String
+  dog        Dog @relation(fields: [dogId], references: [id], onDelete: Cascade)
+  customerId String
+  customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  @@unique([runId, dogId])
+  @@index([customerId, dogId])
 }

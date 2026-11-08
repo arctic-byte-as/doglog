@@ -29,3 +29,7 @@ For new course groups, choosing the first session date (or changing its prescrib
 ## All courses overview
 
 The Course dropdown includes All courses. Schedule mode shows combined group/session/enrolled-dog totals, every course group with its course-type label and management actions, and the shared calendar across course types. Selecting a specific course filters its course sessions and groups; the dog calendar filter still applies. All-course content mode shows each available curriculum with a button to open its prescribed weeks. Editing a group selects the group's actual course and preserves its week-content mapping. Tests create both Puppy and Skills groups, verify the combined twelve-session calendar, and open the correct group editor; content-mode checks cover both curricula.
+
+## Production preparation
+
+The approved design now has a durable release mode on Services → Courses: saved trainer-owned groups, transactional sessions/enrolments, concurrency checks, owner/dog authorization, automatic course service access, and customer-calendar/course-page integration. Temporary state is retained only as a component test/design mode; the actual service page passes persist=true and loads database groups. No sample courses or exercises appear in the production scheduler. See RELEASE_2026-11-08.md.

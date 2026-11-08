@@ -1,5 +1,7 @@
 'use client';
 
+import CustomerCourseSessions from '@/components/CustomerCourseSessions';
+import type { CustomerCourseEvent } from '@/lib/course-runs-server';
 import DiaryExerciseInstructions from '@/components/DiaryExerciseInstructions';
 import { findDiaryExercise } from '@/lib/diary-exercise';
 import { trainingScheduleDays } from '@/lib/training-diary';
@@ -11,7 +13,7 @@ import Link from 'next/link';
 import { useTrainingLibrary } from '@/lib/use-training-library';
 
 type Entry = { summary?: string; id: string; dogId: string; day: string; exerciseName: string; category: string | null; minutes: number; repetitions: number | null; result: string; completed: boolean };
-export default function TrainingDiaryClient({ dogs, entries: initialEntries, locale, preview = false, apiBase = '/api/customer/diary', initialDogId, initialDay }: { dogs: { id: string; name: string }[]; entries: Entry[]; locale: 'en' | 'nb'; preview?: boolean; apiBase?: string; initialDogId?: string; initialDay?: string }) {
+export default function TrainingDiaryClient({ dogs, entries: initialEntries, locale, preview = false, apiBase = '/api/customer/diary', initialDogId, initialDay, courseEvents = [] }: { dogs: { id: string; name: string }[]; entries: Entry[]; locale: 'en' | 'nb'; preview?: boolean; apiBase?: string; initialDogId?: string; initialDay?: string; courseEvents?: CustomerCourseEvent[] }) {
   const [previewEntries, setPreviewEntries] = useState(initialEntries);
   const entries = preview ? previewEntries : initialEntries;
   const nb = locale === 'nb';
@@ -38,6 +40,7 @@ export default function TrainingDiaryClient({ dogs, entries: initialEntries, loc
   const input = 'mt-1 block min-h-11 w-full rounded-xl border border-brand-200 bg-white px-3 py-2';
   const button = 'min-h-11 rounded-full border border-brand-200 px-5 py-2 text-sm font-semibold disabled:opacity-50';
   const visible = entries.filter((e) => e.dogId === dogId && (history || e.day === day));
+  const dogCourses = courseEvents.filter(event => event.dogIds.includes(dogId));
   const completed = visible.filter((e) => e.completed);
   function exerciseSummary(entry: Entry) {
     const exercise = findDiaryExercise(libraryCategories, entry)?.exercise;
@@ -85,11 +88,12 @@ export default function TrainingDiaryClient({ dogs, entries: initialEntries, loc
       <label>{nb ? 'Hund' : 'Dog'}<select className={input} value={dogId} onChange={(e) => { setDogId(e.target.value); setDraft(null); setOpenDay(null); }}>{dogs.map((dog) => <option key={dog.id} value={dog.id}>{dog.name}</option>)}</select></label>
       <label>{nb ? 'Dato' : 'Date'}<input type="date" required className={input} value={day} onChange={(e) => { setDay(e.target.value); setDraft(null); }} /></label>
     </div>
-    <TrainingDiaryCalendar entries={entries.filter((entry) => entry.dogId === dogId)} day={day} locale={locale} onNavigate={(value) => { setDay(value); setHistory(false); setDraft(null); }} onSelect={(value) => { setDay(value); setHistory(false); setDraft(null); setOpenDay(value); }} />
+    <TrainingDiaryCalendar courseEvents={dogCourses} entries={entries.filter((entry) => entry.dogId === dogId)} day={day} locale={locale} onNavigate={(value) => { setDay(value); setHistory(false); setDraft(null); }} onSelect={(value) => { setDay(value); setHistory(false); setDraft(null); setOpenDay(value); }} />
     <dialog ref={dialogRef} onCancel={() => setOpenDay(null)} onClose={() => setOpenDay(null)} onClick={(event) => { if (event.target === event.currentTarget) { const rect = event.currentTarget.getBoundingClientRect(); if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) setOpenDay(null); } }} aria-labelledby="diary-day-title" className="m-auto max-h-[85dvh] w-[calc(100%-2rem)] max-w-lg overflow-y-auto rounded-2xl border border-brand-200 bg-white p-5 text-brand-900 shadow-xl backdrop:bg-black/40">
       <div className="flex items-start justify-between gap-3"><div><h2 id="diary-day-title" className="text-xl font-semibold">{openDay ? new Date(`${openDay}T12:00:00`).toLocaleDateString(nb ? 'nb-NO' : 'en-GB', { weekday: 'long', day: 'numeric', month: 'long' }) : ''}</h2><p className="mt-1 text-sm text-brand-700">{dogs.find((dog) => dog.id === dogId)?.name} · {nb ? 'Planlagte øvelser' : 'Scheduled exercises'}</p></div><button type="button" className={button} onClick={() => setOpenDay(null)} aria-label={nb ? 'Lukk' : 'Close'}>✕</button></div>
       <p className="mt-4 text-sm">{nb ? 'Kryss av øvelsene når du har fullført dem.' : 'Tick each exercise when you have completed it.'}</p>
       {entries.some((entry) => entry.dogId === dogId && entry.day === openDay) ? <ul className="mt-4 space-y-3">{entries.filter((entry) => entry.dogId === dogId && entry.day === openDay).map((entry) => <li key={entry.id}><label className={`flex min-h-16 cursor-pointer items-start gap-3 rounded-xl border p-4 ${entry.completed ? 'border-emerald-200 bg-emerald-50' : 'border-brand-200'}`}><input type="checkbox" className="training-completion-checkbox mt-1 shrink-0" checked={entry.completed} disabled={busy} onChange={() => { void save({ ...entry, completed: !entry.completed }); }} /><span className="min-w-0"><span className="block break-words font-semibold">{entry.exerciseName}</span><span className="mt-1 block text-sm leading-6">{exerciseSummary(entry)}</span><span className="mt-1 block text-xs text-brand-700">{entry.minutes} min</span><span className="mt-1 block text-xs">{entry.completed ? (nb ? 'Fullført' : 'Completed') : (nb ? 'Planlagt' : 'Scheduled')}</span></span></label>{instructions(entry)}</li>)}</ul> : <p className="mt-4 rounded-xl bg-brand-50 p-4 text-sm">{nb ? 'Ingen øvelser planlagt denne dagen.' : 'No exercises scheduled for this day.'}</p>}
+      {dogCourses.some(event => event.day === openDay) ? <CustomerCourseSessions events={dogCourses.filter(event => event.day === openDay)} locale={locale} /> : null}
       {error ? <p className="mt-3 text-sm text-red-700" role="alert">{error}</p> : null}
       {notice ? <p className="mt-3 text-sm" role="status">{notice}</p> : null}
       <div className="mt-5 flex flex-wrap gap-3"><button type="button" className={`${button} bg-brand-900 text-white`} disabled={busy} onClick={() => { setOpenDay(null); setRepeatDays(1); setDraft(blank()); setError(''); setNotice(''); }}>{nb ? 'Legg til øvelse' : 'Add exercise'}</button><button type="button" className={button} onClick={() => setOpenDay(null)}>{nb ? 'Loggfør aktivitet' : 'Log Activity'}</button></div>

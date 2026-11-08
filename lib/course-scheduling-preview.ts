@@ -1,5 +1,5 @@
 export type CourseSessionPreview = { id: string; weekIndex: number; day: string; startTime: string; endTime: string };
-export type CourseRunPreview = { id: string; courseId: string; name: string; location: string; dogIds: string[]; cadenceWeeks?: number; sessions: CourseSessionPreview[] };
+export type CourseRunPreview = { id: string; updatedAt?: string; courseId: string; name: string; location: string; dogIds: string[]; cadenceWeeks?: number; sessions: CourseSessionPreview[] };
 
 export function validCourseTimeRange(start: string, end: string) {
   const valid = (time: string) => /^([01]\d|2[0-3]):[0-5]\d$/.test(time);

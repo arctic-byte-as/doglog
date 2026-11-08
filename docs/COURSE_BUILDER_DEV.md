@@ -43,3 +43,9 @@ The course stores each selected exercise's exact name, category and full instruc
 A sticky Save course toolbar stays visible while building long courses. Top and bottom save actions use the same form validation. Saving a scheduled definition creates a new version rather than overwriting the existing group content. Duplicate submissions are blocked while a save is in flight.
 
 Only a confirmed successful response closes the editor, moves the course to the top of Available courses, and highlights it with a ready-to-schedule confirmation. Failed saves retain the draft and show the error in the toolbar. Service navigation is refreshed after success, and allocation links fetch the current service catalogue.
+
+## Course length from Week 1
+
+Build the first week, then enter **Number of weeks** (1–52) and choose **Apply number of weeks · Copy Week 1**. New weeks receive independent copies of Week 1's focus, instructions, activities and full library exercise snapshots, with numbered week labels. Existing edited weeks are preserved when extending the course. The single-week Add action also copies Week 1.
+
+Reducing the count requires the inline **Remove later weeks** confirmation; **Keep all weeks** cancels it. Apply a changed count before saving. Each generated week remains individually editable and follows the same scheduling cadence and persistence rules as manually added weeks.

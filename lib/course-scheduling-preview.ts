@@ -1,5 +1,5 @@
 export type CourseSessionPreview = { id: string; weekIndex: number; day: string; startTime: string; endTime: string };
-export type CourseRunPreview = { id: string; courseId: string; name: string; location: string; dogIds: string[]; sessions: CourseSessionPreview[] };
+export type CourseRunPreview = { id: string; courseId: string; name: string; location: string; dogIds: string[]; cadenceWeeks?: number; sessions: CourseSessionPreview[] };
 
 export function validCourseTimeRange(start: string, end: string) {
   const valid = (time: string) => /^([01]\d|2[0-3]):[0-5]\d$/.test(time);
@@ -20,4 +20,13 @@ export function courseSessionOverlaps(a: CourseSessionPreview, b: CourseSessionP
 export function validCoursePreviewSession(session: CourseSessionPreview, weekCount: number) {
   return Number.isInteger(session.weekIndex) && session.weekIndex >= 0 && session.weekIndex < weekCount
     && coursePreviewDays(session.day, 1) !== null && validCourseTimeRange(session.startTime, session.endTime);
+}
+
+export function applyCourseCadence(sessions: CourseSessionPreview[], intervalWeeks: number): CourseSessionPreview[] | null {
+  if (![0, 1, 2].includes(intervalWeeks) || !sessions.length) return null;
+  if (intervalWeeks === 0) return sessions.map((session) => ({ ...session }));
+  const firstDay = sessions[0].day;
+  const dates = coursePreviewDays(firstDay, (sessions.length - 1) * intervalWeeks + 1);
+  if (!dates) return null;
+  return sessions.map((session, index) => ({ ...session, day: dates[index * intervalWeeks] }));
 }

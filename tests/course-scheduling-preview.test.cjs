@@ -49,3 +49,17 @@ test('individually chosen course weeks and dates are valid without requiring wee
   assert.equal(validCoursePreviewSession({...weekThree, weekIndex:0, day:'2026-11-24'},6),true);
   for (const patch of [{weekIndex:-1},{weekIndex:6},{weekIndex:1.5},{day:''},{day:'2026-02-30'},{endTime:'17:00'}]) assert.equal(validCoursePreviewSession({...weekThree,...patch},6),false);
 });
+
+test('course cadence uses the chosen first date and preserves week content and times', () => {
+  const { applyCourseCadence } = require('../lib/course-scheduling-preview.ts');
+  const sessions = [0,1,2].map(index => ({ id:`week-${index}`, weekIndex:index+2, day:index ? '2026-11-10' : '2026-11-09', startTime:'18:00', endTime:'19:00' }));
+  const weekly = applyCourseCadence(sessions,1);
+  assert.deepEqual(weekly.map(item=>item.day), ['2026-11-09','2026-11-16','2026-11-23']);
+  assert.deepEqual(weekly.map(item=>item.weekIndex), [2,3,4]);
+  assert.ok(weekly.every(item=>item.startTime==='18:00' && item.endTime==='19:00'));
+  assert.deepEqual(applyCourseCadence(sessions,2).map(item=>item.day), ['2026-11-09','2026-11-23','2026-12-07']);
+  assert.deepEqual(applyCourseCadence(sessions,0), sessions);
+  assert.equal(applyCourseCadence(sessions,3), null);
+  assert.equal(applyCourseCadence([],1), null);
+  assert.equal(applyCourseCadence([{...sessions[0],day:''}],1), null);
+});

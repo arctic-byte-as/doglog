@@ -15,3 +15,9 @@ Open decisions asked of owner: weekly series versus individually entered dates, 
 Checks cover weekly dates across year/leap/DST boundaries, time validation, overlaps, mixed-calendar rendering and unchanged exercise-only calendar behavior. Browser visual verification is recorded separately if available.
 
 The owner confirmed selecting a course week (for example Week 3) and its own date/time. The form now supports multiple manual session rows with content previews, and the session editor can change the linked course week. The seed example is a single Week 1 session.
+
+## Cadence control
+
+The owner requested a visible cadence setting after the seeded Sunday example caused confusion. No course groups are now pre-scheduled, and the first session date is blank until chosen. Course cadence offers weekly, every two weeks, or individual dates. The first date defines the weekday; explicit buttons generate the remaining prescribed weeks or apply spacing to current draft rows. Newly added draft sessions use the selected interval. Manually moved dates stay unchanged until cadence is explicitly applied. Saved preview groups retain individual session editing. The previous single-session example described above is no longer seeded.
+
+Cadence is also available under Edit group / participants: existing session rows are copied into the draft form, the cadence choice is retained, and dates change only through explicit generation/application and Update preview group. The initial date is not chosen automatically, so the intended weekday comes from the trainer's selection.

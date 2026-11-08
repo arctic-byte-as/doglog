@@ -16,3 +16,8 @@ export function coursePreviewDays(startDay: string, weeks: number) {
 export function courseSessionOverlaps(a: CourseSessionPreview, b: CourseSessionPreview) {
   return a.day === b.day && a.startTime < b.endTime && b.startTime < a.endTime;
 }
+
+export function validCoursePreviewSession(session: CourseSessionPreview, weekCount: number) {
+  return Number.isInteger(session.weekIndex) && session.weekIndex >= 0 && session.weekIndex < weekCount
+    && coursePreviewDays(session.day, 1) !== null && validCourseTimeRange(session.startTime, session.endTime);
+}

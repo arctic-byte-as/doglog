@@ -41,3 +41,11 @@ test('existing diary calendar still works without any course sessions', () => {
   assert.ok(html.includes('Training calendar'));
   assert.equal(html.includes('Blue: course session'), false);
 });
+
+test('individually chosen course weeks and dates are valid without requiring weekly sequence', () => {
+  const { validCoursePreviewSession } = require('../lib/course-scheduling-preview.ts');
+  const weekThree = { id:'chosen-session', weekIndex:2, day:'2026-11-12', startTime:'17:30', endTime:'18:30' };
+  assert.equal(validCoursePreviewSession(weekThree,6),true);
+  assert.equal(validCoursePreviewSession({...weekThree, weekIndex:0, day:'2026-11-24'},6),true);
+  for (const patch of [{weekIndex:-1},{weekIndex:6},{weekIndex:1.5},{day:''},{day:'2026-02-30'},{endTime:'17:00'}]) assert.equal(validCoursePreviewSession({...weekThree,...patch},6),false);
+});

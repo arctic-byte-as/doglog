@@ -90,6 +90,7 @@ export default async function AdminTestingPage(props: { searchParams?: Promise<{
         </div>
 
         <AdminMenuSelect selectedHref="/admin/testing" />
+        {process.env.COURSE_SCHEDULING_PREVIEW === 'true' && process.env.VERCEL_ENV !== 'production' ? <SectionCard title="New Dev suggestion: Course scheduling"><p>Schedule course weeks, assign existing owners and dogs, and preview blue course sessions alongside training exercises.</p><Link href="/services/courses" className="inline-flex min-h-11 items-center rounded-full bg-brand-900 px-5 py-2 font-semibold text-white">Review course scheduling →</Link></SectionCard> : null}
 
         <SectionCard title="Home page suggestion: Your next small win"><p className="text-sm text-brand-700">Example of the Tailored Training Plan service card on the customer home page. Fictional data illustrates a week of practice and the next exercise. The real home card uses saved diary records.</p><div className="max-w-xl"><TrainingHomeCard today={new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/Oslo' })} href="#diary-preview" entries={Array.from({ length: 7 }, (_, index) => { const date = new Date(); date.setUTCDate(date.getUTCDate() - index); return { dogId: 'demo', day: date.toLocaleDateString('sv-SE', { timeZone: 'Europe/Oslo' }), exerciseName: 'Look at me', minutes: 3, completed: index > 0 && index !== 4 }; })} /></div></SectionCard>
         <div id="diary-preview" className="scroll-mt-6"><TrainingDiaryPreview /></div>

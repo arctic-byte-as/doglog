@@ -30,3 +30,9 @@ export function applyCourseCadence(sessions: CourseSessionPreview[], intervalWee
   if (!dates) return null;
   return sessions.map((session, index) => ({ ...session, day: dates[index * intervalWeeks] }));
 }
+
+export function generateCourseWeeks(first: CourseSessionPreview, weekCount: number, cadence: number) {
+  if (!Number.isInteger(weekCount) || weekCount < 1 || weekCount > 52 || !Number.isInteger(first.weekIndex) || first.weekIndex < 0 || first.weekIndex >= weekCount || ![1,2].includes(cadence)) return null;
+  const rows = Array.from({ length: weekCount - first.weekIndex }, (_, index) => ({ ...first, id: index ? `${first.id}-week-${first.weekIndex + index}` : first.id, weekIndex: first.weekIndex + index }));
+  return applyCourseCadence(rows, cadence);
+}

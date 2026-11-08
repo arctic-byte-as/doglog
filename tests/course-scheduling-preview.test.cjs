@@ -63,3 +63,37 @@ test('course cadence uses the chosen first date and preserves week content and t
   assert.equal(applyCourseCadence([],1), null);
   assert.equal(applyCourseCadence([{...sessions[0],day:''}],1), null);
 });
+
+function schedulingForm() {
+  const state = []; let cursor = 0;
+  const react = { useState(initial) { const i = cursor++; if (!(i in state)) state[i] = typeof initial === 'function' ? initial() : initial; return [state[i], value => { state[i] = typeof value === 'function' ? value(state[i]) : value; }]; }, useRef: () => ({ current:null }), useEffect: () => {} };
+  const compiled = ts.transpileModule(fs.readFileSync(require.resolve('../components/CourseSchedulingPreview.tsx'),'utf8'), { compilerOptions:{ module:ts.ModuleKind.CommonJS,jsx:ts.JsxEmit.ReactJSX } }).outputText;
+  const exports = {};
+  new Function('require','exports',compiled)(id => {
+    if(id==='react') return react;
+    if(id==='react/jsx-runtime') return require(id);
+    if(id==='@/lib/courses') return require('../lib/courses.ts');
+    if(id==='@/lib/course-scheduling-preview') return require('../lib/course-scheduling-preview.ts');
+    if(id.startsWith('@/components/')) return { default:id.split('/').at(-1) };
+    throw Error(id);
+  },exports);
+  function nodes(tree) { return Array.isArray(tree) ? tree.flatMap(nodes) : tree && typeof tree==='object' ? [tree,...nodes(tree.props?.children)] : []; }
+  return () => { cursor=0; return nodes(exports.default({dogs:[],trainingEntries:[],today:'2026-11-08'})); };
+}
+test('choosing the first date automatically fills remaining weeks without pressing Generate', () => {
+  const render=schedulingForm();
+  let nodes=render();
+  nodes.find(node=>node.type==='input' && node.props.type==='date').props.onChange({target:{value:'2026-11-09'}});
+  nodes=render();
+  assert.deepEqual(nodes.filter(node=>node.type==='input' && node.props.type==='date').map(node=>node.props.value),['2026-11-09','2026-11-16','2026-11-23','2026-11-30','2026-12-07','2026-12-14']);
+  const cadence=nodes.find(node=>node.type==='select' && node.props.value===1);
+  cadence.props.onChange({target:{value:'2'}});
+  nodes=render();
+  assert.deepEqual(nodes.filter(node=>node.type==='input' && node.props.type==='date').map(node=>node.props.value),['2026-11-09','2026-11-23','2026-12-07','2026-12-21','2027-01-04','2027-01-18']);
+});
+test('individual-date mode does not generate unwanted course sessions', () => {
+  const render=schedulingForm();let nodes=render();
+  nodes.find(node=>node.type==='select' && node.props.value===1).props.onChange({target:{value:'0'}});
+  nodes=render();nodes.find(node=>node.type==='input' && node.props.type==='date').props.onChange({target:{value:'2026-11-09'}});
+  nodes=render();assert.equal(nodes.filter(node=>node.type==='input' && node.props.type==='date').length,1);
+});

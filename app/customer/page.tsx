@@ -43,13 +43,13 @@ export default async function CustomerPage() {
     enabled.has('RECOMMENDED_VIDEOS') ? getRecommendedVideos(user.customer.id) : Promise.resolve([]),
     enabled.has('TAILORED_TRAINING_PLAN') ? prisma.trainingEntry.findMany({ where: { dog: { customerId: user.customer.id }, day: { gte: weekStart, lte: today } }, select: { dogId: true, day: true, exerciseName: true, minutes: true, completed: true }, orderBy: { createdAt: 'asc' } }) : Promise.resolve([]),
     enabled.has('CONSULTATIONS') ? getCustomerPublishedConsultations(user.customer.id) : Promise.resolve([]),
-    !enabled.has('TAILORED_TRAINING_PLAN') && (enabled.has('PUPPY_COURSE') || enabled.has('SKILLS_COURSE')) ? getCustomerCourseEvents(user.customer.id, locale) : Promise.resolve([]),
+    !enabled.has('TAILORED_TRAINING_PLAN') && (['PUPPY_COURSE','SKILLS_COURSE','OPEN_TRAINING','PRIVATE_TRAINING'].some(key => enabled.has(key))) ? getCustomerCourseEvents(user.customer.id, locale) : Promise.resolve([]),
   ]);
   const consultationEvents = publishedConsultations.map(({ consultation, version }) => ({
     id: `consultation-${version.id}`, day: dayKey(consultation.date), dogName: consultation.dog.name,
     title: consultation.focus || t.services.CONSULTATIONS.title, href: `/customer/consultations/${consultation.id}?version=${version.id}`,
   }));
-  const events = [...courseEvents.map(event => ({ id: event.id, day: event.day, title: `${event.title} · ${event.weekTitle} · ${event.startTime}–${event.endTime}`, dogName: customer.dogs.filter(dog => event.dogIds.includes(dog.id)).map(dog => dog.name).join(', '), href: `/customer/services/${event.courseId === 'puppy' ? 'puppy-course' : 'skills-course'}`, kind: 'course' as const })), ...consultationEvents, ...customer.dogs.flatMap((dog) => [
+  const events = [...courseEvents.map(event => ({ id: event.id, day: event.day, title: `${event.title} · ${event.weekTitle} · ${event.startTime}–${event.endTime}`, dogName: customer.dogs.filter(dog => event.dogIds.includes(dog.id)).map(dog => dog.name).join(', '), href: `/customer/services/${event.serviceKey === 'OPEN_TRAINING' ? 'open-training' : event.serviceKey === 'PRIVATE_TRAINING' ? 'private-training' : event.serviceKey === 'PUPPY_COURSE' ? 'puppy-course' : 'skills-course'}`, kind: 'course' as const })), ...consultationEvents, ...customer.dogs.flatMap((dog) => [
     ...dog.serviceSessions.filter((record) => enabled.has(record.serviceKey)).map((record) => ({
       id: `session-${record.id}`, day: dayKey(record.date), dogName: dog.name,
       title: record.focus || (record.serviceKey === 'PRIVATE_TRAINING' ? t.services.PRIVATE_TRAINING.title : t.services.OPEN_TRAINING.title),

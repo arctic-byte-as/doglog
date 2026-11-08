@@ -66,7 +66,7 @@ export default async function CustomerServicePage(props: { params: Promise<{ ser
   const trainingDogs = service.key === 'TAILORED_TRAINING_PLAN' ? await prisma.dog.findMany({ where: { customerId: user.customer.id }, select: { id: true, name: true }, orderBy: { name: 'asc' } }) : [];
   const trainingEntries = service.key === 'TAILORED_TRAINING_PLAN' ? await prisma.trainingEntry.findMany({ where: { dog: { customerId: user.customer.id } }, orderBy: [{ day: 'desc' }, { createdAt: 'desc' }] }) : [];
   const courseId = service.key === 'PUPPY_COURSE' ? 'puppy' : service.key === 'SKILLS_COURSE' ? 'skills' : null;
-  const courseEvents = service.key === 'TAILORED_TRAINING_PLAN' || courseId ? await getCustomerCourseEvents(user.customer.id, locale) : [];
+  const courseEvents = service.key === 'TAILORED_TRAINING_PLAN' || courseId || service.key === 'OPEN_TRAINING' || service.key === 'PRIVATE_TRAINING' ? await getCustomerCourseEvents(user.customer.id, locale) : [];
   const sectionTitle = t.nav.myServices;
   const recommendedVideos = service.key === 'RECOMMENDED_VIDEOS' ? await getRecommendedVideos(user.customer.id) : [];
   const consultations = service.key === 'CONSULTATIONS' ? await getCustomerPublishedConsultations(user.customer.id) : [];
@@ -95,8 +95,9 @@ export default async function CustomerServicePage(props: { params: Promise<{ ser
           <div className="space-y-6">
             <CustomerServiceSelect label={t.nav.myServices} services={assignedServices} selectedHref={service.href} />
 
+            {!courseId && service.key !== 'TAILORED_TRAINING_PLAN' && courseEvents.length ? <CustomerCourseSessions events={courseEvents.filter(event => event.serviceKey === service.key)} locale={locale} /> : null}
             {service.key === 'TAILORED_TRAINING_PLAN' ? <div className="space-y-5"><h2 className="text-2xl font-semibold">{serviceTitle}</h2>{trainingDogs.length ? <TrainingDiaryClient courseEvents={courseEvents} dogs={trainingDogs} entries={trainingEntries.map(({ id, dogId, day, exerciseName, category, minutes, repetitions, result, completed }) => ({ id, dogId, day, exerciseName, category, minutes, repetitions, result, completed }))} locale={locale} /> : <Link href="/customer/dogs" className="underline">{locale === 'nb' ? 'Legg til en hund for å starte.' : 'Add a dog to get started.'}</Link>}</div> : service.key === 'RECOMMENDED_VIDEOS'  ? <RecommendedVideos videos={recommendedVideos} locale={locale} /> : courseId ? (
-              <div className="space-y-6">{courseEvents.some(event => event.courseId === courseId) ? <CustomerCourseSessions events={courseEvents.filter(event => event.courseId === courseId)} locale={locale} /> : null}<CoursesClient
+              <div className="space-y-6">{courseEvents.some(event => event.serviceKey === service.key) ? <CustomerCourseSessions events={courseEvents.filter(event => event.serviceKey === service.key)} locale={locale} /> : null}<CoursesClient
                 editable={false}
                 initialCourseId={courseId}
                 lockedCourse

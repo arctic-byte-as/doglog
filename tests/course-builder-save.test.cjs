@@ -3,7 +3,7 @@ function loadWeeks() {
   const code = ts.transpileModule(fs.readFileSync(require.resolve('../lib/course-builder-weeks.ts'), 'utf8'), { compilerOptions: { module: ts.ModuleKind.CommonJS } }).outputText;
   const exports = {}; new Function('exports', code)(exports); return exports;
 }
-function builder() {
+function builder(options = {}) {
   const slots = []; let cursor = 0, refreshed = 0;
   const react = {
     useState(initial) { const i = cursor++; if (!(i in slots)) slots[i] = typeof initial === 'function' ? initial() : initial; return [slots[i], value => { slots[i] = typeof value === 'function' ? value(slots[i]) : value; }]; },
@@ -18,7 +18,7 @@ function builder() {
   };
   new Function('require', 'exports', code)(id => { if (id in imports) return imports[id]; throw Error(id); }, exports);
   function nodes(tree) { return Array.isArray(tree) ? tree.flatMap(nodes) : tree && typeof tree === 'object' ? [tree, ...nodes(tree.props?.children)] : []; }
-  return { render() { cursor = 0; return nodes(exports.default({ initialTemplates: [], builtins: [], usedIds: [], initialUpdatedAt: null })); }, refreshCount: () => refreshed };
+  return { render() { cursor = 0; return nodes(exports.default({ initialTemplates: options.templates || [], builtins: [], usedIds: options.usedIds || [], initialUpdatedAt: options.updatedAt || null })); }, refreshCount: () => refreshed };
 }
 function start(app) {
   app.render().find(node => node.type === 'button' && node.props.children === '+ Build a course').props.onClick();
@@ -81,4 +81,29 @@ test('reducing course length requires an explicit removal action', () => {
   app.render().find(node => node.type === 'button' && node.props.children === 'Apply number of weeks · Copy Week 1').props.onClick();
   app.render().find(node => node.type === 'button' && node.props.children === 'Remove later weeks').props.onClick();
   assert.equal(app.render().filter(node => node.type === 'Picker').length, 1);
+});
+
+test('deleting requires confirmation and removes the course from available courses after success', async () => {
+  const course = { id: 'custom-delete-test', title: 'Delete me', serviceKey: 'OPEN_TRAINING', weeks: [], capacity: 3, durationMinutes: 60 };
+  const app = builder({ templates: [course], updatedAt: 'version-one' }), original = global.fetch; let calls = 0;
+  global.fetch = async (_, options) => { calls++; assert.equal(options.method, 'DELETE'); assert.deepEqual(JSON.parse(options.body), { id: course.id, updatedAt: 'version-one' }); return { ok: true, json: async () => ({ templates: [], updatedAt: 'version-two' }) }; };
+  try {
+    let tree = app.render(); tree.find(node => node.type === 'button' && node.props.children === 'Delete course').props.onClick();
+    assert.equal(calls, 0); app.render().find(node => node.type === 'button' && node.props.children === 'Keep course').props.onClick();
+    assert.equal(calls, 0); tree = app.render(); assert.ok(tree.some(node => node.type === 'h3' && node.props.children === course.title));
+    tree.find(node => node.type === 'button' && node.props.children === 'Delete course').props.onClick();
+    app.render().find(node => node.type === 'button' && node.props.children === 'Yes, delete course').props.onClick(); await settled();
+    tree = app.render(); assert.equal(calls, 1); assert.equal(tree.some(node => node.type === 'h3' && node.props.children === course.title), false); assert.equal(app.refreshCount(), 1);
+  } finally { global.fetch = original; }
+});
+test('a rejected delete preserves the available course and explains why', async () => {
+  const course = { id: 'custom-delete-test', title: 'Keep me', serviceKey: 'OPEN_TRAINING', weeks: [], capacity: 3, durationMinutes: 60 };
+  const app = builder({ templates: [course] }), original = global.fetch;
+  global.fetch = async () => ({ ok: false, json: async () => ({ error: 'This course has scheduled groups.' }) });
+  try {
+    app.render().find(node => node.type === 'button' && node.props.children === 'Delete course').props.onClick();
+    app.render().find(node => node.type === 'button' && node.props.children === 'Yes, delete course').props.onClick(); await settled();
+    const tree = app.render(); assert.ok(tree.some(node => node.props?.role === 'alert' && node.props.children.includes('scheduled groups'))); assert.ok(tree.some(node => node.type === 'h3' && node.props.children === course.title)); assert.equal(app.refreshCount(), 0);
+    const scheduled = builder({ templates: [course], usedIds: [course.id] }).render(); assert.equal(scheduled.find(node => node.type === 'button' && node.props.children === 'Delete course').props.disabled, true);
+  } finally { global.fetch = original; }
 });

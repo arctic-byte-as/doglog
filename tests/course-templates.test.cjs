@@ -46,3 +46,18 @@ test('library exercises retain exact names, categories, instructions and transla
   for (const libraryExercises of [[{ ...linked, exercise: { title: 'Missing instructions' } }], Array(21).fill(linked), [{ ...linked, category: '' }]]) assert.equal(validation.parseCourseTemplate({ ...value, weeks: [{ ...value.weeks[0], libraryExercises }] }), null);
   assert.equal(validation.parseCourseTemplate(template()).weeks[0].libraryExercises, undefined);
 });
+
+test('delete removes only the selected course from the current trainer library', async () => {
+  const first = template(), second = template(), updatedAt = new Date('2026-11-08T12:00:00Z'); let saved;
+  const api = route({ appContent: { findUnique: async ({ where }) => { assert.equal(where.key, 'course-templates:trainer-one'); return { value: JSON.stringify([first, second]), updatedAt }; }, updateMany: async ({ where, data }) => { assert.equal(where.key, 'course-templates:trainer-one'); assert.equal(where.updatedAt, updatedAt); saved = JSON.parse(data.value); return { count: 1 }; } }, courseRun: { count: async ({ where }) => { assert.deepEqual(where, { trainerId: 'trainer-one', courseId: first.id }); return 0; } } });
+  assert.equal((await api.DELETE(request({ id: first.id, updatedAt: updatedAt.toISOString() }))).status, 200); assert.deepEqual(saved, [second]);
+});
+test('delete denies scheduled courses, foreign identities and stale lists without writes', async () => {
+  const course = template(), updatedAt = new Date('2026-11-08T12:00:00Z'); let writes = 0;
+  const api = route({ appContent: { findUnique: async () => ({ value: JSON.stringify([course]), updatedAt }), updateMany: async () => { writes++; return { count: 1 }; } }, courseRun: { count: async () => 1 } });
+  assert.equal((await api.DELETE(request({ id: course.id, updatedAt: updatedAt.toISOString() }))).status, 409);
+  assert.equal((await api.DELETE(request({ id: template().id, updatedAt: updatedAt.toISOString() }))).status, 404);
+  assert.equal((await api.DELETE(request({ id: 'puppy', updatedAt: updatedAt.toISOString() }))).status, 404);
+  assert.equal((await api.DELETE(request({ id: course.id, updatedAt: 'stale' }))).status, 409);
+  assert.equal((await api.DELETE(request(null))).status, 400); assert.equal(writes, 0);
+});

@@ -46,10 +46,18 @@ function request(route, token, method = 'GET', body) {
   assert(customerService.status === 200 && customerService.text.includes(template.weeks[0].details), 'Owner sees correct custom course instructions in selected service');
   assert(customerService.text.includes(libraryExercise.exercise.title) && customerService.text.includes(libraryExercise.exercise.steps[0]), 'Owner sees the linked library exercise and its full instructions');
   assert(request('/api/course-templates', trainerToken, 'PUT', { template: { ...template, title: 'Changed' }, updatedAt: saved.data.updatedAt }).status === 409, 'Used template edit prevented');
-  assert(request('/api/course-templates', trainerToken, 'PUT', { template: { ...template, id: ids.copy }, updatedAt: saved.data.updatedAt }).status === 200, 'New version can be saved');
+  const copied = request('/api/course-templates', trainerToken, 'PUT', { template: { ...template, id: ids.copy }, updatedAt: saved.data.updatedAt });
+  assert(copied.status === 200, 'New version can be saved');
   assert(request('/api/course-templates', trainerToken, 'PUT', { template: { ...template, id: ids.copy }, updatedAt: saved.data.updatedAt }).status === 409, 'Stale library update prevented');
   assert(request('/api/course-runs', trainerToken).data.runs.some(run => run.id === ids.run && run.sessions.length === 4), 'Group persists across reload');
-  console.log('PASS: course builder save/reload, service allocation, 90-minute default, three-dog capacity, four scheduled weeks, service grant, customer calendar/content and library exercise instructions, definition protection, new versions and stale-edit protection.');
+  assert(request('/api/course-templates', ownerToken, 'DELETE', { id: ids.copy, updatedAt: copied.data.updatedAt }).status === 307, 'Owner cannot delete trainer courses');
+  assert(request('/api/course-templates', trainerToken, 'DELETE', { id: ids.copy, updatedAt: saved.data.updatedAt }).status === 409, 'Stale deletion denied');
+  assert(request('/api/course-templates', trainerToken, 'DELETE', { id: ids.template, updatedAt: copied.data.updatedAt }).status === 409, 'Scheduled definition deletion denied');
+  const deleted = request('/api/course-templates', trainerToken, 'DELETE', { id: ids.copy, updatedAt: copied.data.updatedAt });
+  assert(deleted.status === 200 && !deleted.data.templates.some(item => item.id === ids.copy), 'Unused course deleted');
+  assert(!request('/api/course-templates', trainerToken).data.templates.some(item => item.id === ids.copy), 'Deleted course absent after reload');
+  assert(!request('/services/courses?service=OPEN_TRAINING', trainerToken).text.includes(ids.copy), 'Deleted course removed from scheduling catalogue');
+  console.log('PASS: course builder save/reload, service allocation, 90-minute default, three-dog capacity, four scheduled weeks, service grant, customer calendar/content and library exercise instructions, definition protection, new versions, stale-edit protection and safe course deletion.');
 })().catch(error => { console.error(error.message); process.exitCode = 1; }).finally(async () => {
   await db.courseRun.deleteMany({ where: { trainerId: ids.trainer } });
   await db.appContent.deleteMany({ where: { key: `course-templates:${ids.trainer}` } });

@@ -12,6 +12,8 @@ export default function CourseBuilderClient({ initialTemplates, builtins, initia
   const { libraryCategories, loading: libraryLoading, error: libraryError } = useTrainingLibrary();
   const [weekCount, setWeekCount] = useState('1');
   const [pendingReduction, setPendingReduction] = useState<number | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
+  const [deleteError, setDeleteError] = useState('');
   const router = useRouter();
   const [savedId, setSavedId] = useState<string | null>(null);
   const availableCourses = useRef<HTMLElement>(null);
@@ -71,6 +73,33 @@ export default function CourseBuilderClient({ initialTemplates, builtins, initia
       setBusy(false);
     }
   }
+  async function deleteCourse(course: CourseTemplate) {
+    if (saving.current) return;
+    saving.current = true;
+    setBusy(true);
+    setDeleteError('');
+    try {
+      const response = await fetch('/api/course-templates', {
+        method: 'DELETE', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: course.id, updatedAt }),
+      });
+      const data = await response.json();
+      if (!response.ok) throw Error(data.error || 'Could not delete course.');
+      if (!Array.isArray(data.templates) || data.templates.some((item: CourseTemplate) => item.id === course.id)) throw Error('The deletion could not be confirmed. Please reload.');
+      setTemplates(data.templates);
+      setUpdatedAt(data.updatedAt);
+      setDeleteTarget(null);
+      if (draft?.id === course.id) setDraft(null);
+      if (savedId === course.id) setSavedId(null);
+      setMessage(`${course.title} was deleted from Available courses.`);
+      router.refresh();
+    } catch (cause) {
+      setDeleteError(cause instanceof Error ? cause.message : 'Could not delete course.');
+    } finally {
+      saving.current = false;
+      setBusy(false);
+    }
+  }
   return <div className="space-y-6"><div className="rounded-2xl bg-brand-50 p-5"><h1 className="text-2xl font-semibold">Course Builder</h1><p className="mt-3 text-sm leading-6">Build reusable course content here, then schedule groups through the appropriate service. For example: Open Training, three dogs, four weekly sessions.</p><button className={`${button} mt-4 bg-brand-900 text-white`} disabled={busy} onClick={()=>{setDraft(blank());setError('');setMessage('');}}>+ Build a course</button></div>
     {draft?<form ref={editor} className="space-y-5 rounded-2xl border border-brand-200 p-5" onSubmit={event=>{event.preventDefault();void save((event.nativeEvent as SubmitEvent).submitter?.getAttribute('value') === 'copy');}}>
       <div className="sticky top-3 z-20 space-y-3 rounded-xl border border-brand-200 bg-white p-4 shadow-sm">
@@ -94,7 +123,10 @@ export default function CourseBuilderClient({ initialTemplates, builtins, initia
       {usedIds.includes(draft.id)?<p className="rounded-xl bg-blue-50 p-4 text-sm">This course is already scheduled. Save a copy to develop a new version while preserving the content of existing groups.</p>:null}
       <div className="flex flex-wrap gap-3"><button type="submit" name="action" value={usedIds.includes(draft.id)?'copy':'save'} disabled={busy} className={`${button} bg-brand-900 text-white`}>{busy?'Saving…':usedIds.includes(draft.id)?'Save as a new course':'Save course'}</button>{!usedIds.includes(draft.id)?<button type="submit" name="action" value="copy" disabled={busy} className={button}>Save as a new course</button>:null}<button type="button" className={button} disabled={busy} onClick={()=>setDraft(null)}>Close editor</button></div>
     </form>:null}
-    <section ref={availableCourses} tabIndex={-1} aria-label="Available courses" className="scroll-mt-6 space-y-4 rounded-2xl focus:outline-none focus:ring-2 focus:ring-brand-300"><h2 className="text-xl font-semibold">Available courses</h2>{message?<p role="status" className="rounded-xl bg-green-50 p-4 text-sm text-green-900">{message}</p>:null}{!templates.length?<p className="text-sm">No custom courses yet. Build one above or copy an existing course below.</p>:null}{templates.map(course=><article key={course.id} className={`space-y-3 rounded-2xl border p-5 ${course.id === savedId ? 'border-green-500 bg-green-50' : 'border-brand-200'}`}><h3 className="text-lg font-semibold">{course.title}</h3>{course.id === savedId ? <p className="text-sm font-semibold text-green-800">✓ Saved · Ready to schedule</p> : null}<p className="text-sm">{courseServiceTypes.find(service=>service.key===course.serviceKey)?.title} · {course.weeks.length} sessions · {course.durationMinutes} min · {course.capacity?`up to ${course.capacity} dogs`:'no set dog limit'}</p><p className="text-sm leading-6">{course.summary}</p><div className="flex flex-wrap gap-2"><button type="button" className={button} onClick={()=>edit(course)}>View / edit course</button><Link prefetch={false} href={`/services/courses?${new URLSearchParams({courseId:course.id,service:course.serviceKey})}`} className={`${button} bg-brand-900 text-white`}>Allocate through Services →</Link></div></article>)}</section>
+    <section ref={availableCourses} tabIndex={-1} aria-label="Available courses" className="scroll-mt-6 space-y-4 rounded-2xl focus:outline-none focus:ring-2 focus:ring-brand-300"><h2 className="text-xl font-semibold">Available courses</h2>{message?<p role="status" className="rounded-xl bg-green-50 p-4 text-sm text-green-900">{message}</p>:null}{!templates.length?<p className="text-sm">No custom courses yet. Build one above or copy an existing course below.</p>:null}{templates.map(course=><article key={course.id} className={`space-y-3 rounded-2xl border p-5 ${course.id === savedId ? 'border-green-500 bg-green-50' : 'border-brand-200'}`}><h3 className="text-lg font-semibold">{course.title}</h3>{course.id === savedId ? <p className="text-sm font-semibold text-green-800">✓ Saved · Ready to schedule</p> : null}<p className="text-sm">{courseServiceTypes.find(service=>service.key===course.serviceKey)?.title} · {course.weeks.length} sessions · {course.durationMinutes} min · {course.capacity?`up to ${course.capacity} dogs`:'no set dog limit'}</p><p className="text-sm leading-6">{course.summary}</p><div className="flex flex-wrap gap-2"><button type="button" className={button} disabled={busy} onClick={()=>edit(course)}>View / edit course</button><Link prefetch={false} href={`/services/courses?${new URLSearchParams({courseId:course.id,service:course.serviceKey})}`} className={`${button} bg-brand-900 text-white`}>Allocate through Services →</Link><button type="button" disabled={busy || usedIds.includes(course.id)} className={`${button} text-red-700`} onClick={()=>{setDeleteTarget(course.id);setDeleteError('');}}>Delete course</button></div>
+      {usedIds.includes(course.id)?<p className="text-sm text-brand-700">This course has scheduled groups. Remove those groups in Services before deleting it.</p>:null}
+      {deleteTarget === course.id ? <div role="region" aria-label={`Delete ${course.title}`} className="space-y-3 rounded-xl border border-red-200 bg-red-50 p-4"><p className="text-sm">Delete <strong>{course.title}</strong>? It will be removed from Available courses and will no longer be available to schedule. This cannot be undone.</p>{deleteError?<p role="alert" className="text-sm text-red-700">{deleteError}</p>:null}<div className="flex flex-wrap gap-2"><button type="button" disabled={busy} className={`${button} bg-red-700 text-white`} onClick={()=>void deleteCourse(course)}>{busy?'Deleting…':'Yes, delete course'}</button><button type="button" disabled={busy} className={button} onClick={()=>{setDeleteTarget(null);setDeleteError('');}}>Keep course</button></div></div> : null}
+    </article>)}</section>
     <section className="space-y-4"><h2 className="text-xl font-semibold">Start from an existing course</h2>{builtins.map(course=><article key={course.id} className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-brand-200 p-4"><div><h3 className="font-semibold">{course.title}</h3><p className="text-sm">{course.weeks.length} prescribed weeks</p></div><button type="button" className={button} onClick={()=>edit(course,true)}>Use as a starting point</button></article>)}</section>
   </div>;
 }

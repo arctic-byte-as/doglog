@@ -49,3 +49,9 @@ Only a confirmed successful response closes the editor, moves the course to the 
 Build the first week, then enter **Number of weeks** (1–52) and choose **Apply number of weeks · Copy Week 1**. New weeks receive independent copies of Week 1's focus, instructions, activities and full library exercise snapshots, with numbered week labels. Existing edited weeks are preserved when extending the course. The single-week Add action also copies Week 1.
 
 Reducing the count requires the inline **Remove later weeks** confirmation; **Keep all weeks** cancels it. Apply a changed count before saving. Each generated week remains individually editable and follows the same scheduling cadence and persistence rules as manually added weeks.
+
+## Deleting built courses
+
+Custom courses in Available courses have a Delete course action and inline confirmation. Keep course cancels without a request. Successful deletion removes the definition from the trainer's saved library and refreshes Services navigation; failure keeps the card visible with an error.
+
+Definitions referenced by any scheduled group cannot be deleted, including groups in the past, because those groups still need their content. Remove their groups through Services first. Built-in curricula remain available as starting points. Server-side trainer scoping, library version checks and serializable transactions protect against foreign requests, stale lists and concurrent scheduling.

@@ -97,3 +97,37 @@ test('individual-date mode does not generate unwanted course sessions', () => {
   nodes=render();nodes.find(node=>node.type==='input' && node.props.type==='date').props.onChange({target:{value:'2026-11-09'}});
   nodes=render();assert.equal(nodes.filter(node=>node.type==='input' && node.props.type==='date').length,1);
 });
+
+test('All courses combines both course groups and calendars and opens the right group editor', () => {
+  const render=schedulingForm();
+  function createGroup(courseId,name,date) {
+    let nodes=render();
+    nodes.find(node=>node.type==='select' && ['puppy','skills','all'].includes(node.props.value)).props.onChange({target:{value:courseId}});
+    nodes=render();nodes.find(node=>node.type==='input' && node.props.maxLength===150).props.onChange({target:{value:name}});
+    nodes.find(node=>node.type==='input' && node.props.type==='date').props.onChange({target:{value:date}});
+    nodes=render();nodes.find(node=>node.type==='form').props.onSubmit({preventDefault(){}});
+  }
+  createGroup('puppy','Puppy group','2026-11-09');
+  createGroup('skills','Skills group','2026-11-10');
+  let nodes=render();
+  const selector=nodes.find(node=>node.type==='select' && node.props.value==='skills');
+  selector.props.onChange({target:{value:'all'}});
+  nodes=render();
+  assert.equal(nodes.find(node=>node.type==='TrainingDiaryCalendar').props.courseEvents.length,12);
+  assert.ok(nodes.some(node=>node.type==='h3' && node.props.children==='Puppy group'));
+  assert.ok(nodes.some(node=>node.type==='h3' && node.props.children==='Skills group'));
+  assert.equal(nodes.some(node=>node.type==='form'),false);
+  const edit=nodes.find(node=>node.type==='button' && node.props.children==='Edit group / participants');
+  edit.props.onClick();nodes=render();
+  assert.equal(nodes.find(node=>node.type==='select' && node.props.value==='puppy').props.value,'puppy');
+  assert.equal(nodes.find(node=>node.type==='input' && node.props.maxLength===150).props.value,'Puppy group');
+});
+test('All courses content view exposes both curricula without choosing one silently', () => {
+  const render=schedulingForm();let nodes=render();
+  nodes.find(node=>node.type==='select' && node.props.value==='puppy').props.onChange({target:{value:'all'}});
+  nodes=render();nodes.find(node=>node.type==='button' && node.props.children==='Course content').props.onClick();
+  nodes=render();
+  assert.ok(nodes.some(node=>node.type==='h2' && node.props.children==='Puppy Course'));
+  assert.ok(nodes.some(node=>node.type==='h2' && node.props.children==='Skills Course'));
+  assert.equal(nodes.some(node=>node.type==='CoursesClient'),false);
+});

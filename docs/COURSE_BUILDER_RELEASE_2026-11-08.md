@@ -24,3 +24,11 @@ Production uses the doglog Vercel project and app.norsepaw.com. The workspace re
 The hosted Dev integration check covers save/reload, service allocation, duration defaults, capacity, scheduled weeks, service grants, customer calendar visibility/instructions, definition protection, copies, stale edits, deletion persistence and removal from the scheduling catalogue. Disposable Dev records are cleaned up. UI state tests cover successful/failed save, duplicate submissions, independent week editing, course-length confirmation, delete confirmation/cancel and rejected deletion.
 
 Production deployment and signed-out route/authentication smoke checks are recorded after release. Authenticated mutation workflows run only on isolated Dev.
+
+## Released
+
+Main merge: `e31acfb`. Production build `dpl_HKKgNGAykVBFVNfkytRqM9GpKUFU` (https://doglog-82fjeyaf5-tectrap-projects.vercel.app) reached Ready and was promoted to https://app.norsepaw.com. Vercel inspection confirmed this exact deployment serves the live domain and functions remain in fra1.
+
+Candidate and live checks passed: login returns 200; Course Builder, Services → Courses and customer diary require sign-in (Next.js streams their login redirects in 200 responses); GET/PUT/DELETE course-template APIs return 307 to sign-in for unauthenticated requests. No production mutation fixtures were created. The preceding production deployment `dpl_5xoNQXm5GoEfZHmwEtahMdVzycZT` remains available for rollback. No schema rollback is required; retain any subsequently created course definitions and schedules.
+
+The verified Dev deployment remains `dpl_H5gSskgBEdF7UBUDokEin9e1n3Ap`, assigned to the stable development alias. Local .vercel/project.json remains linked to doglog-development. Workspace .env files and development logins were excluded from uploads.

@@ -1,3 +1,4 @@
+import { getCustomerCourseEvents } from '@/lib/course-runs-server';
 import Link from 'next/link';
 import { SiteShell } from '@/components/SiteShell';
 import { SectionCard } from '@/components/SectionCard';
@@ -9,9 +10,10 @@ import prisma from '@/lib/prisma';
 export default async function TrainingDiaryPage() {
   const user = await requireCustomer();
   const locale = await getCustomerLocale();
+  const courseEvents = await getCustomerCourseEvents(user.customer.id, locale);
   const dogs = await prisma.dog.findMany({ where: { customerId: user.customer.id }, select: { id: true, name: true }, orderBy: { name: 'asc' } });
   const entries = await prisma.trainingEntry.findMany({ where: { dog: { customerId: user.customer.id } }, orderBy: [{ day: 'desc' }, { createdAt: 'desc' }] });
   return <SiteShell><SectionCard title={locale === 'nb' ? 'Treningsdagbok' : 'Training diary'}>
-    {dogs.length ? <TrainingDiaryClient dogs={dogs} entries={entries.map(({ id, dogId, day, exerciseName, category, minutes, repetitions, result, completed }) => ({ id, dogId, day, exerciseName, category, minutes, repetitions, result, completed }))} locale={locale} /> : <Link href="/customer/dogs" className="underline">{locale === 'nb' ? 'Legg til en hund for å starte dagboken.' : 'Add a dog to start your training diary.'}</Link>}
+    {dogs.length ? <TrainingDiaryClient courseEvents={courseEvents} dogs={dogs} entries={entries.map(({ id, dogId, day, exerciseName, category, minutes, repetitions, result, completed }) => ({ id, dogId, day, exerciseName, category, minutes, repetitions, result, completed }))} locale={locale} /> : <Link href="/customer/dogs" className="underline">{locale === 'nb' ? 'Legg til en hund for å starte dagboken.' : 'Add a dog to start your training diary.'}</Link>}
   </SectionCard></SiteShell>;
 }

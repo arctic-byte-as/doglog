@@ -1,0 +1,35 @@
+# Course scheduling design preview — 8 November 2026
+
+Scope: isolated Dev suggestion on `feature/course-scheduling-dev-preview`. No production publication, database migration, service grants or permanent enrolments are part of this preview.
+
+Entry: Services → Courses → choose Puppy Course / Skills Course → Schedule courses. Existing course content remains available in a separate tab. The preview is gated by `COURSE_SCHEDULING_PREVIEW=true` and cannot replace the production Courses view when `VERCEL_ENV=production`.
+
+Proposed workflow: create a named course group, choose a prescribed course week and its individual date and local start/end time, optionally set a meeting location, and select owners with their dogs from the signed-in trainer's existing Dev database records. Add only the chosen weeks/sessions; no weekly dates are generated automatically. More sessions can be added with independent dates, times and week selections. Each session resolves its focus/details/activities from the course catalog automatically. Change group enrolments or edit a single session's date/time later. The same course can have multiple current or future groups. Both existing templates currently have six weeks.
+
+The shared TrainingDiaryCalendar now accepts optional timed course events. Blue labelled course sessions appear alongside existing scheduled/completed exercise markers; a day popup shows both kinds of activity. The preview can filter by enrolled dog. Course sessions are not counted as completed home exercises. A sample course group has no enrolled customers; a clearly marked example home-practice entry is used only if no saved Dev exercises exist.
+
+Schedules/enrolments exist only in React state and reset on reload. The real Dev owner/dog list and diary records are read-only. Times are shown as Europe/Oslo local course times. No emails or notifications are sent. Time ranges must end after they start on the same day. Course-to-course overlaps produce a review message; this is not a full attendance/capacity system.
+
+Open decisions asked of owner: weekly series versus individually entered dates, owner-and-dog versus owner-only enrolment, temporary preview versus saved Dev schedules. The owner selected individual course-week/date scheduling. Owner-and-dog enrolment and temporary storage remain the current review defaults. A persistent version would need explicit course-run/session/enrolment records, trainer-scoped writes, customer calendar integration, timezone-safe storage, cancellations, and enrolment/access rules. Future catalog templates should reuse this scheduling flow.
+
+Checks cover weekly dates across year/leap/DST boundaries, time validation, overlaps, mixed-calendar rendering and unchanged exercise-only calendar behavior. Browser visual verification is recorded separately if available.
+
+The owner confirmed selecting a course week (for example Week 3) and its own date/time. The form now supports multiple manual session rows with content previews, and the session editor can change the linked course week. The seed example is a single Week 1 session.
+
+## Cadence control
+
+The owner requested a visible cadence setting after the seeded Sunday example caused confusion. No course groups are now pre-scheduled, and the first session date is blank until chosen. Course cadence offers weekly, every two weeks, or individual dates. The first date defines the weekday; explicit buttons generate the remaining prescribed weeks or apply spacing to current draft rows. Newly added draft sessions use the selected interval. Manually moved dates stay unchanged until cadence is explicitly applied. Saved preview groups retain individual session editing. The previous single-session example described above is no longer seeded.
+
+Cadence is also available under Edit group / participants: existing session rows are copied into the draft form, the cadence choice is retained, and dates change only through explicit generation/application and Update preview group. The initial date is not chosen automatically, so the intended weekday comes from the trainer's selection.
+
+## Automatic generation correction
+
+For new course groups, choosing the first session date (or changing its prescribed week/time) now automatically generates the remaining prescribed weeks when the cadence is weekly or every two weeks. Changing between those cadences regenerates the new draft dates. Individual-date mode remains manual. Edits to later rows stay as entered unless the first session/cadence is changed or Regenerate is used. Existing saved preview groups still require explicit application and updating, preserving rescheduled dates during unrelated edits. Regression tests invoke the actual form change handlers to verify first-date generation, cadence changes and manual-mode behavior. Add selected sessions remains the explicit action that puts the draft group on the calendar.
+
+## All courses overview
+
+The Course dropdown includes All courses. Schedule mode shows combined group/session/enrolled-dog totals, every course group with its course-type label and management actions, and the shared calendar across course types. Selecting a specific course filters its course sessions and groups; the dog calendar filter still applies. All-course content mode shows each available curriculum with a button to open its prescribed weeks. Editing a group selects the group's actual course and preserves its week-content mapping. Tests create both Puppy and Skills groups, verify the combined twelve-session calendar, and open the correct group editor; content-mode checks cover both curricula.
+
+## Production preparation
+
+The approved design now has a durable release mode on Services → Courses: saved trainer-owned groups, transactional sessions/enrolments, concurrency checks, owner/dog authorization, automatic course service access, and customer-calendar/course-page integration. Temporary state is retained only as a component test/design mode; the actual service page passes persist=true and loads database groups. No sample courses or exercises appear in the production scheduler. See RELEASE_2026-11-08.md.

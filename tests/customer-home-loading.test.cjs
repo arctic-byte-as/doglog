@@ -9,6 +9,7 @@ function loadPage(prisma, videos, publications) {
     if (id === 'react') return { Suspense: 'Suspense' };
     if (id === 'react/jsx-runtime') return require(id);
     if (id === 'next/link') return { default: 'Link' };
+    if (id === '@/lib/course-runs-server') return { getCustomerCourseEvents: async () => [] };
     if (id === '@/lib/prisma') return { default: prisma };
     if (id === '@/lib/auth') return { requireCustomer: async () => ({ customer: { id: 'owner-one' } }) };
     if (id === '@/lib/i18n/customer') return { getCustomerLocale: async () => 'en', getCustomerDictionary: () => ({ dashboard: {}, services: new Proxy({}, { get: () => ({ title: 'Service', description: '' }) }) }) };

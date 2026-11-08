@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useId, useState } from 'react';
 import type { CustomerLocale } from '@/lib/i18n/customer-config';
 
-type TrainingEvent = { id: string; day: string; title: string; dogName: string; href: string };
+type TrainingEvent = { id: string; day: string; title: string; dogName: string; href: string; kind?: 'course' };
 type CalendarLabels = { calendar: string; calendarHelp: string; noDates: string; noDayDates: string; previousMonth: string; nextMonth: string; today: string; viewTraining: string };
 
 export default function CustomerCalendar({ events, today, locale, labels }: { events: TrainingEvent[]; today: string; locale: CustomerLocale; labels: CalendarLabels }) {
@@ -44,7 +44,7 @@ export default function CustomerCalendar({ events, today, locale, labels }: { ev
     </div>
     <div className="mt-5 border-t border-brand-200 pt-4" aria-live="polite">
       <h3 className="text-sm font-semibold">{selectedDate.toLocaleDateString(language, { weekday: 'long', day: 'numeric', month: 'long' })}</h3>
-      {selectedEvents.length ? <ul className="mt-3 space-y-2">{selectedEvents.map((event) => <li key={event.id}><Link href={event.href} className="flex min-h-11 flex-wrap items-center justify-between gap-2 rounded-xl border border-brand-200 bg-brand-50 p-3 text-sm"><span><span className="block font-semibold">{event.title}</span><span className="mt-1 block text-xs">{event.dogName}</span></span><span aria-hidden="true">→</span></Link></li>)}</ul> : <p className="mt-2 text-sm">{monthEvents.length ? labels.noDayDates : labels.noDates}</p>}
+      {selectedEvents.length ? <ul className="mt-3 space-y-2">{selectedEvents.map((event) => <li key={event.id}><Link href={event.href} className={`flex min-h-11 flex-wrap items-center justify-between gap-2 rounded-xl border p-3 text-sm ${event.kind === 'course' ? 'border-blue-200 bg-blue-50' : 'border-brand-200 bg-brand-50'}`}><span><span className="block font-semibold">{event.title}</span><span className="mt-1 block text-xs">{event.dogName}</span></span><span aria-hidden="true">→</span></Link></li>)}</ul> : <p className="mt-2 text-sm">{monthEvents.length ? labels.noDayDates : labels.noDates}</p>}
     </div>
   </section>;
 }

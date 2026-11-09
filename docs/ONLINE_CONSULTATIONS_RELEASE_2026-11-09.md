@@ -21,3 +21,9 @@ If the Google OAuth project remains External/Testing, only listed test users can
 Production candidate build, route/authentication checks and promotion will be recorded after release. No test invitations or calendar mutations are sent on production during automated release checks.
 
 Production credential configuration has not run: automatic approval review rejected the initial fallback from production-specific to Dev credentials without explicit approval of that source/destination. The production candidate is prepared with Google disabled until credential authorization and the Google callback setting are completed.
+
+## Candidate prepared, activation pending
+
+Main merge: `5034cbc`. Unpromoted production candidate `dpl_5wFhQMmrXqvD8zhxAbxLXYYo364p` (https://doglog-omh1k33gf-tectrap-projects.vercel.app) is Ready. Candidate checks passed for login, Course Builder, consultation booking/connection and customer appointments page authentication, plus signed-out booking/connect/check/disconnect API denial. The Google callback returns 503 while configuration is absent, as intended.
+
+The live domains have not been promoted to this candidate. Credential writes were rejected before execution; no production Google variables, account tokens or appointments were created. Explicit owner approval is needed to reuse the dedicated Calendar Dev application credentials in the doglog Production environment (or the owner can provide production-specific Calendar credentials). Also await confirmation that the exact production callback has been registered. After approval/configuration, rebuild with the production environment, verify the configured candidate, promote, push main, and have the trainer connect Google from the production connection page. Dev account tokens/bookings remain isolated.

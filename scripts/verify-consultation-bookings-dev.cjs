@@ -31,7 +31,9 @@ function request(route,token,method='GET',body){const output=path.join(dir,`${++
   fail=true;await service.changeConsultationBooking(ids.trainer,ids.booking,{action:'cancel',updatedAt:saved.updatedAt}).then(()=>{throw Error('Expected simulated failure');},error=>assert(error.status===502,'Google failure reported'));
   saved=(await service.trainerConsultationBookings(ids.trainer))[0];assert(saved.operation==='cancel'&&saved.error,'Failed Google action retained for retry');
   fail=false;await service.changeConsultationBooking(ids.trainer,ids.booking,{action:'retry',updatedAt:saved.updatedAt});saved=(await service.trainerConsultationBookings(ids.trainer))[0];assert(saved.status==='cancelled','Cancellation retry succeeds');
-  assert(request('/customer/appointments',owner).text.includes('Cancelled'),'Customer sees cancelled appointment');
+  const cancelledPage=request('/customer/appointments',owner).text;
+  assert(cancelledPage.includes('Cancelled') || cancelledPage.includes('Avlyst'),'Customer sees cancelled appointment in the selected language');
+  assert(!/<a[^>]+href="https:\/\/meet\.google\.com/.test(cancelledPage),'Cancelled customer appointment has no Join link');
   console.log('PASS: real Dev persistence/locking, safe mocked Google creation, idempotency, rescheduling/cancellation retry, trainer and customer authorization, owner Home/appointments visibility, and stale-write rejection. No Google events or invitations sent.');
 })().catch(error=>{console.error(error.message);process.exitCode=1;}).finally(async()=>{
   await db.appContent.deleteMany({where:{key:{startsWith:`consultation-booking:${ids.trainer}:`}}});await db.dog.deleteMany({where:{id:{in:[ids.dog,ids.otherDog]}}});await db.session.deleteMany({where:{id:{in:sessions}}});await db.user.deleteMany({where:{id:{in:users}}});await db.customer.deleteMany({where:{id:{in:[ids.owner,ids.otherOwner]}}});await db.trainer.deleteMany({where:{id:{in:[ids.trainer,ids.otherTrainer]}}});await db.$disconnect();fs.rmSync(dir,{recursive:true,force:true});

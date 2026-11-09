@@ -60,3 +60,9 @@ test('overlapping slots are rejected and failed Google writes remain retryable a
   await assert.rejects(()=>fixture.server.createConsultationBooking('trainer-a',{...body,id:crypto.randomUUID()}),e=>e.status===409);
   fixture.fail(false);const recovered=await fixture.server.changeConsultationBooking('trainer-a',body.id,{action:'retry',updatedAt:pending.updatedAt});assert.equal(recovered.id,body.id);assert.equal(recovered.status,'confirmed');
 });
+test('invitation actions cannot send to an address different from the reviewed owner email',async()=>{
+  const fixture=storage(),body={...times(),id:crypto.randomUUID(),dogId:'dog-a',sendInvitation:true,recipientEmail:'different@example.org'};
+  await assert.rejects(()=>fixture.server.createConsultationBooking('trainer-a',body),e=>e.status===409);assert.equal(fixture.calls(),0);
+  const created=await fixture.server.createConsultationBooking('trainer-a',{...body,sendInvitation:false});
+  await assert.rejects(()=>fixture.server.changeConsultationBooking('trainer-a',body.id,{action:'invite',updatedAt:created.updatedAt,recipientEmail:'different@example.org'}),e=>e.status===409);assert.equal(fixture.calls(),1);
+});

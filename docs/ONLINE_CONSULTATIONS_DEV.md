@@ -30,3 +30,9 @@ Node regression tests cover Oslo summer/winter time conversion and DST ambiguity
 `scripts/verify-consultation-bookings-dev.cjs <stable-dev-url>` exercises real Dev transactions and hosted owner/trainer pages with a mocked Google adapter and disposable records; no Google events or messages are sent. Live Meet creation/invitation delivery and joining from two devices are completed by the owner through the Dev UI.
 
 References: [Calendar insert](https://developers.google.com/workspace/calendar/api/v3/reference/events/insert), [Calendar update](https://developers.google.com/workspace/calendar/api/v3/reference/events/update), [Calendar delete](https://developers.google.com/workspace/calendar/api/v3/reference/events/delete).
+
+## Verified Dev deployment
+
+Ready at https://doglog-development-6hcfqs9ql-tectrap-projects.vercel.app, assigned to the stable Dev alias. Existing deployment-scoped Google credentials/encryption key are reused; the saved Workspace connection is retained. Production and shared Preview environment settings are unchanged.
+
+134 Node tests pass. TypeScript/lint and optimized builds pass (existing DogListItem image warning only). The hosted verification script passed against real Dev storage and customer/trainer pages with a mocked Google adapter: transaction locks, idempotent creation, owner Home and appointments visibility, foreign-dog/owner rejection, stale update rejection, rescheduling, persisted failure and cancellation retry, and no Join link on cancelled appointments in the default Norwegian locale. Fixture records were removed. The script created no real Google events or invitations; the owner completes the live two-account Meet/invitation test in the Dev UI.

@@ -1,0 +1,40 @@
+// Exercises real Dev persistence with a mocked Google adapter. Sends no events or invitations.
+const {PrismaClient}=require('@prisma/client'),fs=require('node:fs'),ts=require('typescript'),crypto=require('node:crypto'),path=require('node:path'),os=require('node:os'),{spawnSync}=require('node:child_process');
+require('@next/env').loadEnvConfig(process.cwd());
+const deployment=process.argv[2],origin='https://doglog-development-tectrap-projects.vercel.app';
+if(deployment!==origin||!process.env.DATABASE_URL?.includes('gksrxfnghehimzuiqyfs'))throw Error('Only isolated Dev is allowed.');
+const db=new PrismaClient(),tag=crypto.randomUUID(),ids={trainer:crypto.randomUUID(),otherTrainer:crypto.randomUUID(),owner:crypto.randomUUID(),otherOwner:crypto.randomUUID(),dog:crypto.randomUUID(),otherDog:crypto.randomUUID(),booking:crypto.randomUUID()},users=[],sessions=[],dir=fs.mkdtempSync(path.join(os.tmpdir(),'consultation-booking-test-'));
+let calls=0,fail=false,seq=0;
+function assert(value,message){if(!value)throw Error(message);}
+function load(file,imports={}){const code=ts.transpileModule(fs.readFileSync(path.join(process.cwd(),file),'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022}}).outputText;const exports={};new Function('require','exports',code)(id=>id in imports?imports[id]:require(id),exports);return exports;}
+const pure=load('lib/consultation-bookings.ts'),config=load('lib/google-calendar-config.ts');
+const service=load('lib/consultation-bookings-server.ts',{'./prisma':{default:db},'./google-calendar-config':config,'./consultation-bookings':pure,'./google-calendar-server':{withGoogleCalendar:async(_,fn)=>fn({}, {subject:'fixture-account',email:'test@example.test'})},'./google-consultation-events':{syncConsultationEvent:async booking=>{calls++;if(fail)throw new config.GoogleCalendarError('Simulated temporary Google failure',502);return{meetUrl:'https://meet.google.com/abc-defg-hij',meetState:'ready',invitationSent:booking.operation==='invite'||booking.invitationSent};}}});
+async function login(email,role){const user=await db.user.create({data:{email,name:'Disposable booking check',role}});users.push(user.id);const token=crypto.randomBytes(32).toString('base64url');const session=await db.session.create({data:{userId:user.id,sessionToken:crypto.createHash('sha256').update(token).digest('base64url'),expires:new Date(Date.now()+600000)}});sessions.push(session.id);return token;}
+function request(route,token,method='GET',body){const output=path.join(dir,`${++seq}.response`),args=['curl',route,'--deployment',deployment,'--','--silent','--show-error','--output',output,'--write-out','%{http_code}','--request',method,'--header',`Origin: ${origin}`];if(token)args.push('--header',`Cookie: doglog_session=${token}`);if(body){const file=path.join(dir,`${seq}.json`);fs.writeFileSync(file,JSON.stringify(body));args.push('--header','Content-Type: application/json','--data-binary',`@${file}`);}const result=spawnSync('vercel',args,{encoding:'utf8',timeout:45000});assert(result.status===0,'Hosted request failed.');return{status:Number(result.stdout.trim().slice(-3)),text:fs.readFileSync(output,'utf8')};}
+(async()=>{
+  for(const [id,email] of [[ids.trainer,`booking-trainer-${tag}@example.test`],[ids.otherTrainer,`other-booking-trainer-${tag}@example.test`]])await db.trainer.create({data:{id,email,name:'Disposable booking trainer'}});
+  for(const [id,email] of [[ids.owner,`booking-owner-${tag}@example.test`],[ids.otherOwner,`other-booking-owner-${tag}@example.test`]])await db.customer.create({data:{id,email,name:'Disposable booking owner'}});
+  for(const [id,trainerId,customerId]of[[ids.dog,ids.trainer,ids.owner],[ids.otherDog,ids.otherTrainer,ids.otherOwner]])await db.dog.create({data:{id,trainerId,customerId,name:`Check dog ${id.slice(0,6)}`,owner:'Disposable owner',age:'',breed:'',status:'Test'}});
+  const trainer=await login(`booking-trainer-${tag}@example.test`,'TRAINER'),owner=await login(`booking-owner-${tag}@example.test`,'CUSTOMER'),other=await login(`other-booking-owner-${tag}@example.test`,'CUSTOMER');
+  const body={id:ids.booking,dogId:ids.dog,day:'2030-11-11',startTime:'18:00',endTime:'19:00',topic:`Booking check ${tag}`,sendInvitation:false};
+  assert(request('/services/consultations/bookings',trainer).text.includes('Create Meet appointment'),'Trainer booking form is deployed');
+  assert(request('/api/consultation-bookings',null,'POST',body).status===401,'Signed-out booking denied');
+  assert(request('/api/consultation-bookings',owner,'POST',body).status===403,'Customer booking mutation denied');
+  assert(request('/api/consultation-bookings',trainer,'POST',{...body,dogId:ids.otherDog}).status===403,'Foreign dog booking denied before Google access');
+  const created=await service.createConsultationBooking(ids.trainer,body);assert(created.status==='confirmed','Mock Google booking persists');
+  await service.createConsultationBooking(ids.trainer,body);assert(calls===1,'Duplicate create is idempotent');
+  assert((await service.customerConsultationBookings(ids.owner)).length===1,'Owner sees durable booking');assert((await service.customerConsultationBookings(ids.otherOwner)).length===0,'Other owner has no access');
+  assert(request('/customer/appointments',owner).text.includes(body.topic),'Owner appointments page displays booking');assert(request('/customer',owner).text.includes(body.topic),'Owner home displays Join card');assert(!request('/customer/appointments',other).text.includes(body.topic),'Foreign owner page hides booking');
+  assert(request(`/api/consultation-bookings/${ids.booking}`,trainer,'PATCH',{action:'cancel',updatedAt:'stale'}).status===409,'Stale API edit denied');
+  await service.changeConsultationBooking(ids.trainer,ids.booking,{action:'update',updatedAt:created.updatedAt,day:body.day,startTime:'19:00',endTime:'20:00',topic:body.topic});
+  let saved=(await service.trainerConsultationBookings(ids.trainer))[0];assert(saved.startTime==='19:00','Reschedule persists');
+  fail=true;await service.changeConsultationBooking(ids.trainer,ids.booking,{action:'cancel',updatedAt:saved.updatedAt}).then(()=>{throw Error('Expected simulated failure');},error=>assert(error.status===502,'Google failure reported'));
+  saved=(await service.trainerConsultationBookings(ids.trainer))[0];assert(saved.operation==='cancel'&&saved.error,'Failed Google action retained for retry');
+  fail=false;await service.changeConsultationBooking(ids.trainer,ids.booking,{action:'retry',updatedAt:saved.updatedAt});saved=(await service.trainerConsultationBookings(ids.trainer))[0];assert(saved.status==='cancelled','Cancellation retry succeeds');
+  const cancelledPage=request('/customer/appointments',owner).text;
+  assert(cancelledPage.includes('Cancelled') || cancelledPage.includes('Avlyst'),'Customer sees cancelled appointment in the selected language');
+  assert(!/<a[^>]+href="https:\/\/meet\.google\.com/.test(cancelledPage),'Cancelled customer appointment has no Join link');
+  console.log('PASS: real Dev persistence/locking, safe mocked Google creation, idempotency, rescheduling/cancellation retry, trainer and customer authorization, owner Home/appointments visibility, and stale-write rejection. No Google events or invitations sent.');
+})().catch(error=>{console.error(error.message);process.exitCode=1;}).finally(async()=>{
+  await db.appContent.deleteMany({where:{key:{startsWith:`consultation-booking:${ids.trainer}:`}}});await db.dog.deleteMany({where:{id:{in:[ids.dog,ids.otherDog]}}});await db.session.deleteMany({where:{id:{in:sessions}}});await db.user.deleteMany({where:{id:{in:users}}});await db.customer.deleteMany({where:{id:{in:[ids.owner,ids.otherOwner]}}});await db.trainer.deleteMany({where:{id:{in:[ids.trainer,ids.otherTrainer]}}});await db.$disconnect();fs.rmSync(dir,{recursive:true,force:true});
+});

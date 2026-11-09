@@ -57,6 +57,7 @@ export default async function ServiceConsultationsPage() {
                 </p>
               </div>
               {googleCalendarReady() ? <Link href="/services/consultations/google" className="inline-flex min-h-11 items-center rounded-full border border-brand-200 px-5 py-2 font-semibold">Google Calendar & Meet connection →</Link> : null}
+              {googleCalendarReady() ? <Link href="/services/consultations/bookings" className="inline-flex min-h-11 items-center rounded-full bg-brand-900 px-5 py-2 font-semibold text-white">Book an online consultation →</Link> : null}
               <ConsultationLogClient dogs={dogs} consultations={consultationItems} />
             </div>
           </ServicesLayout>

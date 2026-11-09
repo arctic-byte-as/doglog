@@ -10,5 +10,5 @@ export default async function GoogleCalendarPage({ searchParams }: { searchParam
   const user = await requireTrainer(), configured = googleCalendarReady();
   const status = configured ? await googleCalendarStatus(user.trainer.id) : { connected: false };
   const { result } = await searchParams;
-  return <SiteShell><SectionCard title="Consultations"><ServicesLayout activeHref="/services/consultations"><div className="space-y-5"><Link href="/services/consultations" className="underline">← Back to consultations</Link><GoogleCalendarConnection configured={configured} status={status} result={result}/></div></ServicesLayout></SectionCard></SiteShell>;
+  return <SiteShell><SectionCard title="Consultations"><ServicesLayout activeHref="/services/consultations"><div className="space-y-5"><Link href="/services/consultations" className="underline">← Back to consultations</Link><Link href="/services/consultations/bookings" className="inline-flex min-h-11 items-center rounded-full bg-brand-900 px-5 py-2 font-semibold text-white">Book an online consultation →</Link><GoogleCalendarConnection configured={configured} status={status} result={result}/></div></ServicesLayout></SectionCard></SiteShell>;
 }

@@ -1,3 +1,4 @@
+import CustomerUpcomingConsultations from '@/components/CustomerUpcomingConsultations';
 import { getCustomerCourseEvents } from '@/lib/course-runs-server';
 import { Suspense } from 'react';
 import CustomerTrainingDiary from '@/components/CustomerTrainingDiary';
@@ -78,6 +79,7 @@ export default async function CustomerPage() {
 
   return (
     <SiteShell hideDogAvatar mobileHeading={t.dashboard.welcome}>
+      <Suspense fallback={null}><CustomerUpcomingConsultations customerId={user.customer.id} locale={locale}/></Suspense>
       <div className="customer-home dashboard-colour-preview space-y-8">
         <CustomerWelcome name={customer.name} dogs={customer.dogs.map((dog) => ({ id: dog.id, name: dog.name, profileImageUrl: dog.profileImageUrl }))} title={t.dashboard.welcome} description={t.dashboard.welcomeHelp} locale={locale} />
         <SectionCard title={t.dashboard.assignedServices} plainHeader>

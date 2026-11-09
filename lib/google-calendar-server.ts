@@ -88,3 +88,24 @@ export async function checkGoogleCalendar(trainerId: string) {
 export async function disconnectGoogleCalendar(trainerId: string) {
   await prisma.appContent.deleteMany({ where: { key: { in: [googleCalendarKey(trainerId), googleCalendarStateKey(trainerId)] } } });
 }
+
+// Server-only adapter for booking operations. Refreshes are saved only to the same connection version.
+export async function withGoogleCalendar<T>(trainerId: string, action: (client: OAuth2Client, account: { subject: string; email: string }) => Promise<T>): Promise<T> {
+  const config = googleCalendarConfig(), key = googleCalendarKey(trainerId);
+  const row = await prisma.appContent.findUnique({ where: { key } });
+  if (!row) throw new GoogleCalendarError('Connect Google Calendar before booking a consultation.');
+  let connection: Connection;
+  try { connection = openGoogleValue<Connection>(row.value, config.encryptionKey, key); } catch { throw new GoogleCalendarError('Reconnect Google Calendar before booking a consultation.'); }
+  if (connection.clientId !== config.clientId) throw new GoogleCalendarError('Reconnect Google Calendar before booking a consultation.');
+  const client = oauthClient();
+  client.setCredentials({ refresh_token: connection.refreshToken, access_token: connection.accessToken, expiry_date: connection.expiresAt });
+  try { return await action(client, { subject: connection.subject, email: connection.email }); }
+  finally {
+    if (client.credentials.access_token && client.credentials.access_token !== connection.accessToken) {
+      connection.accessToken = client.credentials.access_token;
+      connection.refreshToken = client.credentials.refresh_token || connection.refreshToken;
+      connection.expiresAt = client.credentials.expiry_date || connection.expiresAt;
+      await prisma.appContent.updateMany({ where: { key, value: row.value }, data: { value: sealGoogleValue(connection, config.encryptionKey, key) } }).catch(() => { /* A later request can refresh again; never expose provider errors. */ });
+    }
+  }
+}

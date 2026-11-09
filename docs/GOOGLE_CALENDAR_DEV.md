@@ -38,3 +38,11 @@ Testing-mode Google grants may expire after seven days; reconnect when required.
 ## Verification
 
 `node --test tests/*.test.cjs` and `npm run build` cover local regressions, encryption/context/tamper protection, origin/role checks, offline PKCE parameters, replay/expiry/user/trainer binding, safe status, connection checking and disconnect races. Google requests are mocked in unit tests; live account authorization requires the owner to choose their account and consent in the Dev UI.
+
+## Dev verification
+
+Ready deployment: https://doglog-development-n7qojhkpk-tectrap-projects.vercel.app, assigned to the stable Dev alias. Credentials are attached only to this deployment; shared Preview environment settings and the production project were not changed.
+
+121 Node tests and the optimized build pass (only the existing DogListItem image lint warning). `scripts/verify-google-calendar-dev.cjs` passed against the stable Dev origin using disposable trainer/customer sessions: configured page, signed-out/customer denial, origin enforcement, Google host/client/callback/PKCE/offline URL, protected cookie, encrypted state, invalid callback, cancelled consent, missing-connection check and disconnect. Fixtures were removed. No account was authorized, and no events or invitations were created. The owner must complete Google consent and run Check connection to verify the real account.
+
+References: [Google server OAuth](https://developers.google.com/identity/protocols/oauth2/web-server), [Calendar events-list authorization and response fields](https://developers.google.com/workspace/calendar/api/v3/reference/events/list).

@@ -64,7 +64,7 @@ export async function createConsultationBooking(trainerId:string,body:unknown) {
       if(old.status==='cancelled' || old.operation!=='create')throw new GoogleCalendarError('Use the saved booking actions to manage this appointment.',409);
       assertFree(old);const next={...old,lease:randomUUID(),leaseUntil:Date.now()+120000,error:undefined};await tx.appContent.update({where:{key},data:{value:encoded(next)}});return next;
     }
-    if((await records(trainerId,tx)).length>=200)throw new GoogleCalendarError('The Dev booking limit has been reached.');
+    if((await records(trainerId,tx)).length>=200)throw new GoogleCalendarError('The booking limit has been reached.');
     await assertNoOverlap(trainerId,id,times,tx);
     const next:ConsultationBooking={...times,id,trainerId,dogId:dog.id,dogName:dog.name,customerId:dog.customer!.id,ownerName:dog.customer!.name,attendeeEmail:dog.customer!.email,status:'pending',googleEventId:`np${id.replace(/-/g,'').toLowerCase()}`,googleSubject:account.subject,googleEmail:account.email,meetUrl:null,meetState:'pending',invitationSent:false,notifyOwner,operation:'create',operationId:randomUUID(),lease:randomUUID(),leaseUntil:Date.now()+120000};
     await tx.appContent.create({data:{key,value:encoded(next)}});return next;
@@ -97,7 +97,7 @@ export async function changeConsultationBooking(trainerId:string,id:string,body:
       if(operation==='invite'){
         if(current.invitationSent)throw new GoogleCalendarError('An invitation was already sent. Rescheduling sends its update automatically.',409);
         const dog=await tx.dog.findFirst({where:{id:current.dogId,trainerId,customerId:current.customerId},select:{customer:{select:{email:true}}}});
-        if(!dog?.customer || !validInviteEmail(dog.customer.email))throw new GoogleCalendarError('Update this owner account with your real test email before sending an invitation.');
+        if(!dog?.customer || !validInviteEmail(dog.customer.email))throw new GoogleCalendarError('Update this owner account with a valid email before sending an invitation.');
         if(input.recipientEmail!==dog.customer.email)throw new GoogleCalendarError('The owner email changed. Reload before sending an invitation.',409);
         inviteEmail=dog.customer.email;
       }

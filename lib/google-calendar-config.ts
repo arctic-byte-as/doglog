@@ -16,6 +16,6 @@ export function googleCalendarConfig() {
 export function googleCalendarReady() { try { googleCalendarConfig(); return true; } catch { return false; } }
 export function requireGoogleCalendarOrigin(request: Request) {
   const config = googleCalendarConfig();
-  if (request.headers.get('origin') !== config.origin || new URL(request.url).origin !== config.origin) throw new GoogleCalendarError('Open the Google Calendar connection from the configured Dev address and try again.', 403);
+  if (request.headers.get('origin') !== config.origin || new URL(request.url).origin !== config.origin) throw new GoogleCalendarError('Open the Google Calendar connection from the configured NorsePaw address and try again.', 403);
   return config;
 }

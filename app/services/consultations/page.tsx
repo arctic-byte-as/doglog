@@ -1,3 +1,5 @@
+import Link from 'next/link';
+import { googleCalendarReady } from '@/lib/google-calendar-config';
 import { SiteShell } from '@/components/SiteShell';
 import { SectionCard } from '@/components/SectionCard';
 import ConsultationLogClient from '@/components/ConsultationLogClient';
@@ -54,6 +56,7 @@ export default async function ServiceConsultationsPage() {
                   Create new consultations and open active consultation records.
                 </p>
               </div>
+              {googleCalendarReady() ? <Link href="/services/consultations/google" className="inline-flex min-h-11 items-center rounded-full border border-brand-200 px-5 py-2 font-semibold">Google Calendar & Meet connection →</Link> : null}
               <ConsultationLogClient dogs={dogs} consultations={consultationItems} />
             </div>
           </ServicesLayout>
